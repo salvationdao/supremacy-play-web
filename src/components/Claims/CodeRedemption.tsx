@@ -1,12 +1,12 @@
-import { ClipThing } from "../Common/ClipThing"
 import { Stack, TextField, Typography } from "@mui/material"
-import { colors, fonts } from "../../theme/theme"
-import { useTheme } from "../../containers/theme"
 import { useCallback, useEffect, useState } from "react"
-import { FancyButton } from "../Common/FancyButton"
+import { useTheme } from "../../containers/theme"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
 import { RewardResponse } from "../../types"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../Common/Nice/NiceButton"
 
 interface redemptionProps {
     setRewards: (value: ((prevState: RewardResponse[] | undefined) => RewardResponse[] | undefined) | RewardResponse[] | undefined) => void
@@ -38,19 +38,10 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
     }, [code, send, setLoading, setRewards])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-            }}
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
+        <NiceBoxThing
+            border={{ color: `${theme.factionTheme.primary}50` }}
+            background={{ colors: [theme.factionTheme.background], opacity: 0.9 }}
             sx={{ position: "relative", m: "4rem", maxWidth: "70rem" }}
-            backgroundColor={theme.factionTheme.background}
-            opacity={0.9}
         >
             <Stack alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
                 <Typography variant={"h1"} sx={{ fontSize: "3rem", fontFamily: fonts.nostromoBlack, mb: "2rem" }}>
@@ -64,17 +55,13 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
                 <Stack>
                     <Typography sx={{ mb: "1.6rem", fontFamily: fonts.nostromoBold }}>Enter your 6 digit unlock code</Typography>
 
-                    <ClipThing
-                        clipSize="8px"
-                        border={{
-                            borderColor: theme.factionTheme.primary,
-                            borderThickness: ".2rem",
-                        }}
+                    <NiceBoxThing
+                        border={{ color: theme.factionTheme.primary }}
+                        background={{ colors: [theme.factionTheme.background] }}
                         sx={{ position: "relative", mb: "2.8rem" }}
-                        backgroundColor={theme.factionTheme.background}
                     >
                         <CodeEntry code={code} length={6} setCode={setCode} />
-                    </ClipThing>
+                    </NiceBoxThing>
 
                     {error && (
                         <Typography
@@ -88,32 +75,19 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
                         </Typography>
                     )}
 
-                    <FancyButton
-                        disabled={code.length !== 6 || loading}
+                    <NiceButton
+                        corners
+                        buttonColor={theme.factionTheme.primary}
                         loading={loading}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ width: "100%", py: "1.1rem", color: theme.factionTheme.secondary }}
+                        disabled={code.length !== 6 || loading}
                         onClick={onClaim}
+                        sx={{ py: "1rem" }}
                     >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: theme.factionTheme.secondary,
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            Claim
-                        </Typography>
-                    </FancyButton>
+                        Claim
+                    </NiceButton>
                 </Stack>
             </Stack>
-        </ClipThing>
+        </NiceBoxThing>
     )
 }
 

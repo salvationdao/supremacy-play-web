@@ -2,10 +2,9 @@ import { useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { Weapon } from "../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
-import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
+import { WeaponCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface WarMachineMarketItemProps {
@@ -36,10 +35,10 @@ export const WeaponsMarketItem = ({ item, isGridView, isExpanded, toggleIsExpand
     if (!weapon || !collection_item) return null
 
     return (
-        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Weapons}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={"weapons"}>
             <WeaponCommonArea
                 primaryColor={theme.factionTheme.primary}
-                secondaryColor={theme.factionTheme.secondary}
+                secondaryColor={theme.factionTheme.text}
                 isGridView={isGridView}
                 weaponDetails={weaponDetails}
                 isExpanded={isExpanded}

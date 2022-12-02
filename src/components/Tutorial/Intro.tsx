@@ -3,8 +3,7 @@ import { useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useUrlQuery } from "../../hooks"
 import { opacityEffect } from "../../theme/keyframes"
-import { fonts } from "../../theme/theme"
-import { FancyButton } from "../Common/FancyButton"
+import { NiceButton } from "../Common/Nice/NiceButton"
 
 interface Context {
     time: number
@@ -27,23 +26,10 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
     const videoRef = useRef<HTMLVideoElement>(null)
     return (
         <Box sx={{ background: "#000", width: "100%", height: "100%", position: "relative" }}>
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "9px",
-                    backgroundColor: "#222222",
-                    opacity: 0.8,
-                    border: { borderColor: "#FFFFFF", borderThickness: "1px" },
-                    sx: { position: "absolute", top: "3rem", right: "3rem", zIndex: 9 },
-                }}
-                sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
-                onClick={() => {
-                    toggleTrainingIntro(false)
-                }}
-            >
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
-                    Skip
-                </Typography>
-            </FancyButton>
+            <NiceButton buttonColor="#FFFFFF" onClick={() => toggleTrainingIntro(false)} sx={{ position: "absolute", top: "3rem", right: "3rem", zIndex: 9 }}>
+                Skip
+            </NiceButton>
+
             <video
                 ref={videoRef}
                 onTimeUpdate={(e) => {

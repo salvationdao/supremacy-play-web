@@ -1,15 +1,3 @@
-*,
-*::after,
-*::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
-}
-
-body {
-    box-sizing: border-box;
-}
-
 @font-face {
     font-family: "Share Tech";
     src: url("../assets/fonts/share-tech/share-tech.otf");
@@ -38,19 +26,32 @@ body {
     font-family: "Nostromo Regular Heavy";
     src: url("../assets/fonts/nostromo-regular/NostromoRegular-Heavy.otf");
 }
-
-span {
-    font-family: inherit;
-    font-size: inherit;
+@font-face {
+    font-family: "Rajdhani Light";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Light.ttf");
 }
-
-body {
-    overflow: hidden; /* Hide scrollbars */
+@font-face {
+    font-family: "Rajdhani Regular";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Regular.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Medium";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Medium.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Semibold";
+    src: url("../assets/fonts/rajdhani/Rajdhani-SemiBold.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Bold";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Bold.ttf");
 }
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 57%; /* 62.5% of 16px is 10px */
+    /* By default, 1rem = 16px */
+    /* 62.5% of 16px is 10px, it means now 1rem is 10px */
+    font-size: 57%;
 }
 
 @media only screen and (max-width: 1922px) {
@@ -83,7 +84,62 @@ html {
     }
 }
 
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+body {
+    box-sizing: border-box;
+}
+span {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+body {
+    overflow: hidden; /* Hide scrollbars */
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin !important;
+    scrollbar-color: #00ffff50 #ffffff !important;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 1rem !important;
+    height: 0.6rem !important;
+}
+
+*::-webkit-scrollbar-track {
+    background: #ffffff15 !important;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #00ffff50 !important;
+    border-radius: 0px !important;
+    border: 0.5px ridge #00ffff20 !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #00ffff90 !important;
+}
+
+/* Input number arrows */
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 a {
+    cursor: pointer;
     text-decoration: none;
     color: #00ffff;
 }

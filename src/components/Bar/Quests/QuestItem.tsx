@@ -2,10 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { ProgressBar } from "../../Common/ProgressBar"
-import { TooltipHelper } from "../../Common/TooltipHelper"
 
 interface QuestItemProps {
     questStat: QuestStat
@@ -28,20 +30,15 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
     const [completed, setCompleted] = useState(questStat.obtained)
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            spacing="1rem"
+        <NiceBoxThing
+            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+            background={{ colors: ["#FFFFFF"], opacity: 0.03 }}
             sx={{
                 position: "relative",
+                px: "1.4rem",
                 py: "1.2rem",
-                pl: ".5rem",
-                pr: "1.4rem",
-                borderRadius: 1,
-                backgroundColor: `${colors.purple}16`,
-                userSelect: "none",
                 opacity: completed && !showShowConfetti ? 0.4 : 1,
-                border: completed && !showShowConfetti ? "none" : `${colors.purple}50 1px solid`,
+                userSelect: "none",
                 overflow: "hidden",
             }}
         >
@@ -64,24 +61,19 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                 />
             )}
 
-            <TooltipHelper color={colors.purple} placement="top-end" text={questStat.description}>
+            <NiceTooltip color={colors.purple} placement="top-end" text={questStat.description}>
                 <Box sx={{ position: "absolute", top: ".4rem", right: ".4rem", opacity: 0.4, ":hover": { opacity: 1 } }}>
                     <SvgInfoCircular size="1.3rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
             <Stack spacing=".8rem" sx={{ flex: 1 }}>
                 <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="space-between">
                     <Typography
                         sx={{
                             lineHeight: 1,
-                            fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
+                            fontWeight: "bold",
+                            ...truncateTextLines(1),
                         }}
                     >
                         {questStat.name}
@@ -103,7 +95,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                             sx={{
                                 color: progressPercent < 100 ? colors.red : colors.green,
                                 lineHeight: 1,
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             }}
                         >
                             {cappedCurrent}/{progress.goal}
@@ -123,6 +115,6 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                     </Typography>
                 </Stack>
             </Stack>
-        </Stack>
+        </NiceBoxThing>
     )
 }, propsAreEqual)

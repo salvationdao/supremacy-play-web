@@ -4,8 +4,8 @@ import { useMobile, useTraining } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { TrainingVotingSystem } from "../../../types"
 import { PlayerAbilityStages, TrainingLobby } from "../../../types/training"
-import { MoveableResizableConfig } from "../../Common/MoveableResizable/MoveableResizableContainer"
 import { MoveableResizableBT } from "../MoveableResizableBT"
+import { MoveableResizableConfig } from "../MoveableResizeableContainerBT"
 import { PlayerAbilitiesBT } from "../PlayerAbilities/PlayerAbilitiesBT"
 import { BattleAbilityItemBT } from "./BattleAbility/BattleAbilityItemBT"
 
@@ -77,17 +77,6 @@ export const VotingSystemBT = () => {
                                 pr: "1.4rem",
                                 mt: "1rem",
                                 direction: "ltr",
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
                             }}
                         >
                             <Stack spacing="1rem" sx={{ direction: "ltr", pt: ".4rem", pb: "1.2rem" }}>

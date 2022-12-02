@@ -1,13 +1,13 @@
-import { Faction, User } from "../../../types"
-import React, { useCallback, useEffect, useState } from "react"
-import { GameServerKeys } from "../../../keys"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { Box, Checkbox, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
-import { ClipThing } from "../../Common/ClipThing"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import React, { useCallback, useEffect, useState } from "react"
 import { SvgClose } from "../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
-import { FancyButton } from "../../Common/FancyButton"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { FactionWithPalette, User } from "../../../types"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const AdminBanModal = ({
     user,
@@ -19,7 +19,7 @@ export const AdminBanModal = ({
     user: User
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    faction: Faction
+    faction: FactionWithPalette
     fetchPlayer: (newGid: number) => void
 }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -177,7 +177,7 @@ const AdminBanModalInner = ({
     banReason: string
     sendBanCommand: () => void
     reqError: string
-    faction: Faction
+    faction: FactionWithPalette
     canSubmit: boolean
 }) => {
     return (
@@ -196,11 +196,11 @@ const AdminBanModalInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         sx={{
@@ -221,52 +221,19 @@ const AdminBanModalInner = ({
                         </Typography>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setIsShadowBan(!shadowBan)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={shadowBan}
-                                onClick={() => setIsShadowBan(!shadowBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={shadowBan} onClick={() => setIsShadowBan(!shadowBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Shadowban user</Typography>
                         </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setBanMechQueue(!banMechQueue)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={banMechQueue}
-                                onClick={() => setBanMechQueue(!banMechQueue)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={banMechQueue} onClick={() => setBanMechQueue(!banMechQueue)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from queuing mechs</Typography>
                         </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setChatBan(!chatBan)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={chatBan}
-                                onClick={() => setChatBan(!chatBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={chatBan} onClick={() => setChatBan(!chatBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from chat</Typography>
                         </Stack>
@@ -277,18 +244,7 @@ const AdminBanModalInner = ({
                             onClick={() => setSupContributeBan(!supContributeBan)}
                             sx={{ cursor: "pointer" }}
                         >
-                            <Checkbox
-                                size="small"
-                                checked={supContributeBan}
-                                onClick={() => setSupContributeBan(!supContributeBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={supContributeBan} onClick={() => setSupContributeBan(!supContributeBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from location select</Typography>
                         </Stack>
@@ -299,25 +255,14 @@ const AdminBanModalInner = ({
                             onClick={() => setLocationSelectBan(!locationSelectBan)}
                             sx={{ cursor: "pointer" }}
                         >
-                            <Checkbox
-                                size="small"
-                                checked={locationSelectBan}
-                                onClick={() => setLocationSelectBan(!locationSelectBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={locationSelectBan} onClick={() => setLocationSelectBan(!locationSelectBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from contributing sups</Typography>
                         </Stack>
 
                         <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban Duration (Hours):</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban Duration (Hours):</Typography>
                                 <TextField
                                     value={banDurationHours === 0 ? "" : banDurationHours.toString()}
                                     placeholder="Ban duration in hours"
@@ -336,7 +281,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -346,7 +291,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -358,7 +303,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban Duration (Days):</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban Duration (Days):</Typography>
                                 <TextField
                                     value={banDurationDays === 0 ? "" : banDurationDays.toString()}
                                     placeholder="Ban duration in days"
@@ -377,7 +322,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -387,7 +332,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -399,7 +344,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban reason:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban reason:</Typography>
                                 <TextField
                                     value={banReason}
                                     placeholder="Type the reason to punish the user..."
@@ -414,7 +359,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -424,7 +369,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -439,19 +384,19 @@ const AdminBanModalInner = ({
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: faction.palette.text }}
                             onClick={sendBanCommand}
                             disabled={!canSubmit}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

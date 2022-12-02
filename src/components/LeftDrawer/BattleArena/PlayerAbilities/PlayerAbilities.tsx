@@ -1,32 +1,44 @@
-import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material"
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { Box, Button, Pagination, Stack, Typography } from "@mui/material"
+import { ReactNode, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
-import { useGame } from "../../../../containers"
+import { useArena, useGame, useSupremacy } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
+import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { usePagination } from "../../../../hooks"
-import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
-import { LocationSelectType, PlayerAbility } from "../../../../types"
+import { colors } from "../../../../theme/theme"
+import { BattleState, LocationSelectType, PlayerAbility, WarMachineLiveState } from "../../../../types"
+import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
+import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
-import { PlayerAbilityCard } from "./PlayerAbilityCard"
+
+const filterOptions = [
+    { label: "", value: LocationSelectType.Global, svg: <SvgGlobal size="1.4rem" /> },
+    { label: "", value: LocationSelectType.LocationSelect, svg: <SvgTarget size="1.4rem" /> },
+    { label: "", value: LocationSelectType.MechSelect, svg: <SvgMicrochip size="1.4rem" /> },
+    { label: "", value: LocationSelectType.LineSelect, svg: <SvgLine size="1.4rem" /> },
+]
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { bribeStage, isBattleStarted } = useGame()
+    const { battleID } = useSupremacy()
+    const { battleState, isAIDrivenMatch } = useGame()
 
-    if (!bribeStage || !userID) return null
+    if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box key={battleID} sx={{ position: "relative" }}>
             <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
-                <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
+                <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <PlayerAbilitiesInner />
                 </Box>
 
-                {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+                {(isAIDrivenMatch || battleState !== BattleState.BattlingState) && (
+                    <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
+                )}
             </SectionCollapsible>
         </Box>
     )
@@ -36,14 +48,14 @@ const PlayerAbilitiesInner = () => {
     const theme = useTheme()
     const { userID } = useAuth()
 
-    const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
-    const [shownPlayerAbilities, setShownPlayerAbilities] = useState<PlayerAbility[]>([])
+    const [abilities, setAbilities] = useState<PlayerAbility[]>([])
+    const [displayAbilities, setDisplayAbilities] = useState<PlayerAbility[]>([])
+    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType>()
 
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 8,
         page: 1,
     })
-    const [locationSelectTypes, setLocationSelectTypes] = useState<LocationSelectType[]>([])
 
     useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
@@ -52,79 +64,71 @@ const PlayerAbilitiesInner = () => {
         },
         (payload) => {
             if (!payload) return
-            setPlayerAbilities(payload)
+            setAbilities(payload)
             setTotalItems(payload.length)
         },
     )
 
+    // If all my faction mechs are dead, then disable my player abilities
+    const { currentArenaID } = useArena()
+    const { factionWarMachines } = useGame()
+    const [disableAbilities, setDisableAbilities] = useState(true)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID && !!factionWarMachines,
+        },
+        (payload) => {
+            if (!payload || !factionWarMachines) return
+
+            const deadMechs = payload.filter((p) => {
+                if (p.health > 0) return false
+                return factionWarMachines.find((w) => w.participantID === p.participant_id)
+            })
+
+            setDisableAbilities(deadMechs.length === 3)
+        },
+    )
+
+    // Apply filter
     useEffect(() => {
-        let result = playerAbilities.map((p) => p)
-        if (locationSelectTypes.length > 0) {
-            result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
-        }
+        let result = abilities.map((p) => p)
+        result = result.filter((p) => {
+            if (!locationSelectType) return true
+
+            if (locationSelectType === LocationSelectType.MechSelect) {
+                return (
+                    locationSelectType === p.ability.location_select_type ||
+                    LocationSelectType.MechSelectAllied === p.ability.location_select_type ||
+                    LocationSelectType.MechSelectOpponent === p.ability.location_select_type
+                )
+            }
+            return locationSelectType === p.ability.location_select_type
+        })
 
         setTotalItems(result.length)
-        setShownPlayerAbilities(result.slice((page - 1) * pageSize, page * pageSize))
-    }, [playerAbilities, locationSelectTypes, setTotalItems, pageSize, page])
-
-    const onLocationSelectTypeChange = useCallback(
-        (l: LocationSelectType[]) => {
-            changePage(1)
-            setLocationSelectTypes(l)
-        },
-        [changePage],
-    )
+        setDisplayAbilities(result.slice((page - 1) * pageSize, page * pageSize))
+    }, [abilities, locationSelectType, setTotalItems, pageSize, page])
 
     if (!userID) return null
 
     return (
         <Stack spacing="1rem">
-            <ButtonGroup
-                size="small"
-                sx={(theme) => ({
-                    "& .MuiButton-root": {
-                        flex: 1,
-                        height: "3rem",
-                        borderWidth: "2px",
-                        borderRadius: 0.8,
-                        transition: "none",
-                        "&:hover": {
-                            opacity: 0.9,
-                            backgroundColor: theme.factionTheme.primary,
-                        },
-                    },
-                })}
-            >
-                <FilterButton
-                    value={[LocationSelectType.Global]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgGlobal size="1.4rem" />}
-                />
+            <NiceButtonGroup
+                primaryColor={theme.factionTheme.primary}
+                secondaryColor={theme.factionTheme.text}
+                options={filterOptions}
+                selected={locationSelectType}
+                onSelected={(value) => {
+                    setLocationSelectType((prev) => (prev === value ? undefined : value))
+                    changePage(1)
+                }}
+                sx={{ height: "3rem", "&>*": { flex: "1 !important" } }}
+            />
 
-                <FilterButton
-                    value={[LocationSelectType.LocationSelect]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgTarget size="1.4rem" />}
-                />
-
-                <FilterButton
-                    value={[LocationSelectType.MechSelect, LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgMicrochip size="1.4rem" />}
-                />
-
-                <FilterButton
-                    value={[LocationSelectType.LineSelect]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgLine size="1.4rem" />}
-                />
-            </ButtonGroup>
-
-            {shownPlayerAbilities && shownPlayerAbilities.length > 0 ? (
+            {displayAbilities && displayAbilities.length > 0 ? (
                 <Box
                     sx={{
                         display: "grid",
@@ -132,8 +136,14 @@ const PlayerAbilitiesInner = () => {
                         gap: ".6rem",
                     }}
                 >
-                    {shownPlayerAbilities.map((p) => (
-                        <PlayerAbilityCard key={p.ability.id} playerAbility={p} />
+                    {displayAbilities.map((p) => (
+                        <PlayerAbilitySmallCard
+                            key={p.ability.id}
+                            anyAbility={p.ability}
+                            playerAbility={p}
+                            onClickAction={disableAbilities ? "nothing" : "use"}
+                            ownedCount={p.count}
+                        />
                     ))}
                 </Box>
             ) : (
@@ -146,10 +156,10 @@ const PlayerAbilitiesInner = () => {
                         opacity: 0.8,
                     }}
                 >
-                    {locationSelectTypes ? (
+                    {locationSelectType ? (
                         <>
                             No results,&nbsp;
-                            <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectTypes([])}>
+                            <strong style={{ color: colors.gold, textDecoration: "underline" }} onClick={() => setLocationSelectType(undefined)}>
                                 click here to clear filters.
                             </strong>
                         </>
@@ -175,28 +185,14 @@ const PlayerAbilitiesInner = () => {
                         backgroundColor: "#00000070",
                     }}
                 >
-                    <Pagination
-                        size="medium"
-                        count={totalPages}
-                        page={page}
-                        sx={{
-                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                            ".Mui-selected": {
-                                color: (theme) => theme.factionTheme.secondary,
-                                backgroundColor: `${theme.factionTheme.primary} !important`,
-                            },
-                        }}
-                        onChange={(e, p) => changePage(p)}
-                        showFirstButton
-                        showLastButton
-                    />
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Box>
             )}
         </Stack>
     )
 }
 
-const FilterButton = ({
+export const FilterButton = ({
     value,
     currentSelectedValue,
     onChange: setLocationSelectTypes,
@@ -209,21 +205,21 @@ const FilterButton = ({
 }) => {
     const theme = useTheme()
 
-    const isSame = value.join("||") === currentSelectedValue.join("||")
+    const isSelected = value.join("||") === currentSelectedValue.join("||")
 
     return (
         <Button
             sx={{
                 "&&": {
-                    backgroundColor: isSame ? theme.factionTheme.primary : "unset",
+                    backgroundColor: isSelected ? theme.factionTheme.primary : "unset",
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: isSame ? theme.factionTheme.secondary : "#FFFFFF",
+                    fill: isSelected ? `${theme.factionTheme.text} !important` : "#FFFFFF",
                 },
             }}
             onClick={() => {
-                setLocationSelectTypes(isSame ? [] : value)
+                setLocationSelectTypes(isSelected ? [] : value)
             }}
         >
             {icon}

@@ -1,12 +1,21 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgCubes, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import {
+    SvgCubes,
+    SvgIntroAnimation,
+    SvgOutroAnimation,
+    SvgPowerCore,
+    SvgLoadoutSkin,
+    SvgStats,
+    SvgLoadoutUtility,
+    SvgLoadoutWeapon,
+} from "../../../../../assets"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechBarStats } from "../MechBarStats"
 import { MechLoadoutItem } from "../MechLoadoutItem"
-import { MechRepairBlocks } from "../MechRepairBlocks"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()
@@ -63,13 +72,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {powerCore ? (
-                    <MechLoadoutItem
-                        imageUrl={powerCore.image_url || powerCore.avatar_url}
-                        videoUrls={[powerCore.card_animation_url]}
-                        label={powerCore.label}
-                        primaryColor={colors.powerCore}
-                        Icon={SvgPowerCore}
-                    />
+                    <MechLoadoutItem imageUrl={powerCore.image_url || powerCore.avatar_url} label={powerCore.label} Icon={SvgPowerCore} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -77,25 +80,22 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgWeapons fill={colors.weapons} size="2.5rem" />
+                    <SvgLoadoutWeapon fill={colors.weapons} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
                         WEAPONS ({weapons?.length || 0}/{weapon_hardpoints})
                     </Typography>
                 </Stack>
 
-                {weapons.length > 0 ? (
+                {weapons && weapons.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {weapons.map((w) => {
                             return (
                                 <MechLoadoutItem
                                     key={w.id}
                                     imageUrl={w.image_url || w.avatar_url}
-                                    videoUrls={[w.card_animation_url]}
                                     label={w.label}
-                                    primaryColor={colors.weapons}
-                                    Icon={SvgWeapons}
+                                    Icon={SvgLoadoutWeapon}
                                     rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
-                                    hasSkin={!!w.weapon_skin}
                                 />
                             )
                         })}
@@ -107,7 +107,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgUtilities fill={colors.utilities} size="2.5rem" />
+                    <SvgLoadoutUtility fill={colors.utilities} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.utilities, fontFamily: fonts.nostromoBlack }}>
                         UTILITIES ({utilities?.length || 0}/{utility_slots})
                     </Typography>
@@ -116,16 +116,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {utilities && utilities.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {utilities.map((w) => {
-                            return (
-                                <MechLoadoutItem
-                                    key={w.id}
-                                    imageUrl={w.image_url || w.avatar_url}
-                                    videoUrls={[w.card_animation_url]}
-                                    label={w.label}
-                                    primaryColor={colors.utilities}
-                                    Icon={SvgUtilities}
-                                />
-                            )
+                            return <MechLoadoutItem key={w.id} imageUrl={w.image_url || w.avatar_url} label={w.label} Icon={SvgLoadoutUtility} />
                         })}
                     </Stack>
                 ) : (
@@ -135,7 +126,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                    <SvgLoadoutSkin fill={colors.chassisSkin} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
                         SUBMODEL ({chassis_skin_id ? 1 : 0}/1)
                     </Typography>
@@ -144,10 +135,8 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {chassisSkin ? (
                     <MechLoadoutItem
                         imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
-                        videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
-                        primaryColor={colors.chassisSkin}
-                        Icon={SvgSkin}
+                        Icon={SvgLoadoutSkin}
                         rarity={getRarityDeets(chassisSkin.tier)}
                     />
                 ) : (
@@ -164,13 +153,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {introAnimation ? (
-                    <MechLoadoutItem
-                        imageUrl={introAnimation.image_url || introAnimation.avatar_url}
-                        videoUrls={[introAnimation.card_animation_url]}
-                        label={introAnimation.label}
-                        primaryColor={colors.introAnimation}
-                        Icon={SvgIntroAnimation}
-                    />
+                    <MechLoadoutItem imageUrl={introAnimation.image_url || introAnimation.avatar_url} label={introAnimation.label} Icon={SvgIntroAnimation} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}
@@ -185,13 +168,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 </Stack>
 
                 {outroAnimation ? (
-                    <MechLoadoutItem
-                        imageUrl={outroAnimation.image_url || outroAnimation.avatar_url}
-                        videoUrls={[outroAnimation.card_animation_url]}
-                        label={outroAnimation.label}
-                        primaryColor={colors.outroAnimation}
-                        Icon={SvgOutroAnimation}
-                    />
+                    <MechLoadoutItem imageUrl={outroAnimation.image_url || outroAnimation.avatar_url} label={outroAnimation.label} Icon={SvgOutroAnimation} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}

@@ -8,13 +8,11 @@ export const AuctionPrice = ({ isGridView, formattedPrice, totalBids }: { isGrid
         <General isGridView={isGridView} title="BID PRICE">
             <Stack direction="row" alignItems="center" flexWrap="wrap">
                 {formattedPrice && <SvgSupToken size="1.7rem" fill={colors.auction} />}
-                <Typography sx={{ color: formattedPrice ? colors.auction : colors.lightGrey, fontWeight: "fontWeightBold" }}>
-                    {formattedPrice || "N/A"}
-                </Typography>
+                <Typography sx={{ color: formattedPrice ? colors.auction : colors.lightGrey, fontWeight: "bold" }}>{formattedPrice || "N/A"}</Typography>
 
                 {formattedPrice && !!totalBids && (
                     <Stack direction="row" alignItems="center" sx={{ flexShrink: 0, transform: "scale(.95)", fontStyle: "italic" }}>
-                        <Typography sx={{ color: colors.auction, fontWeight: "fontWeightBold" }}>
+                        <Typography sx={{ color: colors.auction, fontWeight: "bold" }}>
                             &nbsp;({totalBids} BID{totalBids === 1 ? "" : "S"})
                         </Typography>
                     </Stack>

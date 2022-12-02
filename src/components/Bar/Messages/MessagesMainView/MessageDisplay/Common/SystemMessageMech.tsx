@@ -1,30 +1,29 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
 import { SvgCrown, SvgDeath, SvgSkull, SvgSkull2 } from "../../../../../../assets"
 import { useSupremacy } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
-import { getRarityDeets } from "../../../../../../helpers"
+import { truncateTextLines } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
-import { ClipThing } from "../../../../../Common/ClipThing"
-import { RepairBlocks } from "../../../../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
+import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
+import { TypographyTruncated } from "../../../../../Common/TypographyTruncated"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
-    const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
+    const { name, image_url, total_blocks, damaged_blocks, kills, killed } = mech
 
     const theme = useTheme()
     const { getFaction } = useSupremacy()
-    const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
 
     return (
-        <Stack spacing="1rem" sx={{ width: "20rem" }}>
-            <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: theme.factionTheme.primary }} backgroundColor={theme.factionTheme.background}>
+        <Stack spacing="1rem" sx={{ width: "15rem" }}>
+            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [`${theme.factionTheme.background}60`] }}>
                 <Stack
                     spacing="1.2rem"
                     alignItems="stretch"
                     sx={{
                         position: "relative",
-                        p: ".8rem 1rem",
+                        p: ".8rem",
                         borderRadius: 0.8,
                     }}
                 >
@@ -32,7 +31,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                     <Box
                         sx={{
                             position: "relative",
-                            height: "16rem",
+                            height: "10rem",
                             width: "100%",
                             borderRadius: 0.3,
                             overflow: "hidden",
@@ -54,7 +53,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 alignItems="center"
                                 justifyContent="center"
                                 sx={{
-                                    px: "4rem",
+                                    px: "3rem",
                                     position: "absolute",
                                     top: 0,
                                     bottom: 0,
@@ -72,63 +71,23 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                     </Box>
 
                     {/* Info */}
-                    <Stack sx={{ flex: 1, py: ".2rem" }}>
-                        <Box sx={{ py: ".2rem", flex: 1 }}>
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    fontFamily: fonts.nostromoHeavy,
-                                    color: rarityDeets.color,
-                                }}
-                            >
-                                {rarityDeets.label}
-                            </Typography>
-
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontSize: "1.8rem",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {name}
-                            </Typography>
-                        </Box>
+                    <Stack sx={{ flex: 1 }}>
+                        <TypographyTruncated>{name}</TypographyTruncated>
 
                         {total_blocks && <RepairBlocks defaultBlocks={total_blocks} remainDamagedBlocks={damaged_blocks || 0} />}
                     </Stack>
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
 
             {killed && (
-                <Stack spacing=".3rem" sx={{ px: "1rem" }}>
+                <Stack spacing=".3rem" sx={{ px: ".6rem" }}>
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         KILLED BY:
                     </Typography>
 
-                    <Stack spacing=".5rem" direction="row" alignItems="flex-start">
-                        <SvgSkull2 size="1.4rem" />
-                        <Typography
-                            sx={{
-                                fontWeight: "fontWeightBold",
-                                color: getFaction(killed.faction_id).primary_color,
-                                lineHeight: 1.2,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {killed.name}
-                        </Typography>
-                    </Stack>
+                    <TypographyTruncated sx={{ fontWeight: "bold", color: getFaction(killed.faction_id).palette.primary }}>
+                        <SvgSkull2 inline size="1.6rem" /> {killed.name}
+                    </TypographyTruncated>
                 </Stack>
             )}
 
@@ -146,16 +105,11 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                     <SvgDeath size="1.4rem" />
                                     <Typography
                                         sx={{
-                                            fontWeight: "fontWeightBold",
-                                            color: killedFaction.primary_color,
+                                            fontWeight: "bold",
+                                            color: killedFaction.palette.primary,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 2, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...truncateTextLines(2),
                                         }}
                                     >
                                         {kill.name}

@@ -1,32 +1,31 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, STAGING_ONLY, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
-import { hexToRGB, timeSinceInWords } from "../../helpers"
-import { useTimer } from "../../hooks"
+import { useTheme } from "../../containers/theme"
+import { hexToRGB, shadeColor } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
+import { BarButton } from "../MainMenuNav/BarButton"
 import { BarSocials } from "./BarSocials"
+import { GetFactionPass } from "./GetFactionPass"
 import { Messages } from "./Messages/Messages"
-import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
-import { Tutorial } from "./Tutorial"
-
-const Countdown = ({ endTime }: { endTime: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
-    if (totalSecRemain <= 0) return <>very shortly</>
-    return <>in {timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
-}
+import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 
 export const Bar = () => {
+    const theme = useTheme()
     const { userID, user } = useAuth()
     const rgb = hexToRGB(colors.lightRed)
 
+    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.background, -50), [theme.factionTheme.background])
+
     return (
         <>
-            {IS_TESTING_MODE && (
+            {STAGING_ONLY && (
                 <>
                     <Box
                         sx={{
@@ -40,24 +39,24 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={[rgb.r, rgb.g, rgb.b]} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! <span style={{ color: colors.yellow }}>Hundreds of thousands of $SUPS</span> are up for grabs by
-                                helping us play-test incoming mechanisms and features. This round will reset <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
+                                Welcome to the Proving Grounds. Test new features. Report bugs and submit ideas via the feedback form. 🦾🦾
                             </Typography>
                         </Marquee>
                     </Box>
-
-                    <Box
-                        sx={{
-                            position: "fixed",
-                            height: "100%",
-                            width: "100%",
-                            border: `${colors.lightRed} 3px solid`,
-                            zIndex: siteZIndex.Modal * 99,
-                            pointerEvents: "none",
-                        }}
-                    />
                 </>
             )}
+
+            {/* A border around the entire page */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    height: "100%",
+                    width: "100%",
+                    border: (theme) => (STAGING_ONLY ? `${colors.lightRed} 3px solid` : `${theme.factionTheme.s700} 1px solid`),
+                    zIndex: siteZIndex.Modal * 99,
+                    pointerEvents: "none",
+                }}
+            />
 
             <Stack
                 direction="row"
@@ -70,19 +69,13 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    backgroundColor: (theme) => theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.s800,
+                    borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-
                     zIndex: siteZIndex.TopBar,
-                    "::-webkit-scrollbar": {
-                        height: ".6rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: "#FFFFFF50",
-                    },
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    boxShadow: 1.2,
                 }}
             >
                 <BarContent userID={userID} user={user} />
@@ -95,7 +88,7 @@ export const Bar = () => {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+                        backgroundColor: darkerBg,
                         pointerEvents: "none",
                         zIndex: -1,
                     }}
@@ -112,8 +105,8 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         return (
             <>
                 <Logo />
+                <BarButton />
                 <Box sx={{ flexGrow: 1 }} />
-                <Tutorial />
                 <BuySupsButton />
                 <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
@@ -130,8 +123,8 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         return (
             <>
                 <Logo />
+                <BarButton />
                 <Box sx={{ flexGrow: 1 }} />
-                <Tutorial />
                 <BuySupsButton />
                 <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
@@ -147,14 +140,15 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     return (
         <>
             <Logo />
-            <NavLinks />
+            <BarButton />
             <Box sx={{ flexGrow: 1 }} />
-            <Tutorial />
+            <GetFactionPass />
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}
             <BarSocials />
             {userID && <Messages />}
+            {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

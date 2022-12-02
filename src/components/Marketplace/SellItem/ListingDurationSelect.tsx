@@ -2,7 +2,7 @@ import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors } from "../../../theme/theme"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 
 //these values are in terms of hours
@@ -37,7 +37,7 @@ export const ListingDurationSelect = ({
     const listingDurationLabel = useMemo(() => listingDurations.find((i) => i.value === listingDurationHours)?.label, [listingDurationHours])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     return (

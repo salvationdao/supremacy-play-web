@@ -1,14 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo } from "react"
+import { useTimer } from "use-timer"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
-import { useTimer } from "../../../hooks"
+import { supFormatter, timeSinceInWords } from "../../../helpers"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
-import { FancyButton } from "../../Common/FancyButton"
-import { Player } from "../../Common/Player"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobItemProps {
@@ -39,8 +40,8 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
 
     const isFinished = repairJob.closed_at || repairJob.expires_at < new Date()
     const remainDamagedBlocks = repairJob.blocks_required_repair - repairJob.blocks_repaired
-    const primaryColor = jobOwnerFaction.primary_color
-    const backgroundColor = jobOwnerFaction.background_color
+    const primaryColor = jobOwnerFaction.palette.primary
+    const backgroundColor = jobOwnerFaction.palette.background
 
     useEffect(() => {
         if (isFinished && !repairJobModal) {
@@ -80,18 +81,13 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                     variant="body2"
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
+                                        ...truncateTextLines(2),
                                         span: { color: colors.orange },
                                     }}
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                                 </Typography>
-                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} />
                             </Stack>
                         </Stack>
 
@@ -107,23 +103,18 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 <SvgSupToken size="1.8rem" fill={colors.yellow} />
                                 <Typography
                                     sx={{
-                                        fontWeight: "fontWeightBold",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
+                                        fontWeight: "bold",
+                                        ...truncateTextLines(2),
                                     }}
                                 >
-                                    {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)} / BLOCK
+                                    {supFormatter(repairJob.sups_worth_per_block || "0", 2)} / BLOCK
                                 </Typography>
                             </Stack>
                         </General>
 
                         <General isGridViewCompact={true} title="JOB OWNER">
                             <Box>
-                                <Player player={repairJob.job_owner} />
+                                <PlayerNameGid player={repairJob.job_owner} />
                                 {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
                             </Box>
                         </General>
@@ -136,7 +127,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 textColor={colors.lightGrey}
                             />
                         ) : (
-                            <CountdownGeneral isGridViewCompact={true} endTime={repairJob.expires_at} />
+                            <CountdownGeneral isGridViewCompact={true} initialTime={(repairJob.expires_at.getTime() - new Date().getTime()) / 1000} />
                         )}
                     </Stack>
 
@@ -158,15 +149,20 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
     )
 }, propsAreEqual)
 
-const CountdownGeneral = ({ isGridViewCompact, endTime }: { isGridViewCompact?: boolean; endTime: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
+const CountdownGeneral = ({ isGridViewCompact, initialTime }: { isGridViewCompact?: boolean; initialTime: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
     return (
         <General
             isGridViewCompact={isGridViewCompact}
             title="TIME LEFT"
-            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
-            textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
+            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000))}
+            textColor={time < 300 ? colors.orange : "#FFFFFF"}
         />
     )
 }

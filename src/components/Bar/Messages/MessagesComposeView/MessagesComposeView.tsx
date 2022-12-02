@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { SystemMessageDataType } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 import MessageRenderer from "../MessageRenderer"
 
 interface MessageComposeViewProps {
@@ -70,7 +70,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                 sx={{
                     p: "1rem 2rem",
                     pt: "1.5rem",
-                    borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                    borderBottom: `${colors.darkGrey} 1.5px solid`,
                 }}
             >
                 <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -87,7 +87,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                     TO:
                                 </Typography>
                             </InputAdornment>
@@ -119,7 +119,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                     SUBJECT:
                                 </Typography>
                             </InputAdornment>
@@ -201,20 +201,9 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
             </Box>
 
             <Stack direction="row" spacing="1rem" alignItems="center" sx={{ pb: "1rem", px: "2rem" }}>
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        clipSlantSize: "0px",
-                        backgroundColor: colors.grey,
-                        opacity: 1,
-                        border: { borderColor: colors.grey, borderThickness: "1px" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                    onClick={() => onBack()}
-                >
-                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Discard / Back</Typography>
-                </FancyButton>
+                <NiceButton buttonColor={colors.grey} onClick={onBack}>
+                    Discard / Back
+                </NiceButton>
 
                 <Box flex={1} />
 
@@ -222,30 +211,16 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
 
                 <Stack direction="row">
                     <Typography sx={{ color: colors.grey }}>
-                        <Box key={message ? message.length : 0} component="span" sx={{ animate: `${scaleUpKeyframes} .2s ease-out` }}>
+                        <Box component="span" key={message ? message.length : 0} sx={{ animate: `${scaleUpKeyframes} .2s ease-out` }}>
                             {message?.length || 0}
                         </Box>{" "}
                         / {MESSAGE_LIMIT}
                     </Typography>
                 </Stack>
 
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        clipSlantSize: "0px",
-                        backgroundColor: colors.green,
-                        opacity: 1,
-                        border: { borderColor: colors.green, borderThickness: "1px" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
-                    onClick={onSend}
-                    endIcon={<SvgSend size="1.8rem" />}
-                    disabled={!message || loading}
-                    loading={loading}
-                >
-                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Submit Message</Typography>
-                </FancyButton>
+                <NiceButton disabled={!message || loading} loading={loading} buttonColor={colors.green} onClick={onSend}>
+                    Submit Message <SvgSend size="1.6rem" inline />
+                </NiceButton>
             </Stack>
         </Stack>
     )

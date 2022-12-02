@@ -1,15 +1,16 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
-import { FancyButton, TooltipHelper } from "../../.."
+import { useTimer } from "use-timer"
+import { FancyButton, NiceTooltip } from "../../.."
 import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
-import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
-import { useTimer, useToggle } from "../../../../hooks"
+import { getUserRankDeets, snakeToTitle, supFormatter } from "../../../../helpers"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 
 export const BanProposal = () => {
     const { banProposal } = useChat()
@@ -134,7 +135,7 @@ const BanProposalInner = ({
                 <Typography>Do you agree with this proposal?</Typography>
 
                 <Stack direction="row" spacing=".6rem">
-                    <TooltipHelper placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
+                    <NiceTooltip placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "5px",
@@ -148,12 +149,12 @@ const BanProposalInner = ({
                         >
                             <Stack direction="row" justifyContent="center">
                                 {rankDeets?.icon}
-                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "bold" }}>
                                     COMMAND OVERRIDE
                                 </Typography>
                             </Stack>
                         </FancyButton>
-                    </TooltipHelper>
+                    </NiceTooltip>
 
                     <FancyButton
                         clipThingsProps={{
@@ -204,9 +205,9 @@ const BanProposalInner = ({
                         direction="row"
                         justifyContent="space-between"
                     >
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
-                        <Typography sx={{ fontWeight: "fontWeightBold", px: "1rem", backgroundColor: "#00000090" }}>
-                            <Countdown endTime={banProposal.ended_at} toggleOutOfTime={toggleOutOfTime} />s
+                        <Typography sx={{ fontWeight: "bold" }}>PUNISHMENT PROPOSAL</Typography>
+                        <Typography sx={{ fontWeight: "bold", px: "1rem", backgroundColor: "#00000090" }}>
+                            <Countdown initialTime={(banProposal.ended_at.getTime() - new Date().getTime()) / 1000} toggleOutOfTime={toggleOutOfTime} />s
                         </Typography>
                     </Stack>
 
@@ -228,11 +229,11 @@ const BanProposalInner = ({
 
                             <LineItem title="PUNISH">
                                 <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punish_option.key)}</Typography>
-                                <TooltipHelper placement="bottom" text={banProposal.punish_option.description}>
+                                <NiceTooltip placement="bottom" text={banProposal.punish_option.description}>
                                     <Box>
                                         <SvgInfoCircular size="1.1rem" sx={{ pt: 0, pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                     </Box>
-                                </TooltipHelper>
+                                </NiceTooltip>
                             </LineItem>
 
                             <LineItem title="DURATION">
@@ -263,19 +264,19 @@ const BanProposalInner = ({
                     error={error}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {supFormatterNoFixed(banProposal.instant_pass_fee, 0)})
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                                {supFormatter(banProposal.instant_pass_fee, 0)})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
                         As a GENERAL, you have the privilege to issue a command override. With 2 command overrides, the player will be instantly punished. Do
-                        you wish to spend <span>{supFormatterNoFixed(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
+                        you wish to spend <span>{supFormatter(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
                     </Typography>
                 </ConfirmModal>
             )}
@@ -307,12 +308,14 @@ export const LineItem = ({ title, children, color }: { title: string; children: 
     )
 }
 
-const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
-    const { totalSecRemain } = useTimer(endTime)
+const Countdown = ({ initialTime, toggleOutOfTime }: { initialTime: number; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+        onTimeOver: () => toggleOutOfTime(true),
+    })
 
-    useEffect(() => {
-        if (totalSecRemain <= 0) toggleOutOfTime(true)
-    }, [toggleOutOfTime, totalSecRemain])
-
-    return <>{totalSecRemain}</>
+    return <>{time}</>
 }

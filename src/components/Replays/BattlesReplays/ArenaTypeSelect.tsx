@@ -18,11 +18,11 @@ export const ArenaTypeSelect = ({
     const label = useMemo(() => {
         const selected = arenaTypeOptions.find((i) => i.id === selectedArenaType?.id)
         if (!selected) return null
-        return `${selected.type}`
+        return `${selected.name}`
     }, [arenaTypeOptions, selectedArenaType?.id])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Stack>
@@ -73,14 +73,14 @@ export const ArenaTypeSelect = ({
                 }}
                 renderValue={() => {
                     return (
-                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                        <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                             {label || "ALL TIME"}
                         </Typography>
                     )
                 }}
             >
                 <MenuItem value="" onClick={() => onChangeArenaType(undefined)}>
-                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                         ANY
                     </Typography>
                 </MenuItem>
@@ -94,8 +94,8 @@ export const ArenaTypeSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
-                                {x.type}
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
+                                {x.name}
                             </Typography>
                         </MenuItem>
                     )

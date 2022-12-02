@@ -1,14 +1,43 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useGameServerSubscription } from "../hooks/useGameServer"
+import { useUrlQuery } from "../hooks"
+import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Arena, ArenaStatus, ArenaType } from "../types"
+import { Arena, ArenaStatus, GameMap } from "../types"
+import { blankOptionOven, useOvenStream } from "./oven"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
+    const { changeOvenStream, setCurrentStreamOptions } = useOvenStream()
+    const [, updateQuery] = useUrlQuery()
+    const [gameMaps, setGameMaps] = useState<GameMap[]>([])
 
     const currentArenaID = currentArena?.id || ""
+
+    useEffect(() => {
+        if (!currentArena) return
+        changeOvenStream(currentArena.oven_stream)
+        setCurrentStreamOptions([blankOptionOven, currentArena.oven_stream])
+    }, [changeOvenStream, currentArena, setCurrentStreamOptions])
+
+    // Save the arena in url param when its changed
+    useEffect(() => {
+        if (!currentArena) return
+        updateQuery.current({ arenaName: currentArena?.name })
+    }, [currentArena, updateQuery])
+
+    // Gets all available game maps in the game
+    useGameServerSubscriptionSecured<GameMap[]>(
+        {
+            URI: "/game_map_list",
+            key: GameServerKeys.SubGameMapList,
+        },
+        (payload) => {
+            if (!payload) return
+            setGameMaps(payload)
+        },
+    )
 
     return {
         arenaList,
@@ -16,6 +45,7 @@ export const ArenaContainer = createContainer(() => {
         currentArena,
         setCurrentArena,
         currentArenaID,
+        gameMaps,
     }
 })
 
@@ -24,7 +54,9 @@ export const useArena = ArenaContainer.useContainer
 
 export const ArenaListener = () => {
     const { setArenaList, currentArenaID, setCurrentArena } = useArena()
+    const [query] = useUrlQuery()
 
+    // Subscribe to the list of available arenas and set the current one
     useGameServerSubscription<Arena[]>(
         {
             URI: "/public/arena_list",
@@ -37,19 +69,15 @@ export const ArenaListener = () => {
                 return
             }
 
-            // NOTE: temporary default arena to the first one
-            const storyArena = payload.find((arena) => arena.type === ArenaType.Story)
-            if (storyArena) {
-                setCurrentArena(storyArena)
-            } else {
-                setCurrentArena(undefined)
-            }
-            // above code will be refactor when players are able to select arena
+            // Sets the one specified in the url, else default to first one
+            const arenaInUrl = payload.find((arena) => arena.name === query.get("arenaName"))
+            setCurrentArena(arenaInUrl || payload[0])
 
             setArenaList(payload)
         },
     )
 
+    // Subscribe to the status of the arena
     useGameServerSubscription<ArenaStatus>(
         {
             URI: `/public/arena/${currentArenaID}/status`,
@@ -69,6 +97,7 @@ export const ArenaListener = () => {
         },
     )
 
+    // If arena is closed, set it
     useGameServerSubscription<boolean>(
         {
             URI: `/public/arena/${currentArenaID}/closed`,
@@ -80,5 +109,6 @@ export const ArenaListener = () => {
             setCurrentArena(undefined)
         },
     )
+
     return null
 }

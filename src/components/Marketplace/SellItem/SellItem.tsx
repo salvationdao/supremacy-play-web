@@ -1,5 +1,5 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
@@ -8,13 +8,12 @@ import { calculateDutchAuctionEndPrice, numFormatter } from "../../../helpers"
 import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechBasic, MysteryCrate, Weapon } from "../../../types"
+import { Keycard, MechBasic, MysteryCrate, PlayerAsset } from "../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
-import { SuccessModal } from "../../Common/SuccessModal"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
+import { SuccessModal } from "../../Common/Deprecated/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
 import { ListingDurationHoursEnum, ListingDurationSelect } from "./ListingDurationSelect"
@@ -24,7 +23,7 @@ export interface AssetToSellStruct {
     id: string
     mech?: MechBasic
     keycard?: Keycard
-    weapon?: Weapon
+    weapon?: PlayerAsset
     mysteryCrate?: MysteryCrate
 }
 
@@ -73,21 +72,23 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const [dropRate, setDropRate] = useState<number>()
 
     // Others
-    const [listingFee, setListingFee] = useState<number>(10)
+    // const [listingFee, setListingFee] = useState<number>(0)
+    // DEPRECATED: Listing fees removed
+    const listingFee = 0
     const primaryColor = theme.factionTheme.primary
 
     // Calculate fees
-    useEffect(() => {
-        let fee = 10
-        if (reservePrice) fee += 5
-        if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
-        if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
-            //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
-            const listingDurationFee = (listingDurationHours / 24 - 1) * 5
-            fee += listingDurationFee
-        }
-        setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
+    // useEffect(() => {
+    //     let fee = 10
+    //     if (reservePrice) fee += 5
+    //     if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
+    //     if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
+    //         //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
+    //         const listingDurationFee = (listingDurationHours / 24 - 1) * 5
+    //         fee += listingDurationFee
+    //     }
+    //     setListingFee(fee)
+    // }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
@@ -237,73 +238,61 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             pr: "1rem",
                             my: "2rem",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                            },
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
-                                {/* Item type select */}
-                                <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
+                        <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
+                            {/* Item type select */}
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
-                                {/* Asset to sell */}
-                                <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
+                            {/* Asset to sell */}
+                            <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                                <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
-                                {/* Pricing inputs */}
-                                {itemType !== ItemType.Keycards && (
-                                    <PricingInput
-                                        price={startingPrice}
-                                        setPrice={setStartingPrice}
-                                        question="Auction Starting Price"
-                                        description="This will allow buyers to bid on your item as an auction."
-                                        placeholder="Enter auction starting price..."
-                                        isOptional={!!buyoutPrice && !startingPrice}
-                                    />
-                                )}
-
+                            <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
+                            {/* Pricing inputs */}
+                            {itemType !== ItemType.Keycards && (
                                 <PricingInput
-                                    price={buyoutPrice}
-                                    setPrice={setBuyoutPrice}
-                                    question="Buyout Price"
-                                    description="A buyer can pay this amount to immediately purchase your item."
-                                    placeholder="Enter buyout price..."
-                                    error={checkBuyoutPriceError()}
-                                    isOptional={!!startingPrice && !dropRate}
+                                    price={startingPrice}
+                                    setPrice={setStartingPrice}
+                                    question="Auction Starting Price"
+                                    description="This will allow buyers to bid on your item as an auction."
+                                    placeholder="Enter auction starting price..."
+                                    isOptional={!!buyoutPrice && !startingPrice}
                                 />
+                            )}
 
-                                {itemType !== ItemType.Keycards && (
-                                    <>
-                                        <PricingInput
-                                            price={dropRate}
-                                            setPrice={setDropRate}
-                                            question="Price Drop / min"
-                                            description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
-                                            placeholder="Enter price drop..."
-                                            error={checkPriceDropError()}
-                                            isOptional
-                                        />
-                                        <PricingInput
-                                            price={reservePrice}
-                                            setPrice={setReservePrice}
-                                            question="Reserve Price"
-                                            description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
-                                            placeholder="Enter reserve price..."
-                                            error={checkReservePriceError()}
-                                            isOptional
-                                        />
-                                    </>
-                                )}
-                            </Stack>
-                        </Box>
+                            <PricingInput
+                                price={buyoutPrice}
+                                setPrice={setBuyoutPrice}
+                                question="Buyout Price"
+                                description="A buyer can pay this amount to immediately purchase your item."
+                                placeholder="Enter buyout price..."
+                                error={checkBuyoutPriceError()}
+                                isOptional={!!startingPrice && !dropRate}
+                            />
+
+                            {itemType !== ItemType.Keycards && (
+                                <>
+                                    <PricingInput
+                                        price={dropRate}
+                                        setPrice={setDropRate}
+                                        question="Price Drop / min"
+                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
+                                        placeholder="Enter price drop..."
+                                        error={checkPriceDropError()}
+                                        isOptional
+                                    />
+                                    <PricingInput
+                                        price={reservePrice}
+                                        setPrice={setReservePrice}
+                                        question="Reserve Price"
+                                        description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
+                                        placeholder="Enter reserve price..."
+                                        error={checkReservePriceError()}
+                                        isOptional
+                                    />
+                                </>
+                            )}
+                        </Stack>
                     </Box>
 
                     <Stack
@@ -318,11 +307,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         }}
                     >
                         <Stack>
-                            <Stack direction="row" alignItems="center">
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: ".8rem" }}>LISTING FEE:</Typography>
-                                <SvgSupToken size="2.2rem" fill={colors.yellow} />
-                                <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
-                            </Stack>
+                            {listingFee > 0 && (
+                                <Stack direction="row" alignItems="center">
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: ".8rem" }}>LISTING FEE:</Typography>
+                                    <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                                    <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
+                                </Stack>
+                            )}
 
                             <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 10% fee on the final sale value of your item.</Typography>
                         </Stack>
@@ -365,22 +356,34 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     isLoading={submitting}
                     error={submitError}
                     confirmSuffix={
-                        <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                (
-                            </Typography>
-                            <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(listingFee)})
-                            </Typography>
-                        </Stack>
+                        listingFee > 0 ? (
+                            <Stack direction="row" sx={{ ml: ".4rem" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                                    (
+                                </Typography>
+                                <SvgSupToken size="1.8rem" />
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                                    {numFormatter(listingFee)})
+                                </Typography>
+                            </Stack>
+                        ) : undefined
                     }
                 >
                     <Typography variant="h6">
                         Do you wish to list the item for sale?
                         <br />
-                        The listing fee is <span>{numFormatter(listingFee)}</span> SUPS and there will be a <span>10%</span> fee on the final sale value of your
-                        item.
+                        {listingFee > 0 && (
+                            <>
+                                The listing fee is <span>{numFormatter(listingFee)}</span> SUPS and there will be a <span>10%</span> fee on the final sale value
+                                of your
+                            </>
+                        )}
+                        {listingFee <= 0 && (
+                            <>
+                                There will be a <span>10%</span> fee on the final sale value of your
+                            </>
+                        )}
+                        {" item."}
                     </Typography>
 
                     {dropRate && buyoutPrice && (
@@ -404,21 +407,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             </Typography>
 
                             <Stack spacing="1rem" direction="row" alignItems="center">
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                     I have read and understood the above.
                                 </Typography>
                                 <Checkbox
-                                    size="small"
                                     checked={understantDropRisk}
                                     onChange={(e) => {
                                         toggleUnderstantDropRisk(e.currentTarget.checked)
-                                    }}
-                                    sx={{
-                                        p: 0,
-                                        color: colors.yellow,
-                                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                     }}
                                 />
                             </Stack>
@@ -440,16 +435,16 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         let subPath = ""
                         switch (itemType) {
                             case ItemType.WarMachine:
-                                subPath = MARKETPLACE_TABS.WarMachines
+                                subPath = "mechs"
                                 break
                             case ItemType.MysteryCrate:
-                                subPath = MARKETPLACE_TABS.MysteryCrates
+                                subPath = "mystery-crates"
                                 break
                             case ItemType.Weapon:
-                                subPath = MARKETPLACE_TABS.Weapons
+                                subPath = "weapons"
                                 break
                             case ItemType.Keycards:
-                                subPath = MARKETPLACE_TABS.Keycards
+                                subPath = "keycards"
                                 break
                         }
 

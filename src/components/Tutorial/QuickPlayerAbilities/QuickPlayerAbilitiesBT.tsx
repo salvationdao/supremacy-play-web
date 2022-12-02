@@ -29,7 +29,7 @@ const QuickPlayerAbilitiesInner = () => {
     }, [trainingStage, setTutorialRef])
 
     const timeLeft = useMemo(() => {
-        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>10 Minutes</Typography>
+        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.rajdhaniMedium, textTransform: "uppercase" }}>10 Minutes</Typography>
     }, [])
 
     return (
@@ -53,7 +53,7 @@ const QuickPlayerAbilitiesInner = () => {
                 <Stack sx={{ minHeight: "12rem" }}>
                     <Stack>
                         <Stack direction="row" spacing=".6rem" alignItems="center">
-                            <Typography sx={{ fontWeight: "fontWeightBold", textTransform: "uppercase" }}>Next refresh in:</Typography>
+                            <Typography sx={{ fontWeight: "bold", textTransform: "uppercase" }}>Next refresh in:</Typography>
                             {timeLeft}
                         </Stack>
                         {purchaseError && (

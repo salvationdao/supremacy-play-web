@@ -1,27 +1,35 @@
-import { Stack, Typography } from "@mui/material"
+import { Fade, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
-import { SectionFactions, SectionWinner } from "../.."
-import { useGame, useUI } from "../../../containers"
+import { NiceTooltip, SectionFactions, SectionWinner } from "../.."
+import { SvgLobbies } from "../../../assets"
+import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { LEFT_DRAWER_MAP } from "../../../routes"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
+import { colors, fonts } from "../../../theme/theme"
+import { BattleState } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
-    const theme = useTheme()
-    const { map, battleEndDetail } = useGame()
+    const { battleState, battleEndDetail } = useGame()
+    const { currentArenaID } = useArena()
     const { hasModalsOpen, setLeftDrawerActiveTabID } = useUI()
     // When user first loads the web page and gets battle end, we want to prevent changing tabs
     const skippedFirstIteration = useRef(false)
 
+    // When the arena is switched, we skip the first iteration again
+    useEffect(() => {
+        skippedFirstIteration.current = false
+    }, [currentArenaID])
+
     // New game started, so close the panel
     useEffect(() => {
         if (hasModalsOpen()) return
-
-        if (map) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
-    }, [hasModalsOpen, map, setLeftDrawerActiveTabID])
+        if (battleState === BattleState.IntroState)
+            setLeftDrawerActiveTabID((prev) => (prev ? LeftRoutes.find((route) => route.id === LeftRouteID.BattleArena)?.id : prev))
+    }, [hasModalsOpen, battleState, setLeftDrawerActiveTabID])
 
     // Game ends, show the panel
     useEffect(() => {
@@ -31,8 +39,8 @@ export const BattleEndScreen = () => {
             if (skippedFirstIteration.current) {
                 setLeftDrawerActiveTabID((prev) => {
                     // Only change tabs if we are on the battle arena tab
-                    if (prev === LEFT_DRAWER_MAP.battle_arena?.id) {
-                        return LEFT_DRAWER_MAP.previous_battle?.id
+                    if (prev === LeftRoutes.find((route) => route.id === LeftRouteID.BattleArena)?.id) {
+                        return LeftRoutes.find((route) => route.id === LeftRouteID.PreviousBattle)?.id
                     }
                     return prev
                 })
@@ -42,12 +50,9 @@ export const BattleEndScreen = () => {
         }
     }, [battleEndDetail, hasModalsOpen, setLeftDrawerActiveTabID])
 
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
-
     if (!battleEndDetail) {
         return (
-            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%", backgroundColor }}>
+            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%" }}>
                 <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
                     Please wait for the current battle to finish.
                 </Typography>
@@ -59,19 +64,13 @@ export const BattleEndScreen = () => {
 
     return (
         <Stack
-            spacing="1rem"
             sx={{
-                pl: "2rem",
-                pr: "1rem",
-                py: "1.8rem",
                 height: "100%",
                 width: "100%",
                 boxShadow: 20,
-                zIndex: siteZIndex.Popover,
-                backgroundColor,
             }}
         >
-            <Box>
+            <Box sx={{ p: "1rem 1.6rem" }}>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                     BATTLE ID #{battle_identifier.toString().padStart(4, "0")}
                 </Typography>
@@ -80,33 +79,65 @@ export const BattleEndScreen = () => {
                 </Typography>
             </Box>
 
-            <Stack
-                sx={{
-                    flex: 1,
-                    pr: "1rem",
-                    overflowY: "auto",
-                    overflowX: "auto",
-
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                        height: ".6rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: primaryColor,
-                    },
-                }}
-            >
-                <Box sx={{ height: 0 }}>
-                    <Stack spacing="3.2rem" sx={{ py: "1rem" }}>
-                        <SectionWinner battleEndDetail={battleEndDetail} />
-                        <SectionFactions battleEndDetail={battleEndDetail} />
-                        <SectionMechRewards battleEndDetail={battleEndDetail} />
-                    </Stack>
-                </Box>
+            <Stack sx={{ flex: 1, overflow: "hidden" }}>
+                <Stack spacing="3.2rem" flex={1} sx={{ overflowY: "auto", overflowX: "hidden", pb: "1.8rem" }}>
+                    <SectionWinner battleEndDetail={battleEndDetail} />
+                    <SectionFactions battleEndDetail={battleEndDetail} />
+                    <SectionMechRewards battleEndDetail={battleEndDetail} />
+                </Stack>
             </Stack>
         </Stack>
     )
 }
+
+const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+
+    const button = (
+        <NiceButton
+            onClick={onClose}
+            buttonColor={theme.factionTheme.primary}
+            corners
+            sx={{
+                p: ".8rem",
+                pb: ".6rem",
+            }}
+        >
+            <SvgLobbies size="2.6rem" />
+        </NiceButton>
+    )
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            {button}
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.6rem",
+                }}
+            >
+                Previous Battle
+            </Typography>
+            {!isDrawerOpen && <Box flex={1} />}
+            <Fade in={!isDrawerOpen} unmountOnExit>
+                <Box>
+                    <NiceTooltip text="Previous Battle" placement="right">
+                        {button}
+                    </NiceTooltip>
+                </Box>
+            </Fade>
+        </Stack>
+    )
+}
+BattleEndScreen.Header = Header

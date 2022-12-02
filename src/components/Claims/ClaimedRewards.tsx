@@ -1,17 +1,18 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { supFormatter } from "../../helpers"
-import { useTimer } from "../../hooks"
+import { msToTime, supFormatter } from "../../helpers"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MysteryCrateType, OpenCrateResponse, RewardResponse } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
-import { FancyButton } from "../Common/FancyButton"
-import { OpeningCrate } from "../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
+import { OpeningCrate } from "../FleetCrates/FleetCrates"
 
 interface ClaimedRewardsProps {
     rewards: RewardResponse[]
@@ -65,14 +66,10 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
     }, [crateToOpen, setOpeningCrate, send, setOpenedRewards, onClose, newSnackbarMessage])
 
     return (
-        <ClipThing
-            clipSize="8px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
+        <NiceBoxThing
+            border={{ color: `${theme.factionTheme.primary}50` }}
+            background={{ colors: [theme.factionTheme.background], opacity: 0.9 }}
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
-            backgroundColor={theme.factionTheme.background}
         >
             <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem", textAlign: "center" }}>
                 {/* Background image */}
@@ -109,7 +106,11 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                             backgroundColor={theme.factionTheme.background}
                         >
                             <Box sx={{ py: "2rem", px: "3rem" }}>
-                                <Countdown dateTo={mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until} />
+                                <Countdown
+                                    initialTime={
+                                        (new Date(mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until).getTime() - new Date().getTime()) / 1000
+                                    }
+                                />
                             </Box>
                         </ClipThing>
                     </Stack>
@@ -136,13 +137,13 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                                 border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                 sx: { position: "relative", width: "32rem" },
                             }}
-                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.text }}
                             onClick={openCrate}
                         >
                             <Typography
                                 variant="h6"
                                 sx={{
-                                    color: theme.factionTheme.secondary,
+                                    color: theme.factionTheme.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >
@@ -159,7 +160,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                             sx: { position: "relative", width: "32rem" },
                         }}
-                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.text }}
                         to={`/fleet/mystery-crates`}
                     >
                         <Typography
@@ -180,7 +181,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                     <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                 </IconButton>
             )}
-        </ClipThing>
+        </NiceBoxThing>
     )
 }
 
@@ -200,10 +201,17 @@ const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: str
     )
 }
 
-const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
+const Countdown = ({ initialTime }: { initialTime?: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
-    if (seconds === undefined || totalSecRemain <= 0) return null
+    if (time < 0) return null
+
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
 
     return (
         <Stack direction="row">

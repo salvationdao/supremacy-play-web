@@ -7,7 +7,7 @@ import { parseString } from "../../../helpers"
 import { useInterval } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 export const ReplayPlayer = ({
     battleReplay,
@@ -63,24 +63,16 @@ export const ReplayPlayer = ({
 
                 {battleReplay?.intro_ended_at && battleReplay?.started_at && (
                     <Box id="replay-player-skip-button" sx={{ display: "none", position: "absolute", top: "2rem", right: "2.5rem", zIndex: 9 }}>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "8px",
-                                backgroundColor: "#222222",
-                                opacity: 0.6,
-                                border: { borderColor: "#FFFFFF", borderThickness: "1px" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
+                        <NiceButton
+                            buttonColor="#FFFFFF"
                             onClick={() => {
                                 if (!battleReplay?.intro_ended_at || !battleReplay?.started_at) return
                                 const timeSeconds = (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000
                                 seekToSeconds(timeSeconds)
                             }}
                         >
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
-                                SKIP INTRO
-                            </Typography>
-                        </FancyButton>
+                            SKIP INTRO
+                        </NiceButton>
                     </Box>
                 )}
             </Box>

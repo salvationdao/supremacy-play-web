@@ -1,10 +1,20 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { TooltipHelper } from "../../.."
-import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
+import {
+    SvgLoadoutArmour,
+    SvgLoadoutPowerCoreCapacity,
+    SvgLoadoutPowerCoreRegen,
+    SvgLoadoutShield,
+    SvgLoadoutShieldPowerCost,
+    SvgLoadoutShieldRegen,
+    SvgLoadoutSpeed,
+    SvgWrapperProps,
+} from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const MechBarStats = ({
     mech,
@@ -15,6 +25,8 @@ export const MechBarStats = ({
     spacing,
     barHeight,
     iconVersion,
+    compact,
+    outerSx,
 }: {
     mech: MechBasic
     mechDetails?: MechDetails
@@ -24,6 +36,8 @@ export const MechBarStats = ({
     spacing?: string
     barHeight?: string
     iconVersion?: boolean
+    compact?: boolean
+    outerSx?: SxProps
 }) => {
     const theme = useTheme()
 
@@ -34,24 +48,12 @@ export const MechBarStats = ({
     const boostedHealth = mechDetails?.boosted_max_hitpoints || mech.boosted_max_hitpoints
     const speed = mechDetails?.speed || mech.speed
     const boostedSpeed = mechDetails?.boosted_speed || mech.boosted_speed
-    let powerCoreCapacity = 0
-    let powerCoreRechargeRate = 0
-    let totalShield = 0
-    let totalShieldRechargeRate = 0
-    let boostedTotalShieldRechargeRate = 0
-
-    if (mechDetails) {
-        powerCoreCapacity = mechDetails.power_core?.capacity || 0
-        powerCoreRechargeRate = mechDetails.power_core?.recharge_rate || 0
-
-        mechDetails.utility?.forEach((utility) => {
-            if (utility.shield) {
-                totalShield += utility.shield.hitpoints
-                totalShieldRechargeRate += utility.shield.recharge_rate
-                boostedTotalShieldRechargeRate += utility.shield.boosted_recharge_rate || 0
-            }
-        })
-    }
+    const totalShield = mechDetails?.shield || mech.shield
+    const totalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
+    const boostedTotalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
+    const totalShieldRechargePowerCost = mechDetails?.shield_recharge_power_cost || mech.shield_recharge_power_cost
+    const powerCoreCapacity = mechDetails?.power_core?.capacity || mech.power_core_capacity || 0
+    const powerCoreRechargeRate = mechDetails?.power_core?.recharge_rate || mech.power_core_recharge_rate || 0
 
     if (iconVersion) {
         return (
@@ -63,7 +65,26 @@ export const MechBarStats = ({
                     current={health}
                     boostedTo={boostedHealth}
                     total={3000}
-                    Icon={SvgHealth}
+                    Icon={SvgLoadoutArmour}
+                />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgLoadoutShield} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SHIELD REGEN"
+                    current={totalShieldRechargeRate}
+                    boostedTo={boostedTotalShieldRechargeRate}
+                    total={1000}
+                    Icon={SvgLoadoutShieldRegen}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SHIELD REGEN POWER COST"
+                    current={totalShieldRechargePowerCost}
+                    total={100}
+                    unit="/S"
+                    Icon={SvgLoadoutShieldPowerCost}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -73,7 +94,7 @@ export const MechBarStats = ({
                     boostedTo={boostedSpeed}
                     total={5000}
                     unit="CM/S"
-                    Icon={SvgSpeed}
+                    Icon={SvgLoadoutSpeed}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -81,7 +102,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCoreCapacity}
+                    Icon={SvgLoadoutPowerCoreCapacity}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -90,17 +111,7 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
-                />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
-                <IconStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    label="SHIELD REGEN"
-                    current={totalShieldRechargeRate}
-                    boostedTo={boostedTotalShieldRechargeRate}
-                    total={1000}
-                    Icon={SvgShieldRegen}
+                    Icon={SvgLoadoutPowerCoreRegen}
                 />
             </Stack>
         )
@@ -115,16 +126,7 @@ export const MechBarStats = ({
                 pr: ".8rem",
                 py: ".16rem",
                 direction: "ltr",
-
-                "::-webkit-scrollbar": {
-                    width: "1rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: primaryColor,
-                },
+                ...outerSx,
             }}
         >
             <Stack
@@ -143,7 +145,40 @@ export const MechBarStats = ({
                     current={health}
                     boostedTo={boostedHealth}
                     total={15000}
-                    Icon={SvgHealth}
+                    Icon={SvgLoadoutArmour}
+                    compact={compact}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD"
+                    current={totalShield}
+                    total={4000}
+                    Icon={SvgLoadoutShield}
+                    compact={compact}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD REGEN"
+                    current={totalShieldRechargeRate}
+                    boostedTo={boostedTotalShieldRechargeRate}
+                    total={500}
+                    Icon={SvgLoadoutShieldRegen}
+                    compact={compact}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD REGEN POWER COST"
+                    current={totalShieldRechargePowerCost}
+                    total={100}
+                    unit="/S"
+                    Icon={SvgLoadoutShieldPowerCost}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -154,7 +189,8 @@ export const MechBarStats = ({
                     boostedTo={boostedSpeed}
                     total={5000}
                     unit="CM/S"
-                    Icon={SvgSpeed}
+                    Icon={SvgLoadoutSpeed}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -163,7 +199,8 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCoreCapacity}
+                    Icon={SvgLoadoutPowerCoreCapacity}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -173,26 +210,8 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
-                />
-                <BarStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    barHeight={barHeight}
-                    label="SHIELD"
-                    current={totalShield}
-                    total={4000}
-                    Icon={SvgShield}
-                />
-                <BarStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    barHeight={barHeight}
-                    label="SHIELD REGEN"
-                    current={totalShieldRechargeRate}
-                    boostedTo={boostedTotalShieldRechargeRate}
-                    total={500}
-                    Icon={SvgShieldRegen}
+                    Icon={SvgLoadoutPowerCoreRegen}
+                    compact={compact}
                 />
             </Stack>
         </Box>
@@ -205,29 +224,90 @@ export const BarStat = ({
     label,
     current,
     boostedTo,
+    compareTo,
     total,
     unit,
     barHeight,
     Icon,
+    compact,
 }: {
     primaryColor: string
     fontSize: string
     label: string
     current: number | string
     boostedTo?: number | string
+    compareTo?: number | string
     total: number
     unit?: string
     barHeight?: string
     Icon: React.VoidFunctionComponent<SvgWrapperProps>
+    compact?: boolean
 }) => {
-    return useMemo(() => {
-        const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
-        const parsedBoosted = typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo
-        if (!parsedCurrent && !parsedBoosted) return null
+    const parsedCurrent = useMemo(() => (typeof current === "string" ? parseFloat(current) : current), [current])
+    const parsedBoosted = useMemo(() => (typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo), [boostedTo])
+    const compareDifference = useMemo(
+        () => (compareTo ? parsedCurrent - (typeof compareTo === "string" ? parseFloat(compareTo) : compareTo) : undefined),
+        [compareTo, parsedCurrent],
+    )
+    if (!parsedCurrent && !parsedBoosted) return null
 
+    if (compact)
         return (
-            <Box>
-                <TooltipHelper
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
+                <NiceTooltip
+                    placement="left-end"
+                    renderNode={
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontSize,
+                                fontFamily: fonts.nostromoMedium,
+                                ...truncateTextLines(1),
+                            }}
+                        >
+                            {label}
+                        </Typography>
+                    }
+                >
+                    <Box>
+                        <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px", height: "unset" }} />
+                    </Box>
+                </NiceTooltip>
+
+                <Stack flex={1} direction="row" sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                    {parsedBoosted && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                width: `${(100 * parsedBoosted) / total}%`,
+                                height: "100%",
+                                backgroundColor: colors.gold,
+                                transition: "all .15s",
+                            }}
+                        />
+                    )}
+                    <Box
+                        sx={{
+                            zIndex: 1,
+                            position: "relative",
+                            width: `${(100 * parsedCurrent) / total}%`,
+                            height: "100%",
+                            backgroundColor: primaryColor,
+                            transition: "all .15s",
+                        }}
+                    />
+                    {compareDifference && (
+                        <Box
+                            sx={{
+                                width: `${(100 * Math.abs(compareDifference)) / total}%`,
+                                height: "100%",
+                                backgroundColor: compareDifference > 0 ? colors.green : `${primaryColor}44`,
+                                transition: "all .15s",
+                            }}
+                        />
+                    )}
+                </Stack>
+                <NiceTooltip
                     placement="right"
                     text={
                         parsedBoosted && parsedBoosted != parsedCurrent
@@ -235,74 +315,111 @@ export const BarStat = ({
                             : ""
                     }
                 >
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
-                        <Stack spacing=".5rem" direction="row" alignItems="center">
-                            <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    fontSize,
-                                    fontFamily: fonts.nostromoBlack,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {label}
-                            </Typography>
-                        </Stack>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontSize,
+                            textAlign: "end",
+                            fontFamily: fonts.nostromoBold,
+                            color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                            width: "10rem",
+                            ...truncateTextLines(1),
+                        }}
+                    >
+                        {parsedBoosted || parsedCurrent}
+                        {unit}
+                    </Typography>
+                </NiceTooltip>
+            </Stack>
+        )
 
+    return (
+        <Box>
+            <NiceTooltip
+                placement="right"
+                text={
+                    parsedBoosted && parsedBoosted != parsedCurrent
+                        ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                        : ""
+                }
+            >
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
+                    <Stack spacing=".5rem" direction="row" alignItems="center">
+                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
                         <Typography
                             variant="caption"
                             sx={{
                                 fontSize,
-                                textAlign: "end",
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
-                                color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                                ...truncateTextLines(1),
                             }}
                         >
-                            {parsedBoosted || parsedCurrent}
-                            {unit}
+                            {label}
                         </Typography>
                     </Stack>
-                </TooltipHelper>
 
-                <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontSize,
+                            textAlign: "end",
+                            fontFamily: fonts.nostromoBold,
+                            color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                            ...truncateTextLines(1),
+                        }}
+                    >
+                        {compareDifference ? (
+                            <Box
+                                component="span"
+                                sx={{
+                                    color: compareDifference > 0 ? colors.green : colors.red,
+                                    mr: ".5rem",
+                                }}
+                            >
+                                {`(${compareDifference > 0 ? "+" : ""}${compareDifference})`}
+                            </Box>
+                        ) : undefined}
+                        {parsedBoosted || parsedCurrent}
+                        {unit}
+                    </Typography>
+                </Stack>
+            </NiceTooltip>
+
+            <Stack direction="row" sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                {parsedBoosted && (
                     <Box
                         sx={{
-                            width: `${(100 * parsedCurrent) / total}%`,
-                            height: "100%",
-                            backgroundColor: primaryColor,
-                            transition: "all .15s",
-                            zIndex: 10,
                             position: "absolute",
+                            width: `${(100 * parsedBoosted) / total}%`,
+                            height: "100%",
+                            backgroundColor: colors.gold,
+                            transition: "all .15s",
                         }}
                     />
-                    {parsedBoosted && (
-                        <Box
-                            sx={{
-                                width: `${(100 * parsedBoosted) / total}%`,
-                                height: "100%",
-                                backgroundColor: colors.gold,
-                                transition: "all .15s",
-                                zIndex: 9,
-                                position: "absolute",
-                            }}
-                        />
-                    )}
-                </Box>
-            </Box>
-        )
-    }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit, boostedTo])
+                )}
+                <Box
+                    sx={{
+                        zIndex: 1,
+                        position: "relative",
+                        width: `${(100 * parsedCurrent) / total}%`,
+                        height: "100%",
+                        backgroundColor: primaryColor,
+                        transition: "all .15s",
+                    }}
+                />
+                {typeof compareDifference !== "undefined" && (
+                    <Box
+                        sx={{
+                            width: `${(100 * Math.abs(compareDifference)) / total}%`,
+                            height: "100%",
+                            backgroundColor: compareDifference > 0 ? colors.green : `${primaryColor}44`,
+                            transition: "all .15s",
+                        }}
+                    />
+                )}
+            </Stack>
+        </Box>
+    )
 }
 
 export const IconStat = ({
@@ -328,7 +445,7 @@ export const IconStat = ({
         if (!parsedCurrent && !parsedBoosted) return null
 
         return (
-            <TooltipHelper text={`${label}: ${boostedTo || current}`} placement="bottom">
+            <NiceTooltip text={`${label}: ${boostedTo || current}`} placement="bottom">
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -342,10 +459,10 @@ export const IconStat = ({
                         borderRadius: 0.4,
                     }}
                 >
-                    <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />
+                    <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px" }} />
                     <Typography sx={{ lineHeight: 1, fontSize }}>{parsedBoosted || parsedCurrent}</Typography>
                 </Stack>
-            </TooltipHelper>
+            </NiceTooltip>
         )
     }, [Icon, current, fontSize, label, primaryColor, boostedTo])
 }

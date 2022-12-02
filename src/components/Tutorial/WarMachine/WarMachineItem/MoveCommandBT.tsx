@@ -7,6 +7,7 @@ import { zoomEffect } from "../../../../theme/keyframes"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, MechAbilityStages, PlayerAbility, WarMachineState } from "../../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItemBT"
+import { truncateTextLines } from "../../../../helpers"
 
 export const MechMoveCommandAbilityBT: PlayerAbility = {
     id: "mech_move_command",
@@ -95,10 +96,9 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
         if (trainingStage === MechAbilityStages.MoveActionMA) return
         if (!isAlive) return
 
-        setPlayerAbility({
-            ...MechMoveCommandAbilityBT,
-            mechHash: hash,
-        })
+        const aa = { ...MechMoveCommandAbilityBT }
+        aa.ability.mech_hash = hash
+        setPlayerAbility(aa)
 
         setTrainingStage(MechAbilityStages.MoveMA)
     }, [isAlive, hash, setPlayerAbility, setTrainingStage, trainingStage])
@@ -139,13 +139,8 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
                     sx={{
                         pt: ".2rem",
                         lineHeight: 1,
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
+                        fontWeight: "bold",
+                        ...truncateTextLines(1),
                     }}
                 >
                     {trainingStage !== MechAbilityStages.MoveActionMA ? MechMoveCommandAbilityBT.ability.label : "CANCEL"}
@@ -179,7 +174,7 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
                     id="warMachineSkillsText"
                     variant="body1"
                     sx={{
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         color: isMoving ? "#000000" : secondaryColor,
                         letterSpacing: 1,
                         transition: "all .2s",

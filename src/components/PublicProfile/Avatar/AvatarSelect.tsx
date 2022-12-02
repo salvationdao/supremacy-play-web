@@ -8,12 +8,12 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionName } from "../../../types"
 import { SortDir } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
-import { FancyButton } from "../../Common/FancyButton"
-import { PageHeader } from "../../Common/PageHeader"
-import { ChipFilter, ChipFilterSection } from "../../Common/SortAndFilters/ChipFilterSection"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { ChipFilter, ChipFilterSection } from "../../Common/Deprecated/SortAndFilters/ChipFilterSection"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { CustomAvatar, CustomAvatarItem } from "./CustomAvatar"
 
 interface GetAvatarsRequest {
@@ -65,7 +65,6 @@ export const ProfileAvatar = ({
     playerID,
     avatarID,
     isCustom,
-    secondaryColor,
 }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -215,7 +214,7 @@ export const ProfileAvatar = ({
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -355,7 +354,7 @@ export const ProfileAvatar = ({
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -602,16 +601,6 @@ export const ProfileAvatar = ({
                                             overflowY: "auto",
                                             overflowX: "hidden",
                                             direction: "ltr",
-
-                                            "::-webkit-scrollbar": {
-                                                width: "1rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                            },
                                         }}
                                     >
                                         {showCustom ? contentCustom : contentDefault}
@@ -637,21 +626,7 @@ export const ProfileAvatar = ({
                                         backgroundColor: "#00000070",
                                     }}
                                 >
-                                    <Pagination
-                                        size="medium"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                        showFirstButton
-                                        showLastButton
-                                    />
+                                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                                 </Box>
                             )}
                         </Stack>

@@ -1,13 +1,11 @@
-import { Badge, Box, IconButton, Modal, Stack } from "@mui/material"
+import { Badge, Box, IconButton, Stack } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useState } from "react"
-import { SvgClose, SvgMail } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
+import { SvgMail } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { NiceModal } from "../../Common/Nice/NiceModal"
 import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
 import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
 
@@ -16,7 +14,6 @@ export interface SystemMessageDisplayable extends SystemMessage {
 }
 
 export const Messages = () => {
-    const theme = useTheme()
     const [modalOpen, toggleModalOpen] = useToggle(false)
 
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -60,7 +57,7 @@ export const Messages = () => {
                 direction="row"
                 alignItems="center"
                 sx={{
-                    mx: "1.2rem",
+                    mx: "1rem",
                     height: "100%",
                 }}
             >
@@ -75,55 +72,24 @@ export const Messages = () => {
                                 height: 14,
                                 minWidth: 14,
                                 fontSize: "1.5rem",
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             },
                         }}
                     >
                         <IconButton onClick={() => toggleModalOpen(true)}>
-                            <SvgMail size="2.2rem" />
+                            <SvgMail size="2rem" />
                         </IconButton>
                     </Badge>
                 </Box>
             </Stack>
 
-            <Modal open={modalOpen} onClose={() => toggleModalOpen(false)} sx={{ zIndex: siteZIndex.Modal }}>
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: "120rem",
-                        maxWidth: "90vw",
-                        boxShadow: 6,
-                        outline: "none",
-                    }}
-                >
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: theme.factionTheme.primary,
-                            borderThickness: ".2rem",
-                        }}
-                        backgroundColor={theme.factionTheme.background}
-                        sx={{
-                            position: "relative",
-                            height: "130rem",
-                            maxHeight: "90vh",
-                        }}
-                    >
-                        {!composeView ? (
-                            <MessagesMainView lastUpdated={lastUpdated} onCompose={(type: SystemMessageDataType) => setComposeView(type)} />
-                        ) : (
-                            <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
-                        )}
-
-                        <IconButton size="small" onClick={() => toggleModalOpen(false)} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
-                    </ClipThing>
-                </Box>
-            </Modal>
+            <NiceModal open={modalOpen} onClose={() => toggleModalOpen(false)} sx={{ width: "120rem", maxWidth: "90vw", height: "130rem", maxHeight: "90vh" }}>
+                {!composeView ? (
+                    <MessagesMainView lastUpdated={lastUpdated} onCompose={(type: SystemMessageDataType) => setComposeView(type)} />
+                ) : (
+                    <MessagesComposeView onBack={() => setComposeView(undefined)} type={composeView} />
+                )}
+            </NiceModal>
         </>
     )
 }

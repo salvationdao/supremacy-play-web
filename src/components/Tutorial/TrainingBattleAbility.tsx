@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { BattleAbilityStages, BribeStage, Context, GameAbility, LocationSelectType, Map, TrainingAbility, WarMachineState } from "../../types"
+import { BattleAbilityStages, BribeStage, Context, GameAbility, LocationSelectType, Map, RarityEnum, TrainingAbility, WarMachineState } from "../../types"
 import { TutorialContainer } from "./TutorialContainer"
 import { trainingAirStrike } from "./VotingSystem/BattleAbility/BattleAbilityItemBT"
 
@@ -292,7 +292,7 @@ const trainingMechs = (): WarMachineState[] => {
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/boston_cybernetics_xfvs_blue_white.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/boston-cybernetics_law-enforcer-x-1000_dune_avatar.png",
@@ -328,7 +328,7 @@ const trainingMechs = (): WarMachineState[] => {
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/boston_cybernetics_xfvs_blue_white.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/boston-cybernetics_law-enforcer-x-1000_dune_avatar.png",
@@ -364,7 +364,7 @@ const trainingMechs = (): WarMachineState[] => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",

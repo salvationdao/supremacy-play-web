@@ -1,3 +1,4 @@
+import { SxProps } from "@mui/material"
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import { VoidFunctionComponent } from "react"
@@ -10,13 +11,25 @@ import {
     SvgOutroAnimation,
     SvgPowerCore,
     SvgPrivate,
-    SvgSkin,
-    SvgUtilities,
-    SvgWeapons,
+    SvgLoadoutSkin,
+    SvgLoadoutUtility,
+    SvgLoadoutWeapon,
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
+import {
+    AssetItemType,
+    Dimension,
+    GAME_CLIENT_TILE_SIZE,
+    MechStatusEnum,
+    MysteryCrateType,
+    NewMechStruct,
+    Rarity,
+    RarityEnum,
+    UserRank,
+    WeaponType,
+} from "../types"
+import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -89,8 +102,13 @@ export const shadeColor = (hexColor: string, factor: number) => {
     return "#" + RR + GG + BB
 }
 
-export const getRandomArbitrary = (min: number, max: number): number => {
+export const getRandomFloat = (min: number, max: number): number => {
     return Math.random() * (max - min) + min
+}
+
+// Inclusive of min and max
+export const getRandomIntInclusive = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 export const numFormatter = (num: number) => {
@@ -104,19 +122,11 @@ export const numFormatter = (num: number) => {
     return num + ""
 }
 
-export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
-    const supTokens = new BigNumber(num)
-    if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
-
-    const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
-    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
-}
-
-export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
+export const supFormatter = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
-    if (maxDecimals) {
+    if (maxDecimals !== undefined) {
         const split = supTokens.toString().split(".")
-        if (split[1] ? split[1].length : 0 > maxDecimals) {
+        if (split[1] ? split[1].length : 0 >= maxDecimals) {
             if (supTokens.isZero()) return supTokens.toFixed(maxDecimals)
             return supTokens.toFormat(maxDecimals)
         }
@@ -125,9 +135,13 @@ export const supFormatterNoFixed = (num: string, maxDecimals?: number): string =
     return supTokens.toFormat()
 }
 
-export const parseString = (val: string | null, defaultVal: number): number => {
-    if (!val) return defaultVal
-    return parseFloat(val)
+export const parseString = (val: number | string | null | undefined, defaultVal: number): number => {
+    try {
+        if (!val) return defaultVal
+        return parseFloat(`${val}`)
+    } catch (err) {
+        return defaultVal
+    }
 }
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -184,30 +198,41 @@ export const hexToRGB = (hexx: string) => {
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
-        case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
-        case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
-        case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
-        case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
-        case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
-        case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
-        case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
-        case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
-        case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
-        case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
-        case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+        case RarityEnum.Mega:
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 11 }
+        case RarityEnum.Colossal:
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF", rank: 10 }
+        case RarityEnum.Rare:
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF", rank: 9 }
+        case RarityEnum.Legendary:
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF", rank: 8 }
+        case RarityEnum.EliteLegendary:
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF", rank: 7 }
+        case RarityEnum.UltraRare:
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF", rank: 6 }
+        case RarityEnum.Exotic:
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF", rank: 5 }
+        case RarityEnum.Guardian:
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF", rank: 4 }
+        case RarityEnum.Mythic:
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000", rank: 3 }
+        case RarityEnum.DeusEx:
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000", rank: 2 }
+        case RarityEnum.Titan:
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 1 }
         default:
-            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
+    }
+}
+
+export const getOrderStatusDeets = (key: string) => {
+    switch (key) {
+        case FiatOrderStatus.Pending:
+            return { label: "Pending", color: colors.lightNeonBlue, textColor: "#FFFFFF" }
+        case FiatOrderStatus.Refunded:
+            return { label: "Refunded", color: colors.red, textColor: "#FFFFFF" }
+        default:
+            return { label: "Paid", color: colors.green, textColor: "#FFFFFF" }
     }
 }
 
@@ -244,6 +269,39 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
 
 export const snakeToSlug = (str: string): string => {
     return str.split("_").join("-").toLowerCase()
+}
+
+export const getMechStatusDeets = (status?: MechStatusEnum) => {
+    let color = colors.darkGrey
+    let label = "UNKNOWN"
+
+    switch (status) {
+        case MechStatusEnum.Idle:
+            label = "IDLE"
+            color = colors.green
+            break
+        case MechStatusEnum.Queue:
+            label = "IN LOBBY"
+            color = colors.yellow
+            break
+        case MechStatusEnum.Battle:
+            label = "BATTLING"
+            color = colors.orange
+            break
+        case MechStatusEnum.Market:
+            label = "LISTED"
+            color = colors.red
+            break
+        case MechStatusEnum.Sold:
+            label = "SOLD"
+            color = colors.lightGrey
+            break
+        case MechStatusEnum.Damaged:
+            label = "DAMAGED"
+            color = colors.bronze
+            break
+    }
+    return { color, label }
 }
 
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
@@ -376,7 +434,7 @@ export const secondsToWords = (secondsLeft: number) => {
 
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
-    return result.charAt(0).toUpperCase() + result.slice(1)
+    return (result.charAt(0).toUpperCase() + result.slice(1)).trim()
 }
 
 export const EMOJI_REGEX = emojiRegex()
@@ -410,7 +468,7 @@ export const checkIfIsEmoji = (message: string) => {
     return false
 }
 
-// Returns a random chat color for non faction users
+// Returns a random chat color for non faction users (hex code) e.g. #FF1298
 export const getRandomColor = () => {
     let color = "#"
     for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)
@@ -476,37 +534,39 @@ export const getUtilityTypeColor = (utilityType: string | undefined) => {
     }
 }
 
-export const getWeaponTypeColor = (weaponType: string | undefined) => {
+export const getWeaponTypeColor = (weaponType: WeaponType | undefined) => {
     if (!weaponType) return colors.neonBlue
 
-    switch (weaponType.toUpperCase()) {
-        case "CANNON":
+    switch (weaponType) {
+        case WeaponType.Cannon:
             return colors.green
-        case "SWORD":
+        case WeaponType.Sword:
             return colors.red
-        case "MINIGUN":
+        case WeaponType.Minigun:
             return colors.blue
-        case "MISSILE LAUNCHER":
+        case WeaponType.MissileLauncher:
             return colors.orange
-        case "GRENADE LAUNCHER":
+        case WeaponType.RocketPods:
             return colors.orange
-        case "MACHINE GUN":
+        case WeaponType.GrenadeLauncher:
+            return colors.orange
+        case WeaponType.MachineGun:
             return colors.blue
-        case "PLASMA GUN":
+        case WeaponType.PlasmaGun:
             return colors.purple
-        case "SNIPER RIFLE":
+        case WeaponType.SniperRifle:
             return colors.blue
-        case "RIFLE":
+        case WeaponType.Rifle:
             return colors.blue
-        case "FLAK":
+        case WeaponType.Flak:
             return colors.orange
-        case "LASER BEAM":
+        case WeaponType.LaserBeam:
             return colors.purple
-        case "LIGHTNING GUN":
+        case WeaponType.LightningGun:
             return colors.purple
-        case "BFG":
+        case WeaponType.BFG:
             return colors.orange
-        case "FLAMETHROWER":
+        case WeaponType.Flamethrower:
             return colors.orange
         default:
             return colors.neonBlue
@@ -545,18 +605,18 @@ export const getAssetItemDeets = (
             subRoute = "mech"
             break
         case AssetItemType.Weapon:
-            icon = SvgWeapons
+            icon = SvgLoadoutWeapon
             color = colors.weapons
             label = "Weapon"
             subRoute = "weapon"
             break
         case AssetItemType.MechSkin:
-            icon = SvgSkin
+            icon = SvgLoadoutSkin
             color = colors.chassisSkin
             label = "Mech Skin"
             break
         case AssetItemType.WeaponSkin:
-            icon = SvgSkin
+            icon = SvgLoadoutSkin
             color = colors.chassisSkin
             label = "Weapon Skin"
             break
@@ -566,7 +626,7 @@ export const getAssetItemDeets = (
             label = "Power Core"
             break
         case AssetItemType.Utility:
-            icon = SvgUtilities
+            icon = SvgLoadoutUtility
             color = colors.utilities
             label = "Utility"
             break
@@ -585,11 +645,15 @@ export const getAssetItemDeets = (
     return { icon, color, label, subRoute }
 }
 
-export const generatePriceText = (dollars: number, cents: number) => {
-    const totalDollars = dollars + Math.floor(cents / 100)
-    const remainingCents = cents % 100
+export const generatePriceText = (currency: string, cents: string | BigNumber) => {
+    if (typeof cents === "string") {
+        cents = new BigNumber(cents)
+    }
 
-    return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
+    const totalDollars = cents.div(100).toNumber()
+    const remainingCents = cents.mod(100).toNumber()
+
+    return `${currency} ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
 // Converts number to alphabet letter like excel spreadsheet columns. E.g. 0 -> "A", 27 -> AA
@@ -642,6 +706,24 @@ export const calculateCoverDimensions = (dimensions: Dimension, containerDimensi
     return result
 }
 
+// Adjusts dimensions so that the largest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (80, 32).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (20, 40).
+export const calculateContainDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.width * ratio
+
+    if (result.height > containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
+
 export const HEXToVBColor = (hex: string): number => {
     return parseInt(hex.substring(hex.length - 6), 16)
 }
@@ -662,4 +744,95 @@ export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) 
         }
     }
     return true
+}
+
+export const shortCodeGenerator = ({
+    length = 12,
+    omitUppercase,
+    omitLowerCase,
+    omitNumber,
+}: {
+    length?: number
+    omitUppercase?: boolean
+    omitLowerCase?: boolean
+    omitNumber?: boolean
+}): string => {
+    let result = ""
+    let base = ""
+    if (!omitUppercase) base += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if (!omitLowerCase) base += "abcdefghijklmnopqrstuvwxyz"
+    if (!omitNumber) base += "0123456789"
+    for (let i = 0; i < length; i++) {
+        result += base.charAt(Math.floor(Math.random() * base.length))
+    }
+    return result
+}
+
+// Checks if given number is between two other numbers
+export const isInBetweenInclusive = (num: number, between1: number, between2: number) => {
+    return num >= Math.min(between1, between2) && num <= Math.max(between1, between2)
+}
+
+export const isExternalURL = (url: string) => {
+    try {
+        return new URL(url).origin !== location.origin
+    } catch {
+        return false
+    }
+}
+
+// Converts { 1: "1px 2px", 2: "5px 8px" } top clipPath css string: "polygon(1px 2px, 5px 8px)"
+export const objectToPolygonClipPath = (config: { [seq: number]: string }) => {
+    const sorted = Object.entries(config)
+        .sort((a, b) => (parseInt(a[0]) > parseInt(b[0]) ? 1 : -1))
+        .map((c) => c[1])
+    return `polygon(${sorted.join(", ")})`
+}
+
+// Converts milliseconds to: days, hours, minutes, seconds,  => all sum to total the original milliseconds
+export const msToTime = (ms: number) => {
+    const days = Math.floor(ms / 1000 / 60 / 60 / 24)
+    const hours = Math.floor(ms / 1000 / 60 / 60) - days * 24
+    const minutes = Math.floor(ms / 1000 / 60) - days * 24 * 60 - hours * 60
+    const seconds = Math.floor(ms / 1000) - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+    return { days, hours, minutes, seconds }
+}
+
+export const truncateAddress = (addr: string): string => {
+    const first = addr.substring(0, 6)
+    const last = addr.substring(addr.length - 5)
+    return `${first}...${last}`
+}
+
+export const noop = () => {
+    return
+}
+
+export const isBrowser = typeof window !== "undefined"
+
+export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
+    display: isInline ? "-webkit-inline-box" : "-webkit-box",
+    overflow: "hidden",
+    overflowWrap: "anywhere",
+    textOverflow: "ellipsis",
+    WebkitLineClamp: numLines,
+    WebkitBoxOrient: "vertical",
+})
+
+// Return true, if a mech has equipped a power core and more than one weapon
+export const mechHasPowerCoreAndWeapon = (mech: NewMechStruct): boolean => {
+    // Check power core
+    if (!mech.power_core) return false
+
+    // Check weapon count
+    let hasWeapon = false
+    mech.weapon_slots?.forEach((weaponSlot) => {
+        // Skip, if already has weapon
+        if (hasWeapon) return
+
+        // Check whether the mech has weapon equipped
+        hasWeapon = !!weaponSlot.weapon
+    })
+
+    return hasWeapon
 }

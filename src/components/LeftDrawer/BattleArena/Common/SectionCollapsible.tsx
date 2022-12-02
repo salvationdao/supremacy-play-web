@@ -1,11 +1,11 @@
 import { Box, Collapse, Stack, Typography } from "@mui/material"
 import { ReactNode, useEffect } from "react"
-import { SvgDropdownArrow, SvgInfoCircular } from "../../../../assets"
+import { SvgDropdownArrow, SvgInfoIcon } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
-import { FancyButton } from "../../../Common/FancyButton"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const SectionCollapsible = ({
     label,
@@ -25,8 +25,8 @@ export const SectionCollapsible = ({
         (localStorage.getItem(`${localStoragePrefix}-section-collapsible`) || initialExpanded?.toString()) === "true",
     )
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const primaryColor = theme.factionTheme.s500
+    const secondaryColor = theme.factionTheme.text
 
     useEffect(() => {
         localStorage.setItem(`${localStoragePrefix}-section-collapsible`, isExpanded.toString())
@@ -34,23 +34,25 @@ export const SectionCollapsible = ({
 
     return (
         <Box sx={{ my: isExpanded ? "1rem" : ".5rem" }}>
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "0px",
-                    clipSlantSize: "0px",
-                    border: {
-                        borderColor: primaryColor,
-                        borderThickness: ".25rem",
-                    },
-                    corners: {},
-                    backgroundColor: primaryColor,
-                    opacity: isExpanded ? 0.8 : 0.2,
-                    sx: { position: "relative" },
+            <NiceButton
+                fill={isExpanded}
+                buttonColor={primaryColor}
+                sx={{
+                    position: "relative",
+                    p: 0,
+                    width: "100%",
+                    m: 0,
                 }}
-                sx={{ p: 0, color: "#FFFFFF" }}
                 onClick={() => toggleIsExpanded()}
             >
-                <Stack direction="row" alignItems="center" sx={{ height: "100%", pl: "1.8rem", pr: "1.4rem", pt: ".5rem", pb: ".4rem" }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                        p: ".9rem 1.4rem",
+                        width: "100%",
+                    }}
+                >
                     <SvgDropdownArrow
                         size="1.3rem"
                         fill={isExpanded ? secondaryColor : "#FFFFFF"}
@@ -62,7 +64,7 @@ export const SectionCollapsible = ({
                     </Typography>
 
                     {tooltip && (
-                        <TooltipHelper text={tooltip} placement="right">
+                        <NiceTooltip text={tooltip} placement="right">
                             <Box
                                 sx={{
                                     ml: "auto",
@@ -70,20 +72,22 @@ export const SectionCollapsible = ({
                                     ":hover": { opacity: 1 },
                                 }}
                             >
-                                <SvgInfoCircular fill={theme.factionTheme.secondary} size="1.5rem" />
+                                <SvgInfoIcon fill={theme.factionTheme.text} size="1.5rem" />
                             </Box>
-                        </TooltipHelper>
+                        </NiceTooltip>
                     )}
                 </Stack>
-            </FancyButton>
+            </NiceButton>
 
             <Collapse in={isExpanded}>
                 <Box
                     sx={{
+                        position: "relative",
                         p: "1.5rem 1.1rem",
-                        backgroundColor: "#FFFFFF12",
+                        backgroundColor: "#FFFFFF08",
                         boxShadow: 2,
                         border: "#FFFFFF20 1px solid",
+                        borderTop: "none",
                     }}
                 >
                     {children}

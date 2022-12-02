@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
-import { FancyButton, TooltipHelper } from "../.."
+import { FancyButton, NiceTooltip } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -11,8 +11,8 @@ import { GameServerKeys } from "../../../keys"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
@@ -141,7 +141,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 }}
                             />
 
-                            <TooltipHelper text={abilityTypeDescription} placement="bottom">
+                            <NiceTooltip text={abilityTypeDescription} placement="bottom">
                                 <Stack
                                     justifyContent="center"
                                     alignItems="center"
@@ -158,7 +158,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 >
                                     {abilityTypeIcon}
                                 </Stack>
-                            </TooltipHelper>
+                            </NiceTooltip>
 
                             <Box
                                 sx={{
@@ -209,7 +209,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 variant="body1"
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
-                                    color: theme.factionTheme.secondary,
+                                    color: theme.factionTheme.text,
                                 }}
                             >
                                 PURCHASE FOR{" "}
@@ -240,7 +240,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                     isLoading={loading}
                     error={error}
                     confirmSuffix={
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", ml: ".4rem" }}>
                             {availability === SaleAbilityAvailability.CanPurchase ? (
                                 <>
                                     <Box

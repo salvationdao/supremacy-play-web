@@ -11,7 +11,7 @@ export const Dates = ({ createdAt, endAt, onTimeEnded, soldAt }: { createdAt: Da
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                     DATE LISTED:
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                     {createdAt.toUTCString()}
                 </Typography>
             </Box>
@@ -20,7 +20,7 @@ export const Dates = ({ createdAt, endAt, onTimeEnded, soldAt }: { createdAt: Da
                 <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                     {soldAt ? "DATE SOLD" : "END DATE:"}
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue } }}>
+                <Typography variant="h5" sx={{ fontWeight: "bold", span: { color: colors.lightNeonBlue } }}>
                     {(soldAt || endAt).toUTCString()}{" "}
                     <span>
                         (<TimeLeft endAt={soldAt || endAt} onTimeEnded={onTimeEnded} />)

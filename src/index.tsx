@@ -1,4 +1,6 @@
 import { Box, LinearProgress, Stack, Typography } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -11,17 +13,25 @@ import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
-import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
-import { BottomNav } from "./components/BottomNav/BottomNav"
-import { SupremacyWorldModal } from "./components/Common/BannersPromotions/SupremacyWorldModal"
+import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
+import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
+import { MainMenuNav } from "./components/MainMenuNav/MainMenuNav"
+import { MarketingModal } from "./components/MarketingModal/MarketingModal"
+import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage"
+import { AuthPage } from "./components/Signup/AuthPage"
+import { EnlistPage } from "./components/Signup/EnlistPage"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
+import { TutorialPage } from "./components/Tutorial/TutorialPage"
+import { YoutubeLiveStreamModal } from "./components/YoutubeLiveStreamModal/YoutubeLiveStreamModal"
 import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
     GameProvider,
     GlobalNotificationsProvider,
+    MAIN_CONTENT_ID,
     MiniMapPixiProvider,
     MobileProvider,
     SupremacyProvider,
@@ -32,172 +42,15 @@ import {
 } from "./containers"
 import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
+import { FiatProvider } from "./containers/fiat"
 import { FingerprintProvider } from "./containers/fingerprint"
-import { HotkeyProvider } from "./containers/hotkeys"
 import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
-import { NotFoundPage, TutorialPage } from "./pages"
-import { AuthPage } from "./pages/AuthPage"
-import { EnlistPage } from "./pages/EnlistPage"
-import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
-import { LoginRedirect } from "./pages/LoginRedirect"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
+import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
-
-const SUPREMACY_WORLD_SALE_END_DATE = new Date("Nov 04 2022 00:00:00 GMT+0800")
-
-const AppInner = () => {
-    const history = useHistory()
-    const isTraining = location.pathname.includes("/training")
-    const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
-    const { isMobile } = useMobile()
-    const { userID, factionID } = useAuth()
-    const [showLoading, toggleShowLoading] = useToggle(true)
-
-    // Makes the loading screen to show for AT LEAST 1 second
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            toggleShowLoading(false)
-        }, 2000)
-
-        return () => clearTimeout(timeout)
-    }, [toggleShowLoading])
-
-    // Record page changes to Google Analytics
-    useEffect(() => {
-        ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
-        history.listen((location, action) => {
-            if (action === "PUSH") {
-                ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
-            }
-        })
-    }, [history])
-
-    if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
-        return (
-            <Stack
-                spacing="3rem"
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    position: "fixed",
-                    width: "100vw",
-                    height: "100%",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                }}
-            >
-                <Box
-                    sx={{
-                        width: "9rem",
-                        height: "9rem",
-                        background: `url(${SupremacyPNG})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                    }}
-                />
-
-                <Stack alignItems="center" spacing=".8rem">
-                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                        CONNECTING...
-                    </Typography>
-                    <LinearProgress
-                        sx={{
-                            width: "13rem",
-                            height: "9px",
-                            backgroundColor: `${colors.gold}15`,
-                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
-                        }}
-                    />
-                </Stack>
-            </Stack>
-        )
-    }
-
-    return (
-        <>
-            <Stack
-                sx={{
-                    position: "fixed",
-                    width: "100vw",
-                    height: "100%",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                }}
-            >
-                <Bar />
-                {new Date().getTime() < SUPREMACY_WORLD_SALE_END_DATE.getTime() && <SupremacyWorldModal />}
-
-                <Stack
-                    direction="row"
-                    sx={{
-                        position: "relative",
-                        flex: 1,
-                        width: "100vw",
-                        overflow: "hidden",
-                        justifyContent: "space-between",
-                        "& > *": {
-                            flexShrink: 0,
-                        },
-                    }}
-                >
-                    <NavLinksDrawer />
-                    {!isTraining && <LeftDrawer />}
-
-                    <Stack
-                        sx={{
-                            flex: 1,
-                            position: "relative",
-                            height: "100%",
-                            backgroundColor: colors.darkNavy,
-                            overflow: "hidden",
-                        }}
-                    >
-                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {isTraining ? (
-                                <TutorialPage />
-                            ) : !isServerDown ? (
-                                <Switch>
-                                    {ROUTES_ARRAY.map((r) => {
-                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
-                                        if (!enable) return null
-                                        let PageComponent = Component
-                                        if (requireAuth && !userID) {
-                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                            PageComponent = Comp
-                                        } else if (userID && requireFaction && !factionID) {
-                                            PageComponent = EnlistPage
-                                        }
-                                        if (!PageComponent) return null
-                                        return (
-                                            <Route key={id} path={path} exact={exact}>
-                                                <Helmet>
-                                                    <title>{pageTitle}</title>
-                                                    <link rel="canonical" href={`${LINK}/${path}`} />
-                                                </Helmet>
-                                                <PageComponent />
-                                            </Route>
-                                        )
-                                    })}
-                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
-                                </Switch>
-                            ) : (
-                                <Maintenance />
-                            )}
-                        </Box>
-
-                        {isMobile && <BottomNav />}
-                    </Stack>
-
-                    {!isServerDown && <RightDrawer />}
-                </Stack>
-            </Stack>
-
-            <GlobalSnackbar />
-        </>
-    )
-}
+import { ThemeUpdater } from "./theme/ThemeUpdater"
 
 if (SENTRY_CONFIG) {
     Sentry.init({
@@ -234,6 +87,170 @@ const client = createClient({
 
 ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 
+const AppInner = () => {
+    const history = useHistory()
+    const isTutorial = location.pathname.includes("/tutorial")
+    const { isServerDown, serverConnectedBefore, firstConnectTimedOut, isTransparentMode } = useSupremacy()
+    const { isMobile } = useMobile()
+    const { userID, factionID } = useAuth()
+    const [showLoading, toggleShowLoading] = useToggle(true)
+
+    // Makes the loading screen to show for at least 2 seconds
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            toggleShowLoading(false)
+        }, 2000)
+
+        return () => clearTimeout(timeout)
+    }, [toggleShowLoading])
+
+    // Record page changes to Google Analytics
+    useEffect(() => {
+        ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
+        history.listen((location, action) => {
+            if (action === "PUSH") {
+                ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
+            }
+        })
+    }, [history])
+
+    // Loading progress bar
+    if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
+        return (
+            <Stack
+                spacing="3rem"
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100%",
+                    backgroundColor: (theme) => theme.factionTheme.background,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: "9rem",
+                        height: "9rem",
+                        background: `url(${SupremacyPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                />
+
+                <Stack alignItems="center" spacing=".8rem">
+                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+                        CONNECTING...
+                    </Typography>
+
+                    <LinearProgress
+                        sx={{
+                            width: "14rem",
+                            height: "12px",
+                            backgroundColor: `${colors.gold}15`,
+                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                        }}
+                    />
+                </Stack>
+            </Stack>
+        )
+    }
+
+    return (
+        <>
+            <Stack
+                sx={{
+                    position: "fixed",
+                    width: "100vw",
+                    height: "100%",
+                    backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
+                }}
+            >
+                <Bar />
+
+                <MainMenuNav />
+
+                <Stack
+                    direction="row"
+                    sx={{
+                        position: "relative",
+                        flex: 1,
+                        width: "100vw",
+                        overflow: "hidden",
+                        justifyContent: "space-between",
+                        "& > *": {
+                            flexShrink: 0,
+                        },
+                    }}
+                >
+                    {!isTutorial && <LeftDrawer />}
+
+                    <Stack
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                            backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
+                            overflow: "hidden",
+                        }}
+                    >
+                        <Box id={MAIN_CONTENT_ID} sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
+                            <MarketingModal />
+
+                            {isTutorial ? (
+                                <TutorialPage />
+                            ) : !isServerDown ? (
+                                <Switch>
+                                    {Routes.map((route) => {
+                                        const { id, path, exact, Component, restrictions, enable, tabTitle } = route
+
+                                        if (!enable) return null
+
+                                        let PageComponent = Component
+
+                                        // Apply restrictions on the route (need auth, faction etc.)
+                                        if (restrictions?.requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={restrictions.authTitle} authDescription={restrictions.authDescription} />
+                                            PageComponent = Comp
+                                        } else if (userID && restrictions?.requireFaction && !factionID) {
+                                            PageComponent = EnlistPage
+                                        }
+
+                                        if (!PageComponent) return null
+
+                                        return (
+                                            <Route key={id} path={path} exact={exact}>
+                                                <Helmet>
+                                                    <title>{tabTitle}</title>
+                                                    <link rel="canonical" href={`${LINK}/${path}`} />
+                                                </Helmet>
+                                                <PageComponent />
+                                            </Route>
+                                        )
+                                    })}
+
+                                    <Redirect to={Routes.find((route) => route.id === RouteSingleID.NotFound)?.path || "/"} />
+                                </Switch>
+                            ) : (
+                                <Maintenance />
+                            )}
+                        </Box>
+
+                        {isMobile && <BottomNav />}
+                    </Stack>
+
+                    {!isServerDown && <RightDrawer />}
+                </Stack>
+            </Stack>
+
+            <YoutubeLiveStreamModal />
+
+            <GlobalSnackbar />
+        </>
+    )
+}
+
 const tourProviderProps = {
     children: <AppInner />,
     steps: [],
@@ -247,49 +264,53 @@ const tourProviderProps = {
 const App = () => {
     return (
         <ThemeProvider>
-            <ErrorBoundary FallbackComponent={ErrorFallbackPage}>
-                <FingerprintProvider>
-                    <GlobalNotificationsProvider>
-                        <ClientContextProvider client={client}>
-                            <BrowserRouter>
-                                <SupremacyProvider>
-                                    <AuthProvider>
-                                        <ChatProvider>
-                                            <WalletProvider>
-                                                <TourProvider {...tourProviderProps}>
-                                                    <OvenStreamProvider>
-                                                        <ArenaProvider>
-                                                            <ArenaListener />
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <UiProvider>
-                                                                        <GameProvider>
-                                                                            <HotkeyProvider>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
+                    <FingerprintProvider>
+                        <GlobalNotificationsProvider>
+                            <ClientContextProvider client={client}>
+                                <BrowserRouter>
+                                    <SupremacyProvider>
+                                        <AuthProvider>
+                                            <ChatProvider>
+                                                <WalletProvider>
+                                                    <TourProvider {...tourProviderProps}>
+                                                        <OvenStreamProvider>
+                                                            <ArenaProvider>
+                                                                <ArenaListener />
+                                                                <MobileProvider>
+                                                                    <DimensionProvider>
+                                                                        <UiProvider>
+                                                                            <GameProvider>
                                                                                 <MiniMapPixiProvider>
-                                                                                    <UserUpdater />
-                                                                                    <Switch>
-                                                                                        <Route path="/404" exact component={NotFoundPage} />
-                                                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                        <Route path="" component={AppInner} />
-                                                                                    </Switch>
+                                                                                    <FiatProvider>
+                                                                                        <ThemeUpdater>
+                                                                                            <UserUpdater />
+                                                                                            <Switch>
+                                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                                <Route path="" component={AppInner} />
+                                                                                            </Switch>
+                                                                                        </ThemeUpdater>
+                                                                                    </FiatProvider>
                                                                                 </MiniMapPixiProvider>
-                                                                            </HotkeyProvider>
-                                                                        </GameProvider>
-                                                                    </UiProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </ArenaProvider>
-                                                    </OvenStreamProvider>
-                                                </TourProvider>
-                                            </WalletProvider>
-                                        </ChatProvider>
-                                    </AuthProvider>
-                                </SupremacyProvider>
-                            </BrowserRouter>
-                        </ClientContextProvider>
-                    </GlobalNotificationsProvider>
-                </FingerprintProvider>
-            </ErrorBoundary>
+                                                                            </GameProvider>
+                                                                        </UiProvider>
+                                                                    </DimensionProvider>
+                                                                </MobileProvider>
+                                                            </ArenaProvider>
+                                                        </OvenStreamProvider>
+                                                    </TourProvider>
+                                                </WalletProvider>
+                                            </ChatProvider>
+                                        </AuthProvider>
+                                    </SupremacyProvider>
+                                </BrowserRouter>
+                            </ClientContextProvider>
+                        </GlobalNotificationsProvider>
+                    </FingerprintProvider>
+                </ErrorBoundary>
+            </LocalizationProvider>
         </ThemeProvider>
     )
 }

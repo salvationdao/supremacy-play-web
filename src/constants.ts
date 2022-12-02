@@ -27,8 +27,15 @@ export const PASSPORT_SIGNUP = DEV_ONLY
     ? "https://passport.xsyn.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game/?training=false"
     : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
+// Mech loadout
+export const WEBGL_BASE_URL = "https://afiles.ninja-cdn.com/supremacy-hangar/build/"
+export const DEVELOPMENT_BUILD_NUM = 52
+
+// Supremacy world
+export const SUPREMACY_WORLD_SALE_END_DATE = new Date("Nov 04 2022 00:00:00 GMT+0800")
+
 // Battle arena related
-export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")
+export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800")
 export const BATTLE_ARENA_OPEN = !!(
     STAGING_OR_DEV_ONLY ||
     localStorage.getItem("openBattleArena") === "true" ||
@@ -36,8 +43,7 @@ export const BATTLE_ARENA_OPEN = !!(
 )
 
 // Testing related
-export const IS_TESTING_MODE = STAGING_ONLY
-export const NEXT_RESET_TIME = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
+export const NEXT_RESET_TIME = new Date("Sep 07 2022 14:00:00 GMT+0800")
 
 if (USE_PROD_DATA) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
@@ -76,7 +82,7 @@ export const SENTRY_CONFIG = {
 }
 
 // UI related stuff
-export const GAME_BAR_HEIGHT = 5.2 // rem
+export const GAME_BAR_HEIGHT = 6.3 // rem
 export const DRAWER_TRANSITION_DURATION = 250
 export const MESSAGES_BUFFER_SIZE = 500
 export const MAX_CHAT_MESSAGE_LENGTH = 280

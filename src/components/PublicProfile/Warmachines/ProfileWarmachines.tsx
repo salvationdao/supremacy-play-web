@@ -8,9 +8,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionName, MechBasic } from "../../../types"
 import { SortDir } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
-import { PageHeader } from "../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { ProfileWarmachineItem } from "../ProfileMechDetails"
 import { WarmachineDetails } from "./WarmachineDetails"
 
@@ -52,7 +52,7 @@ const getIcon = (factionName: FactionName): string => {
     return WarMachineIconPNG
 }
 
-export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, backgroundColour, factionName }: ProfileWarmachinesProps) => {
+export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, factionName }: ProfileWarmachinesProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -126,7 +126,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColour }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -233,16 +233,6 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                         overflowY: "auto",
                                         overflowX: "hidden",
                                         direction: "ltr",
-
-                                        "::-webkit-scrollbar": {
-                                            width: "1rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: primaryColour,
-                                        },
                                     }}
                                 >
                                     {content}
@@ -259,21 +249,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                     backgroundColor: "#00000070",
                                 }}
                             >
-                                <Pagination
-                                    size="medium"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                        ".Mui-selected": {
-                                            color: secondaryColor,
-                                            backgroundColor: `${primaryColour} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
-                                />
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
                         )}
                     </Stack>

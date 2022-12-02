@@ -2,14 +2,15 @@ import { Autocomplete, Box, CircularProgress, Stack, TextField, Typography } fro
 import { useCallback, useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import { ClipThing } from "../.."
+import { HangarBg } from "../../../assets"
 import { useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { User } from "../../../types"
-import { Player } from "../../Common/Player"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 
 export const AdminLookup = () => {
     const theme = useTheme()
@@ -28,82 +29,95 @@ export const AdminLookup = () => {
     }, [])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.9}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
-            contentSx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
         >
-            <Box
-                sx={{
-                    width: "100%",
-                    maxWidth: "300px",
-                    p: "1rem",
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.9}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+                contentSx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                 }}
             >
-                <LookupSearchBox />
-                {lastLookupPlayer &&
-                    (() => {
-                        const faction = getFaction(lastLookupPlayer.faction_id)
-                        return (
-                            <Stack mt="1rem">
-                                <Typography
-                                    sx={{
-                                        color: colors.grey,
-                                    }}
-                                >
-                                    Previously Viewed:
-                                </Typography>
-                                <Link to={`/admin/lookup/${lastLookupPlayer.gid}`}>
-                                    <Stack
-                                        direction="row"
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                        p="1rem"
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxWidth: "300px",
+                        p: "1rem",
+                    }}
+                >
+                    <LookupSearchBox />
+                    {lastLookupPlayer &&
+                        (() => {
+                            const faction = getFaction(lastLookupPlayer.faction_id)
+                            return (
+                                <Stack mt="1rem">
+                                    <Typography
                                         sx={{
-                                            borderRadius: "2px",
-                                            backgroundColor: `${faction.primary_color}33`,
+                                            color: colors.grey,
                                         }}
                                     >
-                                        <Stack direction="row">
-                                            <Box
-                                                sx={{
-                                                    alignSelf: "flex-start",
-                                                    flexShrink: 0,
-                                                    width: "2rem",
-                                                    height: "2rem",
-                                                    background: `url(${faction.logo_url})`,
-                                                    backgroundColor: faction.background_color,
-                                                    backgroundRepeat: "no-repeat",
-                                                    backgroundPosition: "center",
-                                                    backgroundSize: "contain",
-                                                }}
-                                            />
-                                            <Typography
-                                                sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
-                                            >{`${lastLookupPlayer.username} #${lastLookupPlayer.gid}`}</Typography>
+                                        Previously Viewed:
+                                    </Typography>
+                                    <Link to={`/admin/lookup/${lastLookupPlayer.gid}`}>
+                                        <Stack
+                                            direction="row"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            p="1rem"
+                                            sx={{
+                                                borderRadius: "2px",
+                                                backgroundColor: `${faction.palette.primary}33`,
+                                            }}
+                                        >
+                                            <Stack direction="row">
+                                                <Box
+                                                    sx={{
+                                                        alignSelf: "flex-start",
+                                                        flexShrink: 0,
+                                                        width: "2rem",
+                                                        height: "2rem",
+                                                        background: `url(${faction.logo_url})`,
+                                                        backgroundColor: faction.palette.background,
+                                                        backgroundRepeat: "no-repeat",
+                                                        backgroundPosition: "center",
+                                                        backgroundSize: "contain",
+                                                    }}
+                                                />
+                                                <Typography
+                                                    sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
+                                                >{`${lastLookupPlayer.username} #${lastLookupPlayer.gid}`}</Typography>
+                                            </Stack>
                                         </Stack>
-                                    </Stack>
-                                </Link>
-                            </Stack>
-                        )
-                    })()}
-            </Box>
-        </ClipThing>
+                                    </Link>
+                                </Stack>
+                            )
+                        })()}
+                </Box>
+            </ClipThing>
+        </Box>
     )
 }
 
@@ -168,7 +182,7 @@ export const LookupSearchBox = () => {
                 }}
                 renderOption={(props, u) => (
                     <Stack component="li" direction="row" spacing=".6rem" alignItems="center" {...props}>
-                        <Player player={u} styledImageTextProps={{ textColor: "#FFFFFF" }} />
+                        <PlayerNameGid player={u} />
                     </Stack>
                 )}
                 getOptionLabel={(u) => `${u.username}#${u.gid}`}
@@ -191,7 +205,7 @@ export const LookupSearchBox = () => {
                             borderRadius: 1,
                             "& .MuiInputBase-root": {
                                 py: 0,
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                             },
                             ".Mui-disabled": {
                                 WebkitTextFillColor: "unset",

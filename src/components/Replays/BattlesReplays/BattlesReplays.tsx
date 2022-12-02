@@ -1,7 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, ThreeMechsJPG } from "../../../assets"
+import { useEffect, useMemo, useState } from "react"
+import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
@@ -11,11 +10,19 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Arena, BattleReplay } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { ArenaTypeSelect } from "./ArenaTypeSelect"
+import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { BattleReplayItem } from "./BattleReplayItem"
-import { SearchBattle } from "./SearchBattle"
+
+enum UrlQueryParams {
+    Sort = "sort",
+    Search = "search",
+    Page = "page",
+    PageSize = "pageSize",
+    SelectedGID = "selectedGID",
+}
 
 export interface GetReplaysRequest {
     sort?: {
@@ -44,7 +51,7 @@ export const BattlesReplays = () => {
     const theme = useTheme()
     const { arenaList } = useArena()
     const [query, updateQuery] = useUrlQuery()
-    const [selectedGID, setSelectedGID] = useState(parseString(query.get("selectedGID"), -1))
+    const [selectedGID, setSelectedGID] = useState(parseString(query.get(UrlQueryParams.SelectedGID), -1))
     const { send } = useGameServerCommands("/public/commander")
 
     // Items
@@ -54,20 +61,24 @@ export const BattlesReplays = () => {
 
     // Search, sort, filters
     const [selectedArenaType, setSelectedArenaType] = useState<Arena>()
-    const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
+    const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.DateAddedNewest)
 
     // Pagination
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: 15,
-        page: 1,
+        pageSize: parseString(query.get(UrlQueryParams.PageSize), 15),
+        page: parseString(query.get(UrlQueryParams.Page), 1),
     })
 
     useEffect(() => {
-        updateQuery({
+        updateQuery.current({
+            [UrlQueryParams.Sort]: sort,
+            [UrlQueryParams.Search]: search,
+            [UrlQueryParams.Page]: page.toString(),
+            [UrlQueryParams.PageSize]: pageSize.toString(),
             selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
         })
-    }, [selectedGID, updateQuery])
+    }, [page, pageSize, search, selectedGID, sort, updateQuery])
 
     useEffect(() => {
         setSelectedGID((prev) => {
@@ -81,65 +92,55 @@ export const BattlesReplays = () => {
         })
     }, [arenaList, setSelectedGID])
 
-    const getItems = useCallback(async () => {
-        try {
-            setIsLoading(true)
-
-            let sortDir = SortDir.Asc
-            if (sort === SortTypeLabel.DateAddedNewest) sortDir = SortDir.Desc
-
-            const resp = await send<GetReplaysResponse, GetReplaysRequest>(GameServerKeys.GetReplays, {
-                sort: { direction: sortDir },
-                search: searchValue,
-                page,
-                page_size: pageSize,
-                arena_id: selectedArenaType?.id || "",
-            })
-
-            if (!resp) return
-            setLoadError(undefined)
-            setBattleReplays(resp.battle_replays)
-            setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get replays.")
-            console.error(e)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [sort, send, searchValue, page, pageSize, selectedArenaType?.id, setTotalItems])
-
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        ;(async () => {
+            try {
+                setIsLoading(true)
 
-    const onChangeArenaType = useCallback(
-        (arena: Arena | undefined) => {
-            if (arena) setSelectedGID(arena.gid)
-            setSelectedArenaType(arena)
-        },
-        [setSelectedGID],
-    )
+                let sortDir = SortDir.Asc
+                if (sort === SortTypeLabel.DateAddedNewest) sortDir = SortDir.Desc
+
+                const resp = await send<GetReplaysResponse, GetReplaysRequest>(GameServerKeys.GetReplays, {
+                    sort: { direction: sortDir },
+                    search: search,
+                    page,
+                    page_size: pageSize,
+                    arena_id: selectedArenaType?.id || "",
+                })
+
+                if (!resp) return
+                setLoadError(undefined)
+                setBattleReplays(resp.battle_replays)
+                setTotalItems(resp.total)
+
+                updateQuery.current({
+                    [UrlQueryParams.Sort]: sort,
+                    [UrlQueryParams.Search]: search,
+                    [UrlQueryParams.Page]: page.toString(),
+                    [UrlQueryParams.PageSize]: pageSize.toString(),
+                })
+            } catch (e) {
+                setLoadError(typeof e === "string" ? e : "Failed to get replays.")
+                console.error(e)
+            } finally {
+                setIsLoading(false)
+            }
+        })()
+    }, [sort, send, search, page, pageSize, selectedArenaType?.id, setTotalItems, updateQuery])
 
     const content = useMemo(() => {
         if (loadError) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                        spacing="1.5rem"
+                    <Typography
+                        sx={{
+                            color: colors.red,
+                            fontFamily: fonts.nostromoBold,
+                            textAlign: "center",
+                        }}
                     >
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                                fontFamily: fonts.nostromoBold,
-                                textAlign: "center",
-                            }}
-                        >
-                            {loadError}
-                        </Typography>
-                    </Stack>
+                        {loadError}
+                    </Typography>
                 </Stack>
             )
         }
@@ -147,210 +148,147 @@ export const BattlesReplays = () => {
         if (!battleReplays || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
-                    </Stack>
+                    <CircularProgress />
                 </Stack>
             )
         }
 
         if (battleReplays && battleReplays.length > 0) {
             return (
-                <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Box
-                        sx={{
-                            width: "100%",
-                            py: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(26rem, 1fr))",
-                            gap: "1.3rem",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
-                        {battleReplays.map((battleReplay) => {
-                            return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} />
-                        })}
-                    </Box>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(26rem, 1fr))",
+                        gap: "1.3rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    {battleReplays.map((battleReplay) => {
+                        return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} />
+                    })}
                 </Box>
             )
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
-                    <Box
-                        sx={{
-                            width: "80%",
-                            height: "16rem",
-                            opacity: 0.7,
-                            filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "bottom center",
-                            backgroundSize: "contain",
-                        }}
-                    />
-                    <Typography
-                        sx={{
-                            px: "1.28rem",
-                            pt: "1.28rem",
-                            color: colors.grey,
-                            fontFamily: fonts.nostromoBold,
-                            textAlign: "center",
-                        }}
-                    >
-                        {"There are no replays found."}
-                    </Typography>
+            <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ height: "100%", p: "1rem" }}>
+                <Box
+                    sx={{
+                        width: "20rem",
+                        height: "20rem",
+                        opacity: 0.7,
+                        filter: "grayscale(100%)",
+                        background: `url(${EmptyWarMachinesPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom center",
+                        backgroundSize: "contain",
+                    }}
+                />
+                <Typography
+                    sx={{
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    No results...
+                </Typography>
 
-                    <FancyButton
-                        to={`/`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", mt: "2rem" },
-                        }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
-                    >
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                textAlign: "center",
-                                color: theme.factionTheme.secondary,
-                                fontFamily: fonts.nostromoBold,
-                            }}
-                        >
-                            GO TO BATTLE ARENA
-                        </Typography>
-                    </FancyButton>
-                </Stack>
+                <NiceButton route={{ to: `/` }} buttonColor={theme.factionTheme.primary}>
+                    GO TO BATTLE ARENA
+                </NiceButton>
             </Stack>
         )
-    }, [loadError, battleReplays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, battleReplays, isLoading, theme.factionTheme.primary])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
+        <Stack
+            alignItems="center"
+            spacing="3rem"
+            sx={{
+                p: "4rem 5rem",
+                mx: "auto",
+                position: "relative",
+                height: "100%",
+                maxWidth: "190rem",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.9}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ flex: 1 }}>
-                    <PageHeader
-                        title={
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                BATTLE REPLAYS
-                            </Typography>
-                        }
-                        description={<Typography sx={{ fontSize: "1.85rem" }}>Share epic moments and learn strategies behind the battles.</Typography>}
-                        imageUrl={ThreeMechsJPG}
-                    ></PageHeader>
+            <Typography variant="h2" sx={{ fontFamily: fonts.nostromoBlack, alignSelf: "flex-start" }}>
+                Replays
+            </Typography>
 
-                    <TotalAndPageSizeOptions
-                        countItems={battleReplays?.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        pageSizeOptions={[15, 25, 35]}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
-                    />
-
-                    <Stack
-                        spacing="2.6rem"
-                        direction="row"
-                        alignItems="center"
-                        sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
-                    >
-                        <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                SEARCH:
-                            </Typography>
-                            <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
-                        </Stack>
-
-                        <Box sx={{ flex: 1 }} />
-
-                        <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                BATTLE MODE:
-                            </Typography>
-                            <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} onChangeArenaType={onChangeArenaType} />
-                        </Stack>
-                    </Stack>
-
-                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
-                    </Stack>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
+            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                    {/* Search, sort, grid view, and other top buttons */}
+                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                        {/* Arena list */}
+                        {arenaList.length > 0 && (
+                            <NiceSelect
+                                label="Battle Mode:"
+                                options={arenaList.map((a) => ({
+                                    value: a.id,
+                                    label: a.name,
+                                }))}
+                                selected={selectedArenaType?.name || arenaList[0].name}
+                                onSelected={(value) => setSelectedArenaType(arenaList.find((a) => a.id === value))}
                                 sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
+                                    minWidth: "26rem",
                                 }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
                             />
-                        </Box>
-                    )}
+                        )}
+
+                        <Box flex={1} />
+
+                        {/* Show total */}
+                        <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                            <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                {totalItems || 0} ITEMS
+                            </Typography>
+                        </Stack>
+
+                        {/* Page layout options */}
+                        <NiceButtonGroup
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.text}
+                            options={[
+                                { label: "15", value: 15 },
+                                { label: "25", value: 25 },
+                                { label: "35", value: 35 },
+                            ]}
+                            selected={pageSize}
+                            onSelected={(value) => {
+                                changePageSize(parseString(value, 1))
+                                changePage(1)
+                            }}
+                        />
+
+                        {/* Search bar */}
+                        <NiceTextField
+                            primaryColor={theme.factionTheme.primary}
+                            value={searchInstant}
+                            onChange={(value) => setSearch(value)}
+                            placeholder="Search..."
+                            InputProps={{
+                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                            }}
+                        />
+
+                        {/* Sort */}
+                        <NiceSelect
+                            label="Sort:"
+                            options={sortOptions}
+                            selected={sort}
+                            onSelected={(value) => setSort(`${value}`)}
+                            sx={{ minWidth: "26rem" }}
+                        />
+                    </Stack>
+
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
+
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
             </Stack>
-        </ClipThing>
+        </Stack>
     )
 }

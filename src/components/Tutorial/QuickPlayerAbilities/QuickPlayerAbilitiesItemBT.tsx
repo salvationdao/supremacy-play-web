@@ -5,8 +5,9 @@ import { useGlobalNotifications, useTraining } from "../../../containers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbilityPrePurchase, PlayerAbilityStages, SaleAbility } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
+import { truncateTextLines } from "../../../helpers"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
@@ -82,7 +83,7 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                         saleAbility.ability.label !== "EMP"
                     }
                 >
-                    <TooltipHelper text={saleAbility.ability.description} placement="bottom">
+                    <NiceTooltip text={saleAbility.ability.description} placement="bottom">
                         <Box
                             sx={{
                                 position: "relative",
@@ -216,20 +217,15 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1.2,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                        fontWeight: "fontWeightBold",
+                                        ...truncateTextLines(2),
+                                        fontWeight: "bold",
                                     }}
                                 >
                                     {saleAbility.ability.label}
                                 </Typography>
                             </Stack>
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 </FancyButton>
             </Fade>
         </>

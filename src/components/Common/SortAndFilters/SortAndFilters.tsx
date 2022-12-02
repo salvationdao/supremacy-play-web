@@ -1,224 +1,83 @@
-import { Box, Collapse, Stack, TextField } from "@mui/material"
-import React, { ReactNode, useMemo, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { SvgSearch } from "../../../assets"
+import { Divider, Stack, SxProps, Typography } from "@mui/material"
+import React, { useCallback, useMemo } from "react"
+import { SvgClose2 } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { ChipFilter, ChipFilterSection } from "./ChipFilterSection"
-import { DropdownOptions, DropdownOptionsSection } from "./DropdownOptionsSection"
-import { RangeFilter, RangeFilterSection } from "./RangeFilterSection"
-import { Section } from "./Section"
-import { SliderRangeFilter, SliderRangeFilterSection } from "./SliderRangeFilterSection"
+import { fonts } from "../../../theme/theme"
+import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceButton } from "../Nice/NiceButton"
+import { ChipFilterProps, ChipFilterSection } from "./ChipFilterSection"
+import { RangeFilterProps, RangeFilterSection } from "./RangeFilterSection"
 
 interface SortAndFiltersProps {
-    initialSearch?: string
-    onSetSearch?: React.Dispatch<React.SetStateAction<string>>
-    changePage?: (page: number) => void
-    primaryColor?: string
-    children?: ReactNode
-    isExpanded?: boolean
-
-    // Sections
-    dropdownOptions?: DropdownOptions[]
-    chipFilters?: ChipFilter[]
-    rangeFilters?: RangeFilter[]
-    sliderRangeFilters?: SliderRangeFilter[]
+    open: boolean
+    sx?: SxProps
+    chipFilters?: ChipFilterProps[]
+    rangeFilters?: RangeFilterProps[]
 }
 
-const propsAreEqual = (prevProps: SortAndFiltersProps, nextProps: SortAndFiltersProps) => {
-    return (
-        prevProps.initialSearch === nextProps.initialSearch &&
-        prevProps.isExpanded === nextProps.isExpanded &&
-        prevProps.primaryColor === nextProps.primaryColor &&
-        prevProps.children === nextProps.children
-    )
-}
-
-export const SortAndFilters = React.memo(function SortAndFilters({
-    initialSearch,
-    onSetSearch,
-    dropdownOptions,
-    chipFilters,
-    rangeFilters,
-    sliderRangeFilters,
-    changePage,
-    primaryColor: pColor,
-    children,
-    isExpanded = true,
-}: SortAndFiltersProps) {
+export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFilters, rangeFilters, sx }: SortAndFiltersProps) {
     const theme = useTheme()
-    const [searchValue, setSearchValue] = useState(initialSearch || "")
 
-    const primaryColor = pColor || theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
+    const areFiltersApplied = useMemo(() => {
+        const chipApplied = chipFilters?.some((f) => f.selected?.length > 0)
+        const rangeApplied = rangeFilters?.some((f) => {
+            if (!f.values) return false
 
-    return useMemo(
-        () => (
-            <Collapse in={isExpanded} orientation="horizontal">
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".3rem",
-                    }}
-                    corners={{
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    }}
-                    opacity={0.7}
-                    backgroundColor={backgroundColor}
-                    sx={{ height: "100%", width: "38rem", mr: "1rem", opacity: isExpanded ? 1 : 0, transition: "all .2s" }}
-                >
-                    <Stack sx={{ height: "100%" }}>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-                                scrollbarWidth: "none",
-                                "::-webkit-scrollbar": {
-                                    width: "1rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: primaryColor,
-                                },
-                            }}
-                        >
-                            <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>
-                                {onSetSearch && changePage && (
-                                    <Section label="SEARCH" primaryColor={primaryColor} secondaryColor={secondaryColor} initialExpanded={true}>
-                                        <Stack direction="row" spacing=".5rem">
-                                            <ClipThing
-                                                clipSize="5px"
-                                                clipSlantSize="2px"
-                                                opacity={0.9}
-                                                border={{
-                                                    borderColor: primaryColor,
-                                                    borderThickness: "1px",
-                                                }}
-                                                backgroundColor={backgroundColor}
-                                                sx={{ height: "100%", flex: 1 }}
-                                            >
-                                                <Stack sx={{ height: "100%" }}>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        hiddenLabel
-                                                        fullWidth
-                                                        placeholder="Enter keywords..."
-                                                        sx={{
-                                                            backgroundColor: "unset",
-                                                            ".MuiOutlinedInput-input": {
-                                                                px: "1.5rem",
-                                                                py: ".5rem",
-                                                                height: "unset",
-                                                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                                                    WebkitAppearance: "none",
-                                                                },
-                                                                borderRadius: 0.5,
-                                                                border: `${primaryColor}50 2px solid`,
-                                                                ":hover, :focus, :active": {
-                                                                    backgroundColor: "#00000080",
-                                                                    border: `${primaryColor}99 2px solid`,
-                                                                },
-                                                            },
-                                                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                                                        }}
-                                                        value={searchValue}
-                                                        onChange={(e) => setSearchValue(e.target.value)}
-                                                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                                                            e.stopPropagation()
-                                                            switch (e.key) {
-                                                                case "Enter": {
-                                                                    e.preventDefault()
-                                                                    onSetSearch(searchValue)
-                                                                    changePage(1)
-                                                                    break
-                                                                }
-                                                            }
-                                                        }}
-                                                    />
-                                                </Stack>
-                                            </ClipThing>
+            let min = 0
+            let max = 0
+            f.numberFreq.forEach((num) => {
+                if (num < min) min = num
+                if (num > max) max = num
+            })
 
-                                            <Box sx={{ py: ".1rem" }}>
-                                                <FancyButton
-                                                    clipThingsProps={{
-                                                        clipSize: "5px",
-                                                        clipSlantSize: "2px",
-                                                        backgroundColor: primaryColor,
-                                                        opacity: 1,
-                                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1px" },
-                                                        sx: { position: "relative", width: "4.5rem", height: "100%" },
-                                                    }}
-                                                    sx={{ py: ".6rem", color: secondaryColor, minWidth: 0, height: "100%" }}
-                                                    onClick={() => {
-                                                        onSetSearch(searchValue)
-                                                        changePage(1)
-                                                    }}
-                                                >
-                                                    <SvgSearch size="1.4rem" fill={secondaryColor} sx={{ pt: ".1rem" }} />
-                                                </FancyButton>
-                                            </Box>
-                                        </Stack>
-                                    </Section>
-                                )}
+            return f.values[0] !== min || f.values[1] !== max
+        })
+        return chipApplied || rangeApplied
+    }, [chipFilters, rangeFilters])
 
-                                {!!dropdownOptions &&
-                                    dropdownOptions.length > 0 &&
-                                    dropdownOptions.map((d, i) => (
-                                        <DropdownOptionsSection
-                                            key={i}
-                                            dropdownOptions={d}
-                                            primaryColor={primaryColor}
-                                            secondaryColor={secondaryColor}
-                                            backgroundColor={backgroundColor}
-                                        />
-                                    ))}
+    const clearAllFilters = useCallback(() => {
+        chipFilters?.forEach((f) => f.setSelected([]))
+        rangeFilters?.forEach((f) => f.setValues(undefined))
+    }, [chipFilters, rangeFilters])
 
-                                {!!chipFilters &&
-                                    chipFilters.length > 0 &&
-                                    chipFilters.map((f, i) => (
-                                        <ChipFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />
-                                    ))}
+    return (
+        <NiceBoxThing
+            border={{ color: "#FFFFFF28", thickness: "very-lean" }}
+            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+            sx={{
+                visibility: open ? "visible" : "hidden",
+                width: open ? "38rem" : 0,
+                opacity: open ? 1 : 0,
+                mr: open ? "2.5rem" : 0,
+                overflowY: "hidden",
+                transition: "all .3s",
+                flexShrink: 0,
+                ...sx,
+            }}
+        >
+            <Stack divider={<Divider />} sx={{ overflow: "hidden", height: "100%" }}>
+                {/* Heading */}
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: "1.2rem 2rem", pr: "1rem" }}>
+                    <Typography fontFamily={fonts.nostromoBlack}>FILTERS</Typography>
 
-                                {!!rangeFilters &&
-                                    rangeFilters.length > 0 &&
-                                    rangeFilters.map((f, i) => (
-                                        <RangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />
-                                    ))}
+                    <NiceButton
+                        disabled={!areFiltersApplied}
+                        buttonColor={theme.factionTheme.primary}
+                        onClick={clearAllFilters}
+                        sx={{
+                            p: ".3rem 1rem",
+                        }}
+                    >
+                        <SvgClose2 inline /> Clear Filters
+                    </NiceButton>
+                </Stack>
 
-                                {!!sliderRangeFilters &&
-                                    sliderRangeFilters.length > 0 &&
-                                    sliderRangeFilters.map((f, i) => (
-                                        <SliderRangeFilterSection key={i} filter={f} primaryColor={primaryColor} secondaryColor={secondaryColor} />
-                                    ))}
-                            </Stack>
-                        </Box>
+                <Stack divider={<Divider />} sx={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+                    {!!chipFilters && chipFilters.length > 0 && chipFilters.map((f, i) => <ChipFilterSection key={i} {...f} />)}
 
-                        {children}
-                    </Stack>
-                </ClipThing>
-            </Collapse>
-        ),
-        [
-            backgroundColor,
-            changePage,
-            children,
-            chipFilters,
-            dropdownOptions,
-            isExpanded,
-            onSetSearch,
-            primaryColor,
-            rangeFilters,
-            searchValue,
-            secondaryColor,
-            sliderRangeFilters,
-        ],
+                    {!!rangeFilters && rangeFilters.length > 0 && rangeFilters.map((f, i) => <RangeFilterSection key={i} {...f} />)}
+                </Stack>
+            </Stack>
+        </NiceBoxThing>
     )
-},
-propsAreEqual)
+})

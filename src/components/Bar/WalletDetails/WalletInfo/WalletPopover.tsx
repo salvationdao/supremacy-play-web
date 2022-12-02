@@ -1,14 +1,15 @@
-import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useEffect } from "react"
-import { ClipThing, TransactionItem } from "../../.."
-import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
-import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
+import { TransactionItem } from "../../.."
+import { SvgExternalLink, SvgSupToken } from "../../../../assets"
+import { STAGING_ONLY, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { supFormatterNoFixed } from "../../../../helpers"
+import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { TimeElapsed } from "./TimeElapsed"
 
 export const WalletPopover = ({
@@ -16,7 +17,7 @@ export const WalletPopover = ({
     sups,
     transactions,
     supsEarned,
-    userID,
+    accountID,
     onClose,
     popoverRef,
     startTime,
@@ -26,7 +27,7 @@ export const WalletPopover = ({
     transactions: Transaction[]
     supsSpent: MutableRefObject<BigNumber>
     supsEarned: MutableRefObject<BigNumber>
-    userID: string
+    accountID: string
     onClose: () => void
     popoverRef: MutableRefObject<null>
     startTime: Date
@@ -45,98 +46,68 @@ export const WalletPopover = ({
     }, [localOpen, onClose])
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "center",
+                horizontal: "left",
             }}
             transformOrigin={{
                 vertical: "top",
-                horizontal: "center",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    mt: ".8rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
+                horizontal: "left",
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
-            >
-                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
-                    <Box>
-                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
+            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "30rem", maxHeight: "90vh", p: "1rem 1.6rem" }}>
+                <Box>
+                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack }}>CURRENT SESSION</Typography>
 
-                        <Stack spacing=".5rem">
-                            <Stack direction="row" alignItems="center">
-                                <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• TIME ELAPSED:</Typography>
-                                <Typography sx={{ lineHeight: 1, color: colors.neonBlue }}>
-                                    <TimeElapsed startTime={startTime} />
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" alignItems="center">
-                                <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• SUPS EARNED:</Typography>
-                                <SvgSupToken size="1.4rem" fill={colors.supsCredit} sx={{ pb: ".1rem" }} />
-                                <Typography
-                                    sx={{
-                                        lineHeight: 1,
-                                        color: colors.supsCredit,
-                                    }}
-                                >
-                                    {supFormatterNoFixed(supsEarned.current.toString(), 4)}
-                                </Typography>
-                            </Stack>
-                        </Stack>
-                    </Box>
-
-                    <Box>
-                        <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                            TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS
+                    <Stack spacing=".5rem">
+                        <Typography sx={{ lineHeight: 1 }}>
+                            • TIME ELAPSED:{" "}
+                            <span style={{ color: colors.neonBlue }}>
+                                <TimeElapsed startTime={startTime} />
+                            </span>
                         </Typography>
 
-                        <Stack direction="row" alignItems="center">
-                            <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ pb: ".1rem" }} />
-                            <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatterNoFixed(sups, 18) : "0.00"}</Typography>
+                        <Typography sx={{ lineHeight: 1 }}>
+                            • SUPS EARNED:{" "}
+                            <span style={{ color: colors.supsCredit }}>
+                                <SvgSupToken size="1.4rem" fill={colors.supsCredit} inline />
+                                {supFormatter(supsEarned.current.toString(), 4)}
+                            </span>
+                        </Typography>
+                    </Stack>
+                </Box>
+
+                <Stack spacing=".5rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>TOTAL {STAGING_ONLY ? "V" : ""}SUPS</Typography>
+
+                    <Typography sx={{ lineHeight: 1 }}>
+                        <SvgSupToken size="1.4rem" fill={STAGING_ONLY ? colors.red : colors.yellow} inline />
+                        {sups ? supFormatter(sups, 18) : "0.00"}
+                    </Typography>
+                </Stack>
+
+                {transactions.length > 0 && (
+                    <Box>
+                        <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
+
+                            <a href={`${PASSPORT_WEB}transactions`} target="_blank" rel="noreferrer">
+                                <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />
+                            </a>
+                        </Stack>
+
+                        <Stack spacing=".3rem">
+                            {transactions.slice(0, 5).map((t, i) => (
+                                <TransactionItem accountID={accountID} key={i} transaction={t} />
+                            ))}
                         </Stack>
                     </Box>
-
-                    {transactions.length > 0 && (
-                        <Box>
-                            <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ mb: ".2rem" }}>
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>TRANSACTIONS (24HRS)</Typography>
-
-                                <a href={`${PASSPORT_WEB}transactions`} target="_blank" rel="noreferrer">
-                                    <SvgExternalLink size="1.2rem" sx={{ opacity: 0.7, ":hover": { opacity: 1 } }} />
-                                </a>
-                            </Stack>
-
-                            <Stack spacing=".3rem">
-                                {transactions.slice(0, 5).map((t, i) => (
-                                    <TransactionItem userID={userID} key={i} transaction={t} />
-                                ))}
-                            </Stack>
-                        </Box>
-                    )}
-
-                    <IconButton size="small" onClick={() => toggleLocalOpen(false)} sx={{ position: "absolute", top: "-2rem", right: ".2rem" }}>
-                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </Stack>
-            </ClipThing>
-        </Popover>
+                )}
+            </Stack>
+        </NicePopover>
     )
 }

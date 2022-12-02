@@ -1,14 +1,15 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { SvgEdit } from "../../../assets"
-import { Faction, MechDetails, User } from "../../../types"
+import { truncateTextLines } from "../../../helpers"
+import { FactionWithPalette, MechDetails, User } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { AdminUpdateMechNameModal } from "./AdminUpdateMechNameModal"
 
 interface AdminUserAssetProps {
     user: User
-    faction: Faction
+    faction: FactionWithPalette
     userAsset: AdminGetUserAsset
 }
 
@@ -42,7 +43,7 @@ export const AdminUserAsset = ({ user, faction, userAsset }: AdminUserAssetProps
 
 interface MechEntryProps {
     user: User
-    faction: Faction
+    faction: FactionWithPalette
     mech: MechDetails
 }
 
@@ -77,12 +78,7 @@ const MechEntry = ({ user, faction, mech }: MechEntryProps) => {
                         sx={{
                             fontSize: "1.8rem",
                             color: "#FFFFFF",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
+                            ...truncateTextLines(1),
                         }}
                     >
                         {name}

@@ -7,7 +7,7 @@ export const ItemType = ({ itemType }: { itemType: string }) => {
             <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                 ITEM TYPE:
             </Typography>
-            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 {itemType}
             </Typography>
         </Box>

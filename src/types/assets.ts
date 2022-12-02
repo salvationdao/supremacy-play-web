@@ -1,14 +1,42 @@
 import { Battle, Faction, Map, User, Vector2i } from "."
+import { MechWeaponSlot } from "./battle_queue"
+import { FiatProduct } from "./fiat"
+
+export enum RarityEnum {
+    Mega = "MEGA",
+    Colossal = "COLOSSAL",
+    Rare = "RARE",
+    Legendary = "LEGENDARY",
+    EliteLegendary = "ELITE_LEGENDARY",
+    UltraRare = "ULTRA_RARE",
+    Exotic = "EXOTIC",
+    Guardian = "GUARDIAN",
+    Mythic = "MYTHIC",
+    DeusEx = "DEUS_EX",
+    Titan = "TITAN",
+}
 
 export enum MechStatusEnum {
     Idle = "IDLE",
-    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
-    BattleReady = "BATTLE_READY",
     Damaged = "DAMAGED",
+}
+
+export enum PowerCoreSize {
+    Small = "SMALL",
+    Medium = "MEDIUM",
+    Large = "LARGE",
+}
+
+export enum UtilityType {
+    Shield = "SHIELD",
+    AttackDrone = "ATTACK DRONE",
+    RepairDrone = "REPAIR DRONE",
+    AntiMissile = "ANTI MISSILE",
+    Accelerator = "ACCELERATOR",
 }
 
 export enum WeaponType {
@@ -16,6 +44,7 @@ export enum WeaponType {
     Sword = "Sword",
     Minigun = "Minigun",
     MissileLauncher = "Missile Launcher",
+    RocketPods = "Rocket Pods",
     PlasmaGun = "Plasma Gun",
     SniperRifle = "Sniper Rifle",
     GrenadeLauncher = "Grenade Launcher",
@@ -63,7 +92,7 @@ export interface RepairSlot {
 export interface MechStatus {
     status: MechStatusEnum
     can_deploy: boolean
-    queue_position: number | null
+    battle_lobby_is_locked: boolean
 }
 
 export interface Images {
@@ -82,10 +111,18 @@ export interface Collection {
     token_id: number
     item_type: AssetItemType
     item_id: string
-    tier: string
+    tier: RarityEnum
     owner_id: string
     on_chain_status: string
     locked_to_marketplace: boolean
+    xsyn_locked: boolean
+    market_locked: boolean
+}
+
+export interface PlayerAsset extends Collection {
+    id: string
+    label: string
+    name?: string
     item_sale_id?: string
 }
 
@@ -94,10 +131,23 @@ export interface MechBasic extends Collection, Images {
     label: string
     weapon_hardpoints: number
     utility_slots: number
+    boosted_stat: BoostStatEnum
     speed: number
     boosted_speed: number
     max_hitpoints: number
     boosted_max_hitpoints: number
+    shield: number
+    boosted_shield: number
+    shield_recharge_rate: number
+    boosted_shield_recharge_rate: number
+    shield_recharge_power_cost: number
+    shield_type: string
+    shield_type_label: string
+    shield_type_description: string
+    walk_speed_modifier: string
+    boosted_walk_speed_modifier: string
+    sprint_spread_modifier: string
+    boosted_sprint_spread_modifier: string
     is_default: boolean
     is_insured: boolean
     name: string
@@ -110,7 +160,6 @@ export interface MechBasic extends Collection, Images {
     faction_id: string
     model_id: string
     default_chassis_skin_id: string
-    market_locked: boolean
     chassis_skin_id: string
     intro_animation_id: string
     outro_animation_id: string
@@ -118,10 +167,52 @@ export interface MechBasic extends Collection, Images {
     queue_position: number | null
     updated_at: Date
     created_at: Date
+
+    damaged_blocks: number
+    equipped_weapon_count: number | null
+    equipped_utility_count: number | null
+    power_core_recharge_rate: number | null
+    power_core_capacity: number | null
 }
 
 export interface MechBasicWithQueueStatus extends MechBasic {
+    status: MechStatusEnum
+    can_deploy: boolean
+    lobby_locked_at?: Date
+    assigned_to_battle_id?: string
+    lobby_number?: number
+    is_battle_ready: boolean
+    in_market_place: boolean
+}
+
+export interface MechUtilitySlot {
+    mech_id: string
+    utility_id: string
+    slot_number: number
+    utility?: Utility
+}
+
+export interface NewMechStruct extends MechBasic {
+    owner: User
+    power_core?: PowerCore
+    weapon_slots?: MechWeaponSlot[]
+    utilities?: MechUtilitySlot[]
+    skin_image_url?: string
+    skin_label: string
+
+    stats: BattleMechStats
+
     in_queue: boolean
+    has_repair_offer: boolean
+    player_mech_repair_slot_id?: string
+    status: MechStatusEnum
+    can_deploy: boolean
+    lobby_locked_at?: Date
+    assigned_to_battle_id?: string
+    lobby_number?: number
+    is_battle_ready: boolean
+    in_market_place: boolean
+    is_staked: boolean
 }
 
 export interface MechDetails extends MechBasic {
@@ -134,9 +225,30 @@ export interface MechDetails extends MechBasic {
     intro_animation?: MechAnimation
     outro_animation?: MechAnimation
     power_core?: PowerCore
-    weapons: Weapon[]
-    utility: Utility[]
+    weapons?: Weapon[]
+    utility?: Utility[]
     battle_ready: boolean
+    blueprint_weapon_ids_with_skin_inheritance: string[]
+    compatible_blueprint_mech_skin_ids: string[]
+    inherit_all_weapon_skins: boolean
+    item_sale_id?: string
+    mech_type: MechTypeEnum
+}
+
+export enum MechTypeEnum {
+    Humanoid = "HUMANOID",
+    Platform = "PLATFORM",
+}
+
+export enum BoostStatEnum {
+    MechHealth = "MECH_HEALTH",
+    MechSpeed = "MECH_SPEED",
+    ShieldRegen = "SHIELD_REGEN",
+    MechMaxShield = "MECH_MAX_SHIELD",
+    MechSprintSpreadModifier = "MECH_SPRINT_SPREAD_MODIFIER",
+    MechWalkSpeedModifier = "MECH_WALK_SPEED_MODIFIER",
+    WeaponDamageFalloff = "WEAPON_DAMAGE_FALLOFF",
+    WeaponSpread = "WEAPON_SPREAD",
 }
 
 export interface BlueprintMech {
@@ -153,7 +265,7 @@ export interface BlueprintMech {
     default_chassis_skin_id: string
     collection: string
     repair_blocks: number
-    boost_stat: string
+    boost_stat: BoostStatEnum
     mech_type: string
     availability_id?: string
 }
@@ -177,10 +289,18 @@ export interface BlueprintMechSkin extends Collection, Images {
 
 export interface MechSkin extends Collection, Images {
     id: string
+    blueprint_id: string
+    genesis_token_id: number
+    limited_release_token_id: number
     label: string
-    created_at: Date
-    equipped_on?: string
     level: number
+    default_level: number
+    equipped_on?: string
+    locked_to_mech: boolean
+    tier: RarityEnum
+    created_at: Date
+    swatch_images?: Images
+    blueprint_weapon_skin_id?: string
 }
 
 export interface MechAnimation extends Collection, Images {
@@ -196,6 +316,7 @@ export interface MechAnimation extends Collection, Images {
 
 export interface PowerCore extends Collection, Images {
     id: string
+    blueprint_id: string
     label: string
     size: string
     capacity: number
@@ -207,31 +328,46 @@ export interface PowerCore extends Collection, Images {
     created_at: Date
 }
 
+export interface PowerCoreMaxStats {
+    capacity: number
+    max_draw_rate: number
+    recharge_rate: number
+    armour: number
+    max_hitpoints: number
+}
+
 export interface Weapon extends Collection, Images {
     id: string
     brand_id?: string
     label: string
     slug: string
-    damage: number
+    damage: string
     blueprint_id: string
     default_damage_type: string
     genesis_token_id?: number
     equipped_on?: string
-    weapon_type: string
-    damage_falloff?: number
-    damage_falloff_rate?: number
-    spread?: number
-    rate_of_fire?: number
-    radius?: number
-    radius_damage_falloff?: number
-    projectile_speed?: number
-    energy_cost?: number
-    max_ammo?: number
+    weapon_type: WeaponType
+    damage_falloff?: string
+    boosted_damage_falloff?: string
+    damage_falloff_rate?: string
+    spread?: string
+    boosted_spread?: string
+    rate_of_fire?: string
+    radius?: string
+    radius_damage_falloff?: string
+    projectile_speed?: string
+    energy_cost?: string
+    max_ammo?: string
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date
     market_locked: boolean
     item_sale_id?: string
+    slot_number?: number
+    inherit_skin: boolean
+    locked_to_mech: boolean
+
+    deleted_at?: Date // used for sold item
 }
 
 export interface WeaponSkin extends Collection, Images {
@@ -241,9 +377,11 @@ export interface WeaponSkin extends Collection, Images {
     label: string
     weapon_type: string
     equipped_on?: string
-    tier: string
+    tier: RarityEnum
     created_at: string
     weapon_model_id: Date
+    level?: number
+    swatch_images?: Images
 }
 
 export interface WeaponMaxStats {
@@ -268,21 +406,14 @@ export interface Utility extends Collection, Images {
     blueprint_id: string
     genesis_token_id?: number
     equipped_on?: string
-    type: string
+    type: UtilityType
+    locked_to_mech: boolean
+    slot_number?: number
 
-    shield?: UtilityShield
     attack_drone?: UtilityAttackDrone
     repair_drone?: UtilityRepairDrone
     accelerator?: UtilityAccelerator
     anti_missile?: UtilityAntiMissile
-}
-
-export interface UtilityShield {
-    utility_id: string
-    hitpoints: number
-    recharge_rate: number
-    boosted_recharge_rate: number
-    recharge_energy_cost: number
 }
 
 export interface UtilityAttackDrone {
@@ -381,7 +512,7 @@ export interface WarMachineState {
     externalUrl: string
     name: string
     image: string
-    tier: string
+    tier: RarityEnum
     model: string
     skin: string
     shieldRechargeRate: number
@@ -419,6 +550,8 @@ export enum MysteryCrateType {
 
 export interface StorefrontMysteryCrate extends Images {
     id: string
+    fiat_product_id: string
+    fiat_product: FiatProduct
     mystery_crate_type: MysteryCrateType
     price: string
     amount: number
@@ -441,6 +574,7 @@ export interface MysteryCrate extends Collection, Images {
     deleted_at?: string
     updated_at: string
     created_at: string
+    item_sale_id?: string
 }
 
 export interface Keycard {
@@ -491,6 +625,7 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+    rank: number
 }
 
 export interface StorefrontPackage {
@@ -502,26 +637,9 @@ export interface StorefrontPackage {
     price_cents: number
 }
 
-export interface Submodel {
-    images: Images
-    collection_slug: string
-    hash: string
-    id: string
-    label: string
-    owner_id: string
-    tier: string
-    token_id: number
-    locked_to_marketplace: boolean
-    market_locked: boolean
-    xsyn_locked: boolean
-    updated_at: Date
-    created_at: Date
-    level?: number
-}
-
 export enum SubmodelStatus {
-    Equipped = "EQUIPPED",
-    Unequipped = "UNEQUIPPED",
+    Equipped = "equipped",
+    Unequipped = "unequipped",
 }
 
 export interface BlueprintWeapon {

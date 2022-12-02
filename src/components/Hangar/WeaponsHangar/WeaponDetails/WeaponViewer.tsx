@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { Weapon } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewer"
+import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewer/MechViewer"
 
 export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
@@ -45,7 +45,7 @@ export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                     position: "absolute",
                     zIndex: 3,
                     aspectRatio: "1.3",
-                    height: "70%",
+                    height: "100%",
                     left: "50%",
                     top: "50%",
                     transform: "translate(-50%, -50%)",

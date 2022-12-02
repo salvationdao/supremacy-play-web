@@ -1,20 +1,20 @@
-import { Box, Skeleton, Stack, Typography } from "@mui/material"
-import { useStripe } from "@stripe/react-stripe-js"
-import React from "react"
-import { useMutation } from "react-fetching-library"
-import { SafePNG } from "../../../../assets"
+import { Box, Skeleton, Stack, TextField, Typography } from "@mui/material"
+import React, { useCallback, useMemo, useState } from "react"
+import { SafePNG, SvgArrow } from "../../../../assets"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { CreateCheckoutSession } from "../../../../fetching"
 import { generatePriceText } from "../../../../helpers"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
-import { StorefrontPackage } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FiatProduct } from "../../../../types/fiat"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 
 interface PackageStoreItemProps {
     enlargedView?: boolean
-    item: StorefrontPackage
+    item: FiatProduct
 }
 
 const propsAreEqual = (prevProps: PackageStoreItemProps, nextProps: PackageStoreItemProps) => {
@@ -23,36 +23,49 @@ const propsAreEqual = (prevProps: PackageStoreItemProps, nextProps: PackageStore
 
 export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedView, item }: PackageStoreItemProps) {
     const theme = useTheme()
-    const stripe = useStripe()
-    const { loading, mutate } = useMutation(CreateCheckoutSession)
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [quantity, setQuantity] = useState(1)
 
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
-    const buyNowClickHandler = async () => {
-        if (!stripe) return
+    const addToCart = useCallback(async () => {
+        const errMsg = "Failed to add item to the shopping cart."
+        const quantity = 1
+        try {
+            setIsLoading(true)
+            const resp = await send<boolean>(GameServerKeys.FiatShoppingCartItemAdd, {
+                product_id: item.id,
+                quantity,
+            })
 
-        const host = window.location.protocol + "//" + window.location.host
+            if (!resp) {
+                newSnackbarMessage(errMsg, "error")
+                return
+            }
 
-        const { payload: sessionID, error } = await mutate({
-            package_id: item.id,
-            success_url: host + "/storefront/packages",
-            cancel_url: host + "/storefront/packages",
-        })
-
-        if (error || !sessionID) {
-            return
+            newSnackbarMessage(`Successfully added ${quantity} Starter Package crate to shopping cart.`, "success")
+        } catch (err) {
+            newSnackbarMessage(typeof err === "string" ? err : errMsg, "error")
+            console.error(err)
+        } finally {
+            setIsLoading(false)
         }
+    }, [send, newSnackbarMessage, item.id])
 
-        const resp = await stripe.redirectToCheckout({
-            sessionId: sessionID,
-        })
-
-        if (resp.error) {
-            // TODO: Handle errors :/
-            return
+    const fiatPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of item.pricing) {
+            if (p.currency_code === "USD") {
+                pricing = generatePriceText("$USD", p.amount)
+                break
+            }
         }
-    }
+        return pricing
+    }, [item])
 
     return (
         <>
@@ -95,9 +108,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                                 }}
                             >
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
-                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
-                                        {generatePriceText(item.price_dollars, item.price_cents)}
-                                    </Typography>
+                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>{fiatPrice}</Typography>
                                 </Stack>
                             </Stack>
                         </Box>
@@ -127,7 +138,76 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                                     pt: "1.8rem",
                                 }}
                             >
+                                <ClipThing
+                                    clipSize="5px"
+                                    clipSlantSize="2px"
+                                    border={{
+                                        borderColor: primaryColor,
+                                        borderThickness: "1.5px",
+                                    }}
+                                    opacity={0.9}
+                                    backgroundColor={backgroundColor}
+                                    sx={{ height: "100%", width: "15rem" }}
+                                >
+                                    <Stack direction="row" justifyContent="space-between">
+                                        <TextField
+                                            variant="outlined"
+                                            hiddenLabel
+                                            onWheel={(event) => {
+                                                event.currentTarget.getElementsByTagName("input")[0]?.blur()
+                                            }}
+                                            sx={{
+                                                backgroundColor: "#00000090",
+                                                ".MuiOutlinedInput-input": {
+                                                    px: "1.5rem",
+                                                    py: "1.5rem",
+                                                    fontSize: "2rem",
+                                                    height: "unset",
+                                                    "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
+                                                        WebkitAppearance: "none",
+                                                    },
+                                                    appearance: "textfield",
+                                                },
+                                                ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                                            }}
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                const newAmount = parseInt(e.target.value)
+                                                setQuantity(newAmount)
+                                            }}
+                                        />
+                                        <Stack
+                                            sx={{
+                                                height: "5rem",
+                                                p: "1em",
+                                                "& svg:active": {
+                                                    transform: "scale(1.5)",
+                                                    transition: "all .2s",
+                                                },
+                                            }}
+                                        >
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ cursor: "pointer", zIndex: 1 }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    setQuantity(quantity + 1)
+                                                }}
+                                            />
+                                            <SvgArrow
+                                                size="1.5rem"
+                                                sx={{ transform: "rotate(180deg)", cursor: "pointer" }}
+                                                fill={primaryColor}
+                                                onClick={() => {
+                                                    if (quantity > 1) setQuantity(quantity - 1)
+                                                }}
+                                            />
+                                        </Stack>
+                                    </Stack>
+                                </ClipThing>
                                 <FancyButton
+                                    loading={isLoading}
                                     clipThingsProps={{
                                         clipSize: "5px",
                                         backgroundColor: primaryColor,
@@ -135,15 +215,14 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                                         border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
                                         sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
                                     }}
-                                    loading={!stripe || loading}
-                                    onClick={buyNowClickHandler}
+                                    onClick={addToCart}
                                     sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
                                 >
                                     <Typography
                                         variant={enlargedView ? "body1" : "caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                     >
-                                        Buy Now
+                                        Add to Cart
                                     </Typography>
                                 </FancyButton>
                             </Stack>

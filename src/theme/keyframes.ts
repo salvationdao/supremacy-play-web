@@ -152,3 +152,34 @@ export const dropShadowEffect = keyframes`
 				filter: drop-shadow(0 0 0 ${colors.neonBlue});
 	}
 `
+
+export const sheenMovement = (finalLeft: string, finalOpacity: number, finishAtPercent?: number) => {
+    if (finishAtPercent) {
+        return keyframes({
+            "0%": {
+                opacity: finalOpacity,
+            },
+            [`${finishAtPercent}%`]: {
+                top: "-30%",
+                left: finalLeft,
+                opacity: finalOpacity,
+            },
+            "100%": {
+                top: "-30%",
+                left: finalLeft,
+                opacity: finalOpacity,
+            },
+        })
+    }
+
+    return keyframes({
+        "0%": {
+            opacity: finalOpacity,
+        },
+        "100%": {
+            top: "-30%",
+            left: finalLeft,
+            opacity: finalOpacity,
+        },
+    })
+}

@@ -21,16 +21,6 @@ export const WalletDetails = () => {
                     height: "100%",
                     overflowX: "auto",
                     overflowY: "hidden",
-
-                    "::-webkit-scrollbar": {
-                        height: ".6rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: "#FFFFFF50",
-                    },
                 }}
             >
                 <Stack direction="row" alignItems="center">

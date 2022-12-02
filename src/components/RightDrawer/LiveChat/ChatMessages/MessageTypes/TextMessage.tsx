@@ -2,7 +2,7 @@ import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { UserBanForm } from "../../../.."
-import { SvgInfoCircular, SvgReportFlag, SvgSkull2 } from "../../../../../assets"
+import { SvgInfoCircular, SvgReportFlag, SvgSkull } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
 import { ClickedOnUser, useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
 import { checkIfIsEmoji, dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
@@ -11,7 +11,7 @@ import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessage, ChatMessageType, RoleType, TextMessageData, User } from "../../../../../types"
-import { TooltipHelper } from "../../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../../Common/Nice/NiceTooltip"
 import { Reactions } from "../../AdditionalOptions/Reactions"
 import { ReportModal } from "../../AdditionalOptions/ReportModal"
 import { UserDetailsPopover } from "./UserDetailsPopover"
@@ -79,14 +79,15 @@ export const TextMessage = React.memo(function TextMessage({
         factionColor,
         factionSecondaryColor,
         factionLogoUrl,
+        factionLabel,
     } = useMemo(() => {
         const { from_user, user_rank, message_color, avatar_id, message: content, from_user_stat, metadata } = data
         const isEmoji: boolean = checkIfIsEmoji(content)
         const isTagged = metadata && user.gid in metadata.tagged_users_read
 
         const fromUserFaction = from_user.faction_id ? getFaction(from_user.faction_id) : undefined
-        const factionColor = fromUserFaction ? fromUserFaction.primary_color : message_color
-        const factionSecondaryColor = fromUserFaction ? fromUserFaction.secondary_color : "#FFFFFF"
+        const factionColor = fromUserFaction ? fromUserFaction.palette.primary : message_color
+        const factionSecondaryColor = fromUserFaction ? fromUserFaction.palette.text : "#FFFFFF"
         const factionLogoUrl = fromUserFaction ? fromUserFaction.logo_url : ""
 
         let abilityKillColor = ""
@@ -111,6 +112,7 @@ export const TextMessage = React.memo(function TextMessage({
             factionColor,
             factionSecondaryColor,
             factionLogoUrl,
+            factionLabel: fromUserFaction?.label,
         }
     }, [data, getFaction, user.gid])
 
@@ -119,8 +121,9 @@ export const TextMessage = React.memo(function TextMessage({
     const fontSizes = useMemo(
         () => ({
             small: fontSize ? `${1 * fontSize}rem` : "0.9rem",
-            normal: `${(fontSize || 1.1) * 1.35}rem`,
-            emoji: `${(fontSize || 1.1) * 3}rem`,
+            normal: `${(fontSize || 1.3) * 1.5}rem`,
+            large: `${(fontSize || 1.6) * 2.1}rem`,
+            emoji: `${(fontSize || 1.3) * 3}rem`,
         }),
         [fontSize],
     )
@@ -294,52 +297,53 @@ export const TextMessage = React.memo(function TextMessage({
 
                     {(!isPreviousMessager || (previousMessage && message.sent_at > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
                         <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
-                            <Stack ref={popoverRef} direction="row" spacing=".3rem">
-                                <Stack direction="row" spacing=".4rem" alignItems="flex-start">
+                            <Stack ref={popoverRef} direction="row" spacing=".5rem" alignItems="center">
+                                <Stack direction="row" spacing=".4rem" alignItems="center">
                                     {avatar_id && (
                                         <Box
                                             sx={{
-                                                mt: "-0.1rem !important",
-                                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                                width: fontSizes.large,
+                                                height: fontSizes.large,
                                                 flexShrink: 0,
                                                 backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "contain",
                                                 backgroundColor: factionColor,
-                                                borderRadius: 0.8,
+                                                borderRadius: "50%",
                                                 border: `${factionColor} 1px solid`,
                                             }}
                                         />
                                     )}
+
                                     {factionLogoUrl && (
-                                        <Box
-                                            sx={{
-                                                mt: "-0.1rem !important",
-                                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                                flexShrink: 0,
-                                                backgroundImage: `url(${factionLogoUrl})`,
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "contain",
-                                                backgroundColor: factionColor,
-                                                borderRadius: 0.8,
-                                                border: `${factionColor} 1px solid`,
-                                            }}
-                                        />
+                                        <NiceTooltip placement="top-start" text={factionLabel}>
+                                            <Box
+                                                sx={{
+                                                    width: fontSizes.large,
+                                                    height: fontSizes.large,
+                                                    flexShrink: 0,
+                                                    backgroundImage: `url(${factionLogoUrl})`,
+                                                    backgroundRepeat: "no-repeat",
+                                                    backgroundPosition: "center",
+                                                    backgroundSize: "contain",
+                                                }}
+                                            />
+                                        </NiceTooltip>
                                     )}
+
                                     {user_rank && rankDeets && (
-                                        <TooltipHelper
-                                            placement="top"
+                                        <NiceTooltip
+                                            placement="top-start"
                                             renderNode={
                                                 <Typography
                                                     variant="body1"
                                                     sx={{
+                                                        p: ".5rem 1.2rem",
                                                         color: "#FFFFFF",
-                                                        fontFamily: fonts.shareTech,
+                                                        fontFamily: fonts.rajdhaniMedium,
                                                         textAlign: "start",
+                                                        maxWidth: "25rem",
                                                     }}
                                                 >
                                                     <strong>RANK: </strong>
@@ -350,49 +354,35 @@ export const TextMessage = React.memo(function TextMessage({
                                             }
                                         >
                                             <Box>{rankDeets.icon}</Box>
-                                        </TooltipHelper>
+                                        </NiceTooltip>
                                     )}
                                 </Stack>
 
-                                <Box>
-                                    <UsernameJSX
-                                        data={data}
-                                        fontSize={fontSizes.normal}
-                                        user={from_user}
-                                        toggleIsPopoverOpen={toggleIsPopoverOpen}
-                                        setClickedOnUser={setClickedOnUser}
-                                        tabFactionID={tabFactionID}
-                                    />
+                                <UsernameJSX
+                                    data={data}
+                                    fontSize={`${fontSizes.normal}rem`}
+                                    user={from_user}
+                                    toggleIsPopoverOpen={toggleIsPopoverOpen}
+                                    setClickedOnUser={setClickedOnUser}
+                                    tabFactionID={tabFactionID}
+                                />
 
-                                    {from_user_stat && (
-                                        <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
-                                            <Typography
-                                                sx={{
-                                                    display: "inline-block",
-                                                    lineHeight: 1,
-                                                    fontFamily: fonts.nostromoBold,
-                                                    fontSize: fontSizes.small,
-                                                    color: abilityKillColor,
-                                                }}
-                                            >
-                                                [
-                                            </Typography>
-                                            <SvgSkull2 size={fontSizes.small} fill={abilityKillColor} sx={{ display: "inline-block" }} />
-                                            <Typography
-                                                sx={{
-                                                    display: "inline-block",
-                                                    ml: ".1rem",
-                                                    lineHeight: 1,
-                                                    fontFamily: fonts.nostromoBold,
-                                                    fontSize: fontSizes.small,
-                                                    color: abilityKillColor,
-                                                }}
-                                            >
-                                                {from_user_stat.ability_kill_count}]
-                                            </Typography>
-                                        </Box>
-                                    )}
-                                </Box>
+                                {from_user_stat && (
+                                    <NiceTooltip placement="top-start" text={`${from_user_stat.ability_kill_count} ability kills`}>
+                                        <Typography
+                                            sx={{
+                                                flexShrink: 0,
+                                                lineHeight: 1,
+                                                fontSize: fontSizes.normal,
+                                                color: abilityKillColor,
+                                                cursor: "default",
+                                            }}
+                                        >
+                                            [<SvgSkull size={fontSizes.normal} fill={abilityKillColor} inline />
+                                            {from_user_stat.ability_kill_count}]
+                                        </Typography>
+                                    </NiceTooltip>
+                                )}
                             </Stack>
 
                             <Typography
@@ -442,7 +432,7 @@ export const TextMessage = React.memo(function TextMessage({
                                 )}
                                 <Box
                                     sx={{
-                                        fontFamily: fonts.shareTech,
+                                        fontFamily: fonts.rajdhaniMedium,
                                         lineHeight: 1.2,
                                         color: "#FFFFFF",
                                         fontSize: isEmoji ? fontSizes.emoji : fontSizes.normal,
@@ -498,12 +488,13 @@ export const TextMessage = React.memo(function TextMessage({
             chatMessage,
             data,
             factionColor,
+            factionLabel,
             factionLogoUrl,
             factionSecondaryColor,
             fontSize,
             fontSizes.emoji,
+            fontSizes.large,
             fontSizes.normal,
-            fontSizes.small,
             from_user,
             from_user_stat,
             isAlreadyReported,
@@ -519,14 +510,14 @@ export const TextMessage = React.memo(function TextMessage({
             previousMessage,
             rankDeets,
             reportModalOpen,
+            setClickedOnUser,
             setReportModalOpen,
+            tabFactionID,
             toggleBanModalOpen,
             toggleIsPopoverOpen,
             user,
             userID,
             user_rank,
-            setClickedOnUser,
-            tabFactionID,
         ],
     )
 },
@@ -572,10 +563,9 @@ export const UsernameJSX = React.memo(function UsernameJSX({ data, fontSize, tog
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
                 p: toggleIsPopoverOpen ? "unset" : ".08rem .5rem",
-                color: toggleIsPopoverOpen ? message_color : faction.secondary_color,
-                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
+                color: toggleIsPopoverOpen ? message_color : faction.palette.text,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.palette.primary,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
-                fontWeight: toggleIsPopoverOpen ? 700 : "unset",
                 fontSize,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen

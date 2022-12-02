@@ -16,6 +16,7 @@
   REACT_APP_TELEGRAM_BOT_URL="https://t.me/SupremacyNotificationsBot"
   REACT_APP_ENVIRONMENT="production"
   REACT_APP_CAPTCHA_SITE_KEY="dc2798ab-c560-4cfd-b78b-3c5901e1a535"
+  REACT_APP_STRIPE_PUBLISHABLE_KEY="pk_live_51K4KcfCHhHY2zbVVUOyt8fEnXQcbpeNSvjzoIHc9h2WlZNfWmzCLljOhJB9Le78iS2aLRfoNSuKouF8mPpwSyw3b00rrcCH6SJ"
 [context.staging.environment]
   CI="false"
   REACT_APP_TOKEN_SALE_PAGE="https://passport.xsyn.io/external/buy"
@@ -34,3 +35,4 @@
   REACT_APP_TELEGRAM_BOT_URL= "https://t.me/SupremacyNotifyBot"
   REACT_APP_ENVIRONMENT="staging"
   REACT_APP_CAPTCHA_SITE_KEY="76234527-a022-4392-a254-9f9328dd63bf"
+  REACT_APP_STRIPE_PUBLISHABLE_KEY="pk_test_51K4KcfCHhHY2zbVVAun2XBRv1X54CmeCm6dXlQlc42yhvwG4hHRCtafU0gFI53i2mfPVZYQPeUd1xdfyT8mD6XBF004SqFkRhL"

@@ -9,10 +9,10 @@ import { useGameServerCommandsUser, useGameServerSubscription } from "../../../h
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SortDir } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
-import { FancyButton } from "../../Common/FancyButton"
-import { PageHeader } from "../../Common/PageHeader"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 
 interface CustomAvatarProps {
     playerID: string
@@ -171,16 +171,6 @@ export const CustomAvatar = ({ updateAvatar, playerID, open, setOpen, primaryCol
                                             overflowY: "auto",
                                             overflowX: "hidden",
                                             direction: "ltr",
-
-                                            "::-webkit-scrollbar": {
-                                                width: "1rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                            },
                                         }}
                                     >
                                         {/* Preview */}
@@ -424,7 +414,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: "black" }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -543,16 +533,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: primaryColor,
-                                    },
                                 }}
                             >
                                 {content}
@@ -568,17 +548,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                                 backgroundColor: "#00000070",
                             }}
                         >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
+                            <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                         </Box>
                     )}
                 </Stack>
@@ -587,7 +557,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
     )
 }
 
-interface CustomAvatar {
+export interface CustomAvatar {
     face: Layer
     body: Layer
     hair?: Layer

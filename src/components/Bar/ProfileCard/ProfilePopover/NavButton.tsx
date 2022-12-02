@@ -1,43 +1,20 @@
-import { Stack, Typography } from "@mui/material"
-import { FancyButton } from "../../.."
+import { Typography } from "@mui/material"
 import { fonts } from "../../../../theme/theme"
+import { LinkProps, NiceButton } from "../../../Common/Nice/NiceButton"
 
 interface NavButtonProps {
-    to?: string
-    href?: string
+    linkProps?: LinkProps
     startIcon?: React.ReactNode
     text: string
-    onClick?: React.MouseEventHandler<HTMLButtonElement>
-    hoverBackgroundColor?: string
+    onClick?: () => void
 }
 
-export const NavButton: React.FC<NavButtonProps> = ({ to, href, startIcon, text, onClick, hoverBackgroundColor }) => {
+export const NavButton: React.FC<NavButtonProps> = ({ linkProps, startIcon, text, onClick }) => {
     return (
-        <FancyButton
-            tabIndex={0}
-            clipThingsProps={{
-                clipSize: "9px",
-                opacity: 1,
-                sx: { position: "relative" },
-            }}
-            sx={{ px: "1.6rem", py: ".4rem", color: hoverBackgroundColor }}
-            to={to}
-            href={href || ""}
-            target={href ? "_blank" : undefined}
-            onClick={onClick}
-        >
-            <Stack spacing="1rem" direction="row" alignItems="center">
-                {startIcon}
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: "#FFFFFF",
-                        fontFamily: fonts.nostromoBlack,
-                    }}
-                >
-                    {text}
-                </Typography>
-            </Stack>
-        </FancyButton>
+        <NiceButton tabIndex={0} onClick={() => onClick && onClick()} sx={{ px: "1.6rem", py: ".8rem", justifyContent: "flex-start" }} {...linkProps}>
+            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                {startIcon} {text}
+            </Typography>
+        </NiceButton>
     )
 }

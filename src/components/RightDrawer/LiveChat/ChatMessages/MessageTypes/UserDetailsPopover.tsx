@@ -1,15 +1,16 @@
-import { Box, InputAdornment, MenuItem, Popover, Select, Stack, TextField, Typography, useTheme } from "@mui/material"
+import { Box, InputAdornment, MenuItem, Select, Stack, TextField, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { ClipThing, FancyButton } from "../../../.."
 import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { FeatureName, User, UserStat } from "../../../../../types"
-import { ConfirmModal } from "../../../../Common/ConfirmModal"
-import { Player } from "../../../../Common/Player"
+import { ConfirmModal } from "../../../../Common/Deprecated/ConfirmModal"
+import { NiceButton } from "../../../../Common/Nice/NiceButton"
+import { NicePopover } from "../../../../Common/Nice/NicePopover"
+import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 enum DurationOptions {
     TwentyFourHours = "24 Hours",
@@ -27,7 +28,6 @@ const DURATION_OPTIONS = {
 
 export const UserDetailsPopover = ({
     factionColor,
-    factionSecondaryColor,
     userStat,
     popoverRef,
     open,
@@ -97,7 +97,7 @@ export const UserDetailsPopover = ({
 
     return (
         <>
-            <Popover
+            <NicePopover
                 open={localOpen}
                 anchorEl={popoverRef.current}
                 onClose={() => toggleLocalOpen(false)}
@@ -112,152 +112,87 @@ export const UserDetailsPopover = ({
                 sx={{
                     mt: "-.3rem",
                     ml: "-1rem",
-                    zIndex: siteZIndex.Popover,
-                    ".MuiPaper-root": {
-                        background: "none",
-                    },
                 }}
             >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: factionColor || colors.neonBlue,
-                        borderThickness: ".2rem",
-                    }}
-                    corners={{
-                        topRight: true,
-                        bottomLeft: true,
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={colors.darkNavy}
-                >
-                    <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
-                        <Box sx={{ mt: ".3rem", mb: ".7rem" }}>
-                            <Player player={fromUser} />
-                        </Box>
+                <Stack spacing=".8rem" sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
+                    <Box sx={{}}>
+                        <PlayerNameGid player={fromUser} />
+                    </Box>
 
-                        <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
-                            <Stack direction="row" spacing=".5rem">
-                                <SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />
-                                <Typography variant="body2">
-                                    <strong>ABILITIES:</strong> {userStat.total_ability_triggered}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" spacing=".5rem">
-                                <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
-                                <Typography variant="body2">
-                                    <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" spacing=".5rem">
-                                <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
-                                <Typography variant="body2">
-                                    <strong>ABILITY KILLS:</strong> {userStat.ability_kill_count}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" spacing=".5rem">
-                                <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
-                                <Typography variant="body2">
-                                    <strong>ABILITY KILLS (7 DAYS):</strong> {userStat.last_seven_days_kills}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" spacing=".5rem">
-                                <SvgView size="1.1rem" />
-                                <Typography variant="body2">
-                                    <strong>SPECTATED:</strong> {userStat.view_battle_count}
-                                </Typography>
-                            </Stack>
+                    <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>
+                        <Stack direction="row" spacing=".5rem">
+                            <SvgAbility size="1.1rem" sx={{ pb: ".4rem" }} />
+                            <Typography variant="body2">
+                                <strong>ABILITIES:</strong> {userStat.total_ability_triggered}
+                            </Typography>
                         </Stack>
 
-                        {userHasFeature(FeatureName.profileAvatar) && (
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    clipSlantSize: "0px",
-                                    backgroundColor: factionColor,
-                                    opacity: 1,
-                                    border: { borderColor: factionColor, borderThickness: "2px" },
-                                    sx: { position: "relative", mt: ".7rem" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
-                                to={`/profile/${fromUser.gid}`}
-                                onClick={() => {
-                                    toggleLocalOpen(false)
-                                }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: factionSecondaryColor,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    VIEW PROFILE
-                                </Typography>
-                            </FancyButton>
-                        )}
+                        <Stack direction="row" spacing=".5rem">
+                            <SvgSkull2 size="1.1rem" sx={{ pb: ".4rem" }} />
+                            <Typography variant="body2">
+                                <strong>MECH KILLS:</strong> {userStat.mech_kill_count}
+                            </Typography>
+                        </Stack>
 
-                        {fromUser.faction_id === user.faction_id && (
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    clipSlantSize: "0px",
-                                    backgroundColor: factionColor,
-                                    opacity: 1,
-                                    border: { borderColor: factionColor, borderThickness: "2px" },
-                                    sx: { position: "relative", mt: ".7rem" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
-                                onClick={() => {
-                                    toggleBanModalOpen()
-                                    toggleLocalOpen(false)
-                                }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: factionSecondaryColor,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    PUNISH
-                                </Typography>
-                            </FancyButton>
-                        )}
+                        <Stack direction="row" spacing=".5rem">
+                            <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
+                            <Typography variant="body2">
+                                <strong>ABILITY KILLS:</strong> {userStat.ability_kill_count}
+                            </Typography>
+                        </Stack>
 
-                        {userHasFeature(FeatureName.chatBan) && fromUser.id !== user.id && (
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    clipSlantSize: "0px",
-                                    backgroundColor: factionColor,
-                                    opacity: 1,
-                                    border: { borderColor: factionColor, borderThickness: "2px" },
-                                    sx: { position: "relative", mt: ".7rem" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".1rem", color: factionSecondaryColor }}
-                                onClick={() => {
-                                    setShowChatBanModal(true)
-                                }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: factionSecondaryColor,
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    CHAT BAN
-                                </Typography>
-                            </FancyButton>
-                        )}
+                        <Stack direction="row" spacing=".5rem">
+                            <SvgDeath size="1.1rem" sx={{ pb: ".4rem" }} />
+                            <Typography variant="body2">
+                                <strong>ABILITY KILLS (7 DAYS):</strong> {userStat.last_seven_days_kills}
+                            </Typography>
+                        </Stack>
+
+                        <Stack direction="row" spacing=".5rem">
+                            <SvgView size="1.1rem" />
+                            <Typography variant="body2">
+                                <strong>SPECTATED:</strong> {userStat.view_battle_count}
+                            </Typography>
+                        </Stack>
                     </Stack>
-                </ClipThing>
-            </Popover>
+
+                    {userHasFeature(FeatureName.profileAvatar) && (
+                        <NiceButton
+                            route={{ to: `/profile/${fromUser.gid}` }}
+                            onClick={() => toggleLocalOpen(false)}
+                            buttonColor={factionColor}
+                            sx={{ py: ".3rem" }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                VIEW PROFILE
+                            </Typography>
+                        </NiceButton>
+                    )}
+
+                    {fromUser.faction_id === user.faction_id && (
+                        <NiceButton
+                            onClick={() => {
+                                toggleBanModalOpen()
+                                toggleLocalOpen(false)
+                            }}
+                            buttonColor={factionColor}
+                            sx={{ py: ".3rem" }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                PUNISH
+                            </Typography>
+                        </NiceButton>
+                    )}
+
+                    {userHasFeature(FeatureName.chatBan) && fromUser.id !== user.id && (
+                        <NiceButton onClick={() => setShowChatBanModal(true)} buttonColor={factionColor} sx={{ py: ".3rem" }}>
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                CHAT BAN
+                            </Typography>
+                        </NiceButton>
+                    )}
+                </Stack>
+            </NicePopover>
 
             {showChatBanModal && (
                 <ConfirmModal
@@ -272,7 +207,7 @@ export const UserDetailsPopover = ({
                     isLoading={loading}
                     error={error}
                     confirmSuffix={
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", ml: ".4rem" }}>
                             BAN
                         </Typography>
                     }
@@ -293,7 +228,7 @@ export const UserDetailsPopover = ({
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         }}
                                     >
                                         Reason
@@ -327,7 +262,7 @@ export const UserDetailsPopover = ({
                             borderRadius: 0.5,
                             "&:hover": {
                                 backgroundColor: theme.factionTheme.primary,
-                                ".MuiTypography-root": { color: theme.factionTheme.secondary },
+                                ".MuiTypography-root": { color: theme.factionTheme.text },
                             },
                             ".MuiTypography-root": {
                                 px: "1rem",
@@ -344,7 +279,7 @@ export const UserDetailsPopover = ({
                             sx: {
                                 "&& .Mui-selected": {
                                     ".MuiTypography-root": {
-                                        color: theme.factionTheme.secondary,
+                                        color: theme.factionTheme.text,
                                     },
                                     backgroundColor: theme.factionTheme.primary,
                                 },

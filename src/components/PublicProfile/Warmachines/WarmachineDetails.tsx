@@ -1,16 +1,16 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgCubes, SvgSkin, SvgStats } from "../../../assets"
+import { SvgCubes, SvgLoadoutSkin, SvgStats } from "../../../assets"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
 import { MechDetails } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer"
+import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer/MechViewer"
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
 export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { mechID: string; primaryColor: string; backgroundColor: string }) => {
@@ -78,73 +78,61 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                             mt: ".6rem",
                             mb: ".8rem",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: backgroundColor,
-                            },
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            {mechDetails ? (
-                                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
-                                    {/* Mech avatar, label, name etc */}
-                                    <Stack spacing=".5rem">
-                                        <Stack spacing=".5rem" direction="row" alignItems="center">
-                                            <SvgSkin fill={rarityDeets.color} />
-                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                                {rarityDeets.label}
-                                            </Typography>
-                                        </Stack>
-
-                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
-                                        {mechDetails.name && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.name}</Typography>}
+                        {mechDetails ? (
+                            <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
+                                {/* Mech avatar, label, name etc */}
+                                <Stack spacing=".5rem">
+                                    <Stack spacing=".5rem" direction="row" alignItems="center">
+                                        <SvgLoadoutSkin fill={rarityDeets.color} />
+                                        <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                            {rarityDeets.label}
+                                        </Typography>
                                     </Stack>
 
-                                    {/* Repair status */}
-                                    <Stack spacing=".5rem">
-                                        <Stack direction="row" spacing=".8rem" alignItems="center">
-                                            <SvgCubes fill={primaryColor} size="1.6rem" />
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
-                                        </Stack>
-
-                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
-                                    </Stack>
-
-                                    {/* Bar stats */}
-                                    <Stack spacing=".5rem">
-                                        <Stack direction="row" spacing=".8rem" alignItems="center">
-                                            <SvgStats fill={primaryColor} size="1.6rem" />
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WAR MACHINE STATS</Typography>
-                                        </Stack>
-
-                                        <MechBarStats
-                                            mech={mechDetails}
-                                            mechDetails={mechDetails}
-                                            color={primaryColor}
-                                            fontSize="1.2rem"
-                                            width="100%"
-                                            spacing="1.2rem"
-                                            barHeight=".9rem"
-                                        />
-                                    </Stack>
-
-                                    {/* Mech battle history */}
-                                    <Box sx={{ pt: "2rem" }}>
-                                        <MechBattleHistoryDetails mechDetails={mechDetails} smallSize />
-                                    </Box>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
+                                    {mechDetails.name && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.name}</Typography>}
                                 </Stack>
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                                    <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+
+                                {/* Repair status */}
+                                <Stack spacing=".5rem">
+                                    <Stack direction="row" spacing=".8rem" alignItems="center">
+                                        <SvgCubes fill={primaryColor} size="1.6rem" />
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
+                                    </Stack>
+
+                                    <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
                                 </Stack>
-                            )}
-                        </Box>
+
+                                {/* Bar stats */}
+                                <Stack spacing=".5rem">
+                                    <Stack direction="row" spacing=".8rem" alignItems="center">
+                                        <SvgStats fill={primaryColor} size="1.6rem" />
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WAR MACHINE STATS</Typography>
+                                    </Stack>
+
+                                    <MechBarStats
+                                        mech={mechDetails}
+                                        mechDetails={mechDetails}
+                                        color={primaryColor}
+                                        fontSize="1.2rem"
+                                        width="100%"
+                                        spacing="1.2rem"
+                                        barHeight=".9rem"
+                                    />
+                                </Stack>
+
+                                {/* Mech battle history */}
+                                <Box sx={{ pt: "2rem" }}>
+                                    <MechBattleHistoryDetails mechDetails={mechDetails} smallSize />
+                                </Box>
+                            </Stack>
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
+                                <CircularProgress />
+                            </Stack>
+                        )}
                     </Box>
                 </Stack>
             </ClipThing>
@@ -165,7 +153,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                     </>
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 )}
             </ClipThing>

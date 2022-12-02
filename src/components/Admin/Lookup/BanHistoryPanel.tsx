@@ -1,12 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
-import { Faction } from "../../../types"
-import { AdminPlayerBan } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
 import { colors } from "../../../theme/theme"
-import React from "react"
+import { FactionWithPalette } from "../../../types"
+import { AdminPlayerBan } from "../../../types/admin"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
-export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; playerBans: AdminPlayerBan[] }) => {
+export const BanHistoryPanel = ({ faction, playerBans }: { faction: FactionWithPalette; playerBans: AdminPlayerBan[] }) => {
     return (
         <Stack sx={{ flex: 2, p: "1rem" }} spacing={"1rem"}>
             {playerBans.map((playerBan) => {
@@ -14,10 +13,10 @@ export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; pla
                     <ClipThing
                         clipSize="5px"
                         border={{
-                            borderColor: faction.primary_color,
+                            borderColor: faction.palette.primary,
                             borderThickness: ".3rem",
                         }}
-                        backgroundColor={faction.background_color}
+                        backgroundColor={faction.palette.background}
                         opacity={0.9}
                         sx={{ flex: 1 }}
                         key={playerBan.id}
@@ -32,7 +31,7 @@ export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; pla
                                             width: "2rem",
                                             height: "2rem",
                                             background: `url(${faction.logo_url})`,
-                                            backgroundColor: faction.background_color,
+                                            backgroundColor: faction.palette.background,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",

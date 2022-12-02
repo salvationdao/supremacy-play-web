@@ -1,9 +1,9 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { IconButton, Stack, Typography } from "@mui/material"
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { ChatMessageType, NewBattleMessageData, PunishMessageData, SplitOptionType, SystemBanMessageData, TextMessageData } from "../../../../types"
 import { BanProposal } from "../BanProposal/BanProposal"
 import { GlobalAnnouncement } from "../GlobalAnnouncement"
@@ -79,92 +79,83 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
 
                 {faction_id != null && <BanProposal />}
 
-                <Box
+                <Stack
                     id="chat-container"
                     ref={scrollableRef}
                     onScroll={scrollHandler}
+                    spacing=".6rem"
                     sx={{
                         flex: 1,
                         position: "relative",
-                        ml: "1.5rem",
-                        mr: ".8rem",
-                        pr: "1.6rem",
-                        my: "1rem",
                         overflowY: "auto",
                         overflowX: "hidden",
-                        direction: "ltr",
-
-                        scrollBehavior: "smooth",
-                        "::-webkit-scrollbar": {
-                            width: "1rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: primaryColor,
-                        },
+                        p: "1rem",
                     }}
                 >
-                    <Box sx={{ height: 0 }}>
-                        <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
-                            {chatMessages && chatMessages.length > 0 ? (
-                                chatMessages.map((message, i) => {
-                                    if (message.type === ChatMessageType.Text) {
-                                        if (onlyShowSystemMessages) return null
-                                        return (
-                                            <TextMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                message={message}
-                                                containerRef={scrollableRef}
-                                                isScrolling={isScrolling}
-                                                isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
-                                                previousMessage={chatMessages[i - 1]}
-                                                latestMessage={latestMessage}
-                                                tabFactionID={faction_id}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.PunishVote) {
-                                        const data = message.data as PunishMessageData
-                                        return (
-                                            <PunishMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.SystemBan || message.type === ChatMessageType.ModBan) {
-                                        const data = message.data as SystemBanMessageData
-                                        return (
-                                            <SystemBanMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                                messageType={message.type}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.NewBattle) {
-                                        const data = message.data as NewBattleMessageData
-                                        return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
-                                    }
-
+                    {chatMessages && chatMessages.length > 0 ? (
+                        chatMessages.map((message, i) => {
+                            switch (message.type) {
+                                case ChatMessageType.Text:
+                                    if (onlyShowSystemMessages) return null
+                                    return (
+                                        <TextMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            message={message}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
+                                            previousMessage={chatMessages[i - 1]}
+                                            latestMessage={latestMessage}
+                                            tabFactionID={faction_id}
+                                        />
+                                    )
+                                case ChatMessageType.PunishVote: {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                }
+                                case ChatMessageType.ModBan:
+                                case ChatMessageType.SystemBan: {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            messageType={message.type}
+                                        />
+                                    )
+                                }
+                                case ChatMessageType.NewBattle: {
+                                    const data = message.data as NewBattleMessageData
+                                    return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
+                                }
+                                default:
                                     return null
-                                })
-                            ) : (
-                                <Typography
-                                    sx={{
-                                        color: colors.grey,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    There are no messages yet.
-                                </Typography>
-                            )}
+                            }
+                        })
+                    ) : (
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: colors.grey,
+                                    fontFamily: fonts.nostromoBold,
+                                    textAlign: "center",
+                                }}
+                            >
+                                There are no messages yet
+                            </Typography>
                         </Stack>
-                    </Box>
-                </Box>
+                    )}
+                </Stack>
 
                 <IconButton
                     size="small"
@@ -176,7 +167,10 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                         backgroundColor: primaryColor,
                         boxShadow: 3,
                         opacity: autoScroll ? 0 : 1,
+                        visibility: autoScroll ? "hidden" : "visible",
                         transition: "all .8s ease-out",
+                        zIndex: 999,
+
                         ":hover": {
                             backgroundColor: primaryColor,
                             opacity: 0.7,

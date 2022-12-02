@@ -1,10 +1,9 @@
 import { Checkbox, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
-import { Faction } from "../../../types"
-import { AdminPlayerBan } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
 import { colors } from "../../../theme/theme"
-import React from "react"
+import { FactionWithPalette } from "../../../types"
+import { AdminPlayerBan } from "../../../types/admin"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const ActiveBanPanel = ({
     faction,
@@ -12,7 +11,7 @@ export const ActiveBanPanel = ({
     toggleSelected,
     playerUnBanIDs,
 }: {
-    faction: Faction
+    faction: FactionWithPalette
     playerBans: AdminPlayerBan[]
     toggleSelected: (playerBan: AdminPlayerBan) => void
     playerUnBanIDs: string[]
@@ -26,10 +25,10 @@ export const ActiveBanPanel = ({
                     <ClipThing
                         clipSize="5px"
                         border={{
-                            borderColor: faction.primary_color,
+                            borderColor: faction.palette.primary,
                             borderThickness: ".3rem",
                         }}
-                        backgroundColor={faction.background_color}
+                        backgroundColor={faction.palette.background}
                         opacity={0.9}
                         sx={{ height: "100%" }}
                         key={playerBan.id}
@@ -38,7 +37,6 @@ export const ActiveBanPanel = ({
                             <Stack justifyContent={"space-between"} direction="row" alignItems="center">
                                 <Stack direction="row">
                                     <Checkbox
-                                        size="small"
                                         checked={isSelected}
                                         onClick={() => {
                                             toggleSelected(playerBan)
@@ -48,11 +46,6 @@ export const ActiveBanPanel = ({
                                             bottom: "1rem",
                                             right: ".8rem",
                                             zIndex: 3,
-                                            p: 0,
-                                            color: faction.primary_color,
-                                            "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
-                                            ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
                                         }}
                                     />
                                     <Typography sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}>

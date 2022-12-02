@@ -1,13 +1,16 @@
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
-export const useMounted = () => {
-    const isMounted = useRef(true)
+export function useMounted(): () => boolean {
+    const mountedRef = useRef<boolean>(false)
+    const get = useCallback(() => mountedRef.current, [])
 
     useEffect(() => {
+        mountedRef.current = true
+
         return () => {
-            isMounted.current = false
+            mountedRef.current = false
         }
     }, [])
 
-    return isMounted
+    return get
 }

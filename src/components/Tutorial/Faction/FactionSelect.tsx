@@ -1,15 +1,15 @@
 import { Box, Stack, styled, Typography } from "@mui/material"
-import { useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
-import { Faction } from "../../../types"
+import { GAME_UI_ID, useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
+import { FactionWithPalette } from "../../../types"
 
 import { ArrowForward } from "@mui/icons-material"
 import { useCallback, useEffect } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../../../routes"
+import { LeftRoutes, RightRoutes } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export enum FactionLabel {
     BostonCybernetics = "Boston Cybernetics",
@@ -26,7 +26,7 @@ export const FactionSelect = () => {
     }, [triggerReset])
 
     return (
-        <Stack id="game-ui-container" sx={{ width: "100%", height: "100%", userSelect: "none" }}>
+        <Stack id={GAME_UI_ID} sx={{ width: "100%", height: "100%", userSelect: "none" }}>
             <Typography variant="h1" textAlign="center" sx={{ fontSize: "4rem", my: "4rem" }}>
                 Select Your Faction
             </Typography>
@@ -125,7 +125,7 @@ const getFactionInfo = (factionLabel: string) => {
     }
 }
 
-const FactionBox = ({ faction }: { faction: Faction }) => {
+const FactionBox = ({ faction }: { faction: FactionWithPalette }) => {
     const { setLeftDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki, logo } = getFactionInfo(faction.label)
     const { gameUIDimensions } = useDimension()
@@ -136,8 +136,8 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
             newSnackbarMessage("Successfully enlisted into faction.", "success")
-            setLeftDrawerActiveTabID(LEFT_DRAWER_ARRAY[0]?.id)
-            setRightDrawerActiveTabID(RIGHT_DRAWER_ARRAY[0]?.id)
+            setLeftDrawerActiveTabID(LeftRoutes[0]?.id)
+            setRightDrawerActiveTabID(RightRoutes[0]?.id)
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into faction.", "error")
             console.error(err)
@@ -194,18 +194,6 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                     backgroundImage: `url(${faction.wallpaper_url || wallpaper})`,
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-
-                    "::-webkit-scrollbar": {
-                        width: ".4rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                        borderRadius: 3,
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: faction.primary_color,
-                        borderRadius: 3,
-                    },
                     "&:hover, &:active": {
                         flexGrow: mediumScreen ? 5 : 1,
                         overflowY: "auto",
@@ -243,7 +231,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                         <Box id="logo" component="img" src={logo} alt={`${faction.label}'s logo`} />
                         <Typography variant="h2">{faction.label}</Typography>
                     </Box>
-                    <InnerStack id="inner-stack" color={faction.primary_color} mediumScreen={mediumScreen}>
+                    <InnerStack id="inner-stack" color={faction.palette.primary} mediumScreen={mediumScreen}>
                         {/* description */}
                         <Typography
                             sx={{
@@ -334,7 +322,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                                 clipSize: "9px",
                                 backgroundColor: colors.darkNavyBlue,
                                 opacity: 1,
-                                border: { borderColor: faction.primary_color, borderThickness: "1px" },
+                                border: { borderColor: faction.palette.primary, borderThickness: "1px" },
                             }}
                             onClick={enlistFaction}
                         >
@@ -345,7 +333,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                                     zIndex: 2,
                                     padding: "0 2em",
                                     textAlign: "center !important",
-                                    color: faction.primary_color,
+                                    color: faction.palette.primary,
                                     fontSize: "2.5rem",
                                     fontFamily: fonts.nostromoBold,
                                 }}

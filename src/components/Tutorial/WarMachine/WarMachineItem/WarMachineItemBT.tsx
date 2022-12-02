@@ -3,12 +3,12 @@ import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useRef } from "react"
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../../assets"
 import { useAuth, useMobile, useSupremacy, useTraining } from "../../../../containers"
-import { getRarityDeets } from "../../../../helpers"
+import { getRarityDeets, truncateTextLines } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { dropShadowEffect, zoomEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
-import { GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { GameAbility, LocationSelectType, MechAbilityStages, WarMachineState } from "../../../../types"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarMachineAbilitiesPopoverBT"
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
 import { HealthShieldBarsBT } from "./HealthShieldBarsBT"
@@ -33,7 +33,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Support your Syndicate with a well-timed repair.",
         text_colour: "#FFFFFF",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },
@@ -47,7 +47,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Consume your remaining shield for an explosive defence mechanism.",
         text_colour: "#000000",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },
@@ -85,8 +85,8 @@ export const WarMachineItemBT = ({
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
+    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.palette.primary), [faction.palette.primary, selfOwned])
+    const backgroundColor = useMemo(() => faction.palette.background, [faction.palette.background])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
@@ -232,14 +232,9 @@ export const WarMachineItemBT = ({
                                 variant="h5"
                                 sx={{
                                     lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
+                                    fontWeight: "bold",
                                     whiteSpace: "normal",
-                                    display: "-webkit-box",
-                                    overflowWrap: "anywhere",
-                                    WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 2,
+                                    ...truncateTextLines(2),
                                 }}
                             >
                                 {name || hash}
@@ -290,8 +285,8 @@ export const WarMachineItemBT = ({
                                         id="warMachineSkillsText"
                                         variant="body1"
                                         sx={{
-                                            fontWeight: "fontWeightBold",
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            fontWeight: "bold",
+                                            color: (theme) => theme.factionTheme.text,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                             animation: trainingStage === MechAbilityStages.ExplainMA ? `${zoomEffect(1.35)} 2s infinite` : "unset",

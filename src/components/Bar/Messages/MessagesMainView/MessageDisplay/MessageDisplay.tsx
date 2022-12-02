@@ -2,13 +2,16 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { colors } from "../../../../../theme/theme"
-import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
-import { FancyButton } from "../../../../Common/FancyButton"
+import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType, SystemMessageMechStruct } from "../../../../../types"
+import { BattleLobby } from "../../../../../types/battle_queue"
+import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
+import { BattleLobbyInvitation } from "./BattleLobbyInvitation"
+import { ExpiredBattleLobby } from "./ExpiredBattleLobby"
+import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
-import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -24,6 +27,10 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                 return <MechBattleBeginDetails message={message.message} data={message.data as SystemMessageDataMechBattleBegin} />
             case SystemMessageDataType.PlayerAbilityRefunded:
                 return <PlayerAbilityRefundedMessage message={message.message} data={message.data as PlayerAbilityRefundedData[]} />
+            case SystemMessageDataType.ExpiredBattleLobby:
+                return <ExpiredBattleLobby message={message.message} data={message.data as SystemMessageMechStruct[]} />
+            case SystemMessageDataType.BattleLobbyInvitation:
+                return <BattleLobbyInvitation message={message.message} data={message.data as BattleLobby} />
         }
 
         return <MessageRenderer markdown={message.message} />
@@ -32,7 +39,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
     return (
         <Stack sx={{ height: "100%", p: "1.4rem" }}>
             <Stack direction="row" alignItems="center">
-                <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                     {message.title}
                 </Typography>
                 <Typography sx={{ ml: "auto", color: colors.grey }}>
@@ -54,16 +61,6 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     p: "1rem 1.4rem",
                     backgroundColor: "#FFFFFF15",
                     direction: "ltr",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: (theme) => theme.factionTheme.primary,
-                    },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
@@ -72,22 +69,9 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
             </Box>
 
             <Stack direction="row" alignItems="center">
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        clipSlantSize: "0px",
-                        backgroundColor: colors.grey,
-                        opacity: 1,
-                        border: { borderColor: colors.grey, borderThickness: "1px" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
-                    onClick={onClose}
-                >
-                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
-                        CLOSE
-                    </Typography>
-                </FancyButton>
+                <NiceButton buttonColor={colors.grey} onClick={onClose}>
+                    CLOSE
+                </NiceButton>
             </Stack>
         </Stack>
     )

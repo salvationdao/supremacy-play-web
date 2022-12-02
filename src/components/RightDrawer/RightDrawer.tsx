@@ -1,36 +1,29 @@
-import { Box, Drawer, Fade } from "@mui/material"
-import { useRouteMatch } from "react-router-dom"
+import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
-import { RIGHT_DRAWER_ARRAY, RIGHT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
-import { DrawerButtons } from "./DrawerButtons"
+import { useTheme } from "../../containers/theme"
+import { useActiveRouteID } from "../../hooks/useActiveRouteID"
+import { RightRoutes } from "../../routes"
+import { siteZIndex } from "../../theme/theme"
 
-export const RIGHT_DRAWER_WIDTH = 38 // rem
+export const RIGHT_DRAWER_WIDTH = 42 // rem
+export const DRAWER_OFFSET = "6.6rem"
 
 export const RightDrawer = () => {
-    const { rightDrawerActiveTabID } = useUI()
-    const { isMobile } = useMobile()
+    const theme = useTheme()
     const { userID } = useAuth()
-
-    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = "home"
-    if (match) {
-        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.id || ""
-    }
+    const { isMobile } = useMobile()
+    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
+    const activeRoute = useActiveRouteID()
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || RIGHT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0) return null
+    if (isMobile || RightRoutes.filter((r) => !r.matchRouteIDs || (activeRoute && r.matchRouteIDs.includes(activeRoute.id))).length <= 0) return null
 
-    const isOpen =
-        RIGHT_DRAWER_MAP[rightDrawerActiveTabID] &&
-        (RIGHT_DRAWER_MAP[rightDrawerActiveTabID].matchNavLinkIDs === undefined ||
-            RIGHT_DRAWER_MAP[rightDrawerActiveTabID].matchNavLinkIDs?.includes(activeRouteID))
+    const match = RightRoutes.find((route) => route.id === rightDrawerActiveTabID)
+    const isOpen = match && (match.matchRouteIDs === undefined || (activeRoute && match.matchRouteIDs?.includes(activeRoute.id)))
 
     return (
         <>
-            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open={isOpen}
@@ -38,37 +31,96 @@ export const RightDrawer = () => {
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
+                    width: isOpen ? `${RIGHT_DRAWER_WIDTH}rem` : DRAWER_OFFSET,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: theme.factionTheme.background,
                         position: "absolute",
-                        borderLeft: 0,
+                        borderLeft: `1px solid ${theme.factionTheme.s700}`,
                         overflow: "hidden",
+                        transform: !isOpen ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${DRAWER_OFFSET})) !important` : "",
+                        visibility: !isOpen ? "visible !important" : "",
                     },
                 }}
             >
-                {RIGHT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
-                    const isActive = r.id === rightDrawerActiveTabID
-                    if (isActive || r.mountAllTime) {
-                        return (
-                            <Fade key={r.id} in>
-                                <Box
+                {RightRoutes.map((route) => {
+                    if (
+                        (!route.Header && !route.Component) ||
+                        (route.requireAuth && !userID) ||
+                        (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
+                    ) {
+                        return null
+                    }
+
+                    return (
+                        <Accordion
+                            key={route.id}
+                            expanded={route.id === rightDrawerActiveTabID}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                "&:not(:last-child)": {
+                                    mb: ".5rem",
+                                },
+                                "&.Mui-expanded": {
+                                    flex: 1,
+                                    minHeight: 0,
+                                    m: 0,
+                                    ".MuiCollapse-root": {
+                                        flex: 1,
+                                        ".MuiCollapse-wrapper": {
+                                            height: "100%",
+                                            ".MuiAccordion-region": {
+                                                height: "100%",
+                                            },
+                                        },
+                                    },
+                                },
+                                "&:before": {
+                                    display: "none",
+                                },
+                            }}
+                        >
+                            <AccordionSummary
+                                sx={{
+                                    p: 0,
+                                    minHeight: "auto !important",
+                                    ".MuiAccordionSummary-content": {
+                                        m: 0,
+                                    },
+                                    ".MuiAccordionSummary-content.Mui-expanded": {
+                                        m: 0,
+                                    },
+                                    ":hover": {
+                                        opacity: 1,
+                                    },
+                                }}
+                                onClick={route.id !== rightDrawerActiveTabID ? () => setRightDrawerActiveTabID(route.id) : undefined}
+                            >
+                                {route.Header && (
+                                    <route.Header
+                                        isDrawerOpen={!!isOpen}
+                                        isOpen={route.id === rightDrawerActiveTabID}
+                                        onClose={() => setRightDrawerActiveTabID("")}
+                                    />
+                                )}
+                            </AccordionSummary>
+
+                            {route.Component && (route.mountAllTime || route.id === rightDrawerActiveTabID) && (
+                                <AccordionDetails
                                     sx={{
-                                        height: isActive ? "100%" : 0,
-                                        visibility: isActive ? "visible" : "hidden",
-                                        pointerEvents: isActive ? "all" : "none",
+                                        height: "100%",
+                                        p: 0,
+                                        backgroundColor: theme.factionTheme.background,
                                     }}
                                 >
-                                    {r.Component && <r.Component />}
-                                </Box>
-                            </Fade>
-                        )
-                    }
-                    return null
+                                    <route.Component />
+                                </AccordionDetails>
+                            )}
+                        </Accordion>
+                    )
                 })}
             </Drawer>
         </>

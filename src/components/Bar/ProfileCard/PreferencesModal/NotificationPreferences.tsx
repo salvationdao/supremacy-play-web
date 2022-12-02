@@ -8,7 +8,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 interface PreferencesResponse {
     shortcode: string
@@ -121,7 +121,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                     NOTIFICATIONS
                 </Typography>
 
-                <TooltipHelper
+                <NiceTooltip
                     placement="right-start"
                     renderNode={
                         <Box>
@@ -145,7 +145,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             }}
                         />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             </Stack>
 
             <Stack>
@@ -190,7 +190,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                 {settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && (
                     <Stack spacing=".8rem" sx={{ mt: ".8rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20` }}>
                         <Stack direction="row" alignItems="center">
-                            <Typography sx={{ fontWeight: "fontWeightBold" }}>NOTIFICATION FEE:&nbsp;</Typography>
+                            <Typography sx={{ fontWeight: "bold" }}>NOTIFICATION FEE:&nbsp;</Typography>
                             <SvgSupToken size="1.5rem" fill={colors.yellow} />
                             <Typography>5</Typography>
                         </Stack>
@@ -201,22 +201,14 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                         </Typography>
 
                         <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
+                            <Typography sx={{ fontWeight: "bold", span: { color: colors.yellow } }}>
                                 I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
                             <Checkbox
                                 disabled={loading}
-                                size="small"
                                 checked={agreeToBeCharged}
                                 onChange={(e) => {
                                     setAgreeToBeCharged(e.currentTarget.checked)
-                                }}
-                                sx={{
-                                    p: 0,
-                                    color: colors.yellow,
-                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                 }}
                             />
                         </Stack>
@@ -270,21 +262,11 @@ interface PreferenceToggleProps {
 
 export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
     return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1.2rem">
             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                 {title}
             </Typography>
-            <Switch
-                disabled={disabled}
-                size="small"
-                checked={checked}
-                onChange={onChangeFunction}
-                sx={{
-                    transform: "scale(.7) translateY(-3px)",
-                    ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
-                }}
-            />
+            <Switch disabled={disabled} checked={checked} onChange={onChangeFunction} />
         </Stack>
     )
 }

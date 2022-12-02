@@ -1,12 +1,10 @@
-import { Popover, Stack } from "@mui/material"
+import { Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
-import { ClipThing } from "../../.."
 import { SvgAdmin, SvgAssets, SvgFeedback, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
 import { DEV_ONLY, FEEDBACK_FORM_URL, PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
-import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
 import { RoleType, User } from "../../../../types"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
@@ -14,8 +12,6 @@ import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
-    const theme = useTheme()
-
     const [localOpen, toggleLocalOpen] = useToggle(open)
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
@@ -34,71 +30,77 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
     return (
         <>
-            <Popover
-                open={localOpen}
-                anchorEl={popoverRef.current}
-                onClose={() => toggleLocalOpen(false)}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                }}
-                sx={{
-                    mt: ".5rem",
-                    zIndex: siteZIndex.Popover,
-                    ".MuiPaper-root": {
-                        background: "none",
-                        boxShadow: 0,
-                    },
-                }}
-            >
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%" }}
-                >
-                    <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
-                        <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
+            <NicePopover open={localOpen} anchorEl={popoverRef.current} onClose={() => toggleLocalOpen(false)}>
+                <Stack spacing=".32rem">
+                    <NavButton
+                        linkProps={{
+                            link: { href: `${PASSPORT_WEB}profile`, target: "_blank" },
+                        }}
+                        startIcon={<SvgAssets inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="My Inventory"
+                    />
 
-                        <NavButton to={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
+                    <NavButton
+                        linkProps={{
+                            route: { to: `/profile/${user.gid}` },
+                        }}
+                        startIcon={<SvgProfile inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="Profile"
+                    />
 
-                        {(user.role_type === RoleType.admin || user.role_type === RoleType.moderator) && (
-                            <NavButton to={`/admin/lookup`} startIcon={<SvgAdmin sx={{ pb: ".5rem" }} size="1.6rem" />} text="Admin" />
-                        )}
-
+                    {(user.role_type === RoleType.admin || user.role_type === RoleType.moderator) && (
                         <NavButton
-                            href={`${PASSPORT_WEB}profile/${user.username}/edit`}
-                            startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />}
-                            text="XSYN Profile"
-                        />
-
-                        {STAGING_OR_DEV_ONLY && (
-                            <NavButton to="/billing-history" startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="Billing History" />
-                        )}
-
-                        <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
-
-                        <NavButton href={FEEDBACK_FORM_URL} startIcon={<SvgFeedback sx={{ pb: ".5rem" }} size="1.6rem" />} text="Feedback" />
-
-                        <NavButton
-                            onClick={() => {
-                                togglePreferencesModalOpen(true)
+                            linkProps={{
+                                route: { to: `/admin/lookup` },
                             }}
-                            startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
-                            text="Preferences"
+                            startIcon={<SvgAdmin inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                            text="Admin"
                         />
+                    )}
 
-                        <LogoutButton />
-                    </Stack>
-                </ClipThing>
-            </Popover>
+                    <NavButton
+                        linkProps={{
+                            link: { href: `${PASSPORT_WEB}profile/${user.username}/edit`, target: "_blank" },
+                        }}
+                        startIcon={<SvgProfile inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="XSYN Profile"
+                    />
+
+                    {STAGING_OR_DEV_ONLY && (
+                        <NavButton
+                            linkProps={{
+                                route: { to: "/billing-history" },
+                            }}
+                            startIcon={<SvgAssets inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                            text="Billing History"
+                        />
+                    )}
+
+                    <NavButton
+                        linkProps={{
+                            link: { href: "https://supremacyhelp.zendesk.com/", target: "_blank" },
+                        }}
+                        startIcon={<SvgSupport inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="SUPPORT"
+                    />
+
+                    <NavButton
+                        linkProps={{
+                            link: { href: FEEDBACK_FORM_URL, target: "_blank" },
+                        }}
+                        startIcon={<SvgFeedback inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="Feedback"
+                    />
+
+                    <NavButton
+                        onClick={() => togglePreferencesModalOpen(true)}
+                        startIcon={<SvgSettings inline sx={{ pb: ".5rem" }} size="1.6rem" />}
+                        text="Preferences"
+                    />
+
+                    <LogoutButton />
+                </Stack>
+            </NicePopover>
 
             {/* preferences modal */}
             {preferencesModalOpen && (

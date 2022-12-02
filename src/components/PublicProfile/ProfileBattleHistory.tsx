@@ -1,10 +1,10 @@
-import { Stack, CircularProgress, Box, Typography } from "@mui/material"
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG } from "../../assets"
 import { camelToTitle } from "../../helpers"
 import { useGameServerCommands } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { colors, fonts, theme } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { BattleMechHistory } from "../../types"
 import { HistoryEntry } from "../Hangar/WarMachinesHangar/Common/MechHistory/HistoryEntry"
 
@@ -71,7 +71,7 @@ export const ProfileMechHistory = ({ playerID }: { playerID: string }) => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )

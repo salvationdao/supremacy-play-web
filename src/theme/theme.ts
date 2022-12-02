@@ -1,8 +1,9 @@
+import { FactionTheme } from "@mui/material"
 import { red } from "@mui/material/colors"
-import { createTheme, FactionTheme } from "@mui/material/styles"
+import { createTheme } from "@mui/material/styles"
 import "./global.css"
 
-// had to keep the declare in this file for it to work
+// Had to keep the declare in this file for it to work
 declare module "@mui/material/styles" {
     interface Theme {
         factionTheme: FactionTheme
@@ -14,14 +15,32 @@ declare module "@mui/material/styles" {
 
     export interface FactionTheme {
         primary: string
-        secondary: string
+        text: string
         background: string
+        s100: string
+        s200: string
+        s300: string
+        s400: string
+        s500: string
+        s600: string
+        s700: string
+        s800: string
+        s900: string
     }
     // allow configuration using `createTheme`
     interface FactionThemeOptions {
         primary?: string
-        secondary?: string
+        text?: string
         background?: string
+        s100?: string
+        s200?: string
+        s300?: string
+        s400?: string
+        s500?: string
+        s600?: string
+        s700?: string
+        s800?: string
+        s900?: string
     }
 }
 
@@ -42,29 +61,24 @@ export const colors = {
     blue2: "#309FFF",
     purple: "#9A73F5",
     black2: "#13161B",
-    black3: "#080303",
+    notStaked: "#50B1DE",
 
-    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#3DE0E0",
-    darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
+    darkestNeonBlue: "#050c12",
     darkNavyBlue: "#0C0C1A",
+
     navy: "#2A2A40",
     darkNavy: "#101019",
     darkerNavy: "#08080C",
 
     health: "#BFF600",
     shield: "#00F7F7",
-    warMachineSkillBar: "#9669FF",
 
     lightGrey: "#999999",
     grey: "#777777",
     darkGrey: "#444444",
-    battleQueueBanner: "#C24242",
-    darkestNeonBlue: "#050c12",
-
-    globalChat: "#35A679",
 
     // Transactions
     supsCredit: "#01FF70",
@@ -77,6 +91,8 @@ export const colors = {
     marketSold: "#2BA172",
     marketCreate: "#E6C85C",
     marketBidReturned: "#CC3F3F",
+
+    repair: "#EA8622",
 
     // Mech loadout
     chassisSkin: "#D4AA13",
@@ -103,8 +119,17 @@ export const colors = {
 
 const factionTheme: FactionTheme = {
     primary: "#00FAFA",
-    secondary: "#00FAFA",
-    background: "#050c12",
+    text: "#ffffff",
+    background: "#001919",
+    s100: "#ccfefe",
+    s200: "#80fdfd",
+    s300: "#33fbfb",
+    s400: "#00fafa",
+    s500: "#00c8c8",
+    s600: "#006464",
+    s700: "#004b4b",
+    s800: "#003232",
+    s900: "#001919",
 }
 
 export const fonts = {
@@ -115,15 +140,21 @@ export const fonts = {
     nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTechMono: ["Share Tech Mono", "monospace"].join(","),
+    rajdhaniLight: ["Rajdhani Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniRegular: ["Rajdhani Regular", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniMedium: ["Rajdhani Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniSemibold: ["Rajdhani Semibold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniBold: ["Rajdhani Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
 }
 
 export enum siteZIndex {
     // Shows on top of everything
-    TopBar = 700,
-    Modal = 600,
-    Drawer = 500,
-    Popover = 400,
-    Tooltip = 300,
+    Tooltip = 900,
+    TopBar = 800,
+    MainMenuModal = 700,
+    Popover = 500,
+    Modal = 500,
+    Drawer = 400,
 
     // Stream site top elements
     RoutePage = 101,
@@ -173,46 +204,57 @@ export const theme = createTheme({
         h1: {
             fontFamily: fonts.nostromoBlack,
             fontSize: "8.18rem",
+            lineHeight: 1.5,
         },
         h2: {
             fontFamily: fonts.nostromoBold,
             fontSize: "5.15rem",
+            lineHeight: 1.5,
         },
         h3: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "4.13rem",
+            lineHeight: 1.5,
         },
         h4: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "2.96rem",
+            lineHeight: 1.5,
         },
         h5: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "2.13rem",
+            lineHeight: 1.5,
         },
         h6: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.82rem",
+            lineHeight: 1.5,
         },
         body1: {
-            fontFamily: fonts.shareTech,
-            fontSize: "1.65rem",
+            fontFamily: fonts.rajdhaniMedium,
+            fontSize: "1.7rem",
+            lineHeight: 1.5,
         },
         body2: {
-            fontFamily: fonts.shareTech,
-            fontSize: "1.4rem",
+            fontFamily: fonts.rajdhaniMedium,
+            fontSize: "1.5rem",
+            lineHeight: 1.5,
         },
         subtitle1: {
-            fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontFamily: fonts.rajdhaniMedium,
+            fontSize: "1.34rem",
+            lineHeight: 1.5,
         },
         subtitle2: {
-            fontFamily: fonts.shareTech,
-            fontSize: "1.15rem",
+            fontFamily: fonts.rajdhaniMedium,
+            fontSize: "1.18rem",
+            lineHeight: 1.5,
         },
         caption: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.25rem",
+            lineHeight: 1.5,
         },
     },
     components: {
@@ -256,6 +298,17 @@ export const theme = createTheme({
             defaultProps: {
                 disablePortal: false,
             },
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Popover,
+
+                    ".MuiPaper-root": {
+                        backgroundImage: "unset",
+                        boxShadow: 0,
+                        borderRadius: 0,
+                    },
+                },
+            },
         },
         MuiLink: {
             defaultProps: {
@@ -275,14 +328,23 @@ export const theme = createTheme({
             },
         },
         MuiPagination: {
+            defaultProps: {
+                size: "medium",
+                showFirstButton: true,
+                showLastButton: true,
+            },
             styleOverrides: {
                 root: {
                     ".MuiPagination-ul": {
                         justifyContent: "center",
                     },
                     ".MuiButtonBase-root": {
+                        fontFamily: fonts.nostromoBold,
                         minWidth: "25px",
                         height: "25px",
+                    },
+                    ".MuiSvgIcon-root": {
+                        fontSize: "1.8rem",
                     },
                 },
             },
@@ -292,6 +354,119 @@ export const theme = createTheme({
                 root: {
                     fontFamily: fonts.nostromoBlack,
                     color: "white",
+                },
+            },
+        },
+        MuiCheckbox: {
+            defaultProps: {
+                size: "small",
+            },
+            styleOverrides: {
+                root: {
+                    width: "fit-content",
+                    padding: "0 !important",
+                    color: "#FFFFFF90",
+                    borderRadius: 0,
+                    "& > .MuiSvgIcon-root": { width: "2.6rem", height: "2.6rem" },
+                    ".MuiSvgIcon-root": { transform: "scale(1.1)", transformOrigin: "left" },
+                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue}` },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                    "&.MuiCheckbox-indeterminate > .MuiSvgIcon-root": { color: colors.neonBlue },
+                },
+            },
+        },
+        MuiSwitch: {
+            defaultProps: {
+                size: "small",
+                focusVisibleClassName: ".Mui-focusVisible",
+                disableRipple: true,
+            },
+            styleOverrides: {
+                root: {
+                    width: 30,
+                    height: 15,
+                    padding: 0,
+                    "& .MuiSwitch-switchBase": {
+                        padding: 0,
+                        margin: "2px",
+                        transitionDuration: "300ms",
+                        "&.Mui-checked": {
+                            transform: "translateX(15px)",
+                            color: colors.neonBlue,
+                            "& + .MuiSwitch-track": {
+                                backgroundColor: `${colors.neonBlue}44`,
+                                opacity: 1,
+                                border: 0,
+                            },
+                            "&.Mui-disabled + .MuiSwitch-track": {
+                                opacity: 0.5,
+                            },
+                        },
+                        "&.Mui-focusVisible .MuiSwitch-thumb": {
+                            color: colors.neonBlue,
+                            border: "6px solid #fff",
+                        },
+                        "&.Mui-disabled .MuiSwitch-thumb": {
+                            color: colors.lightGrey,
+                        },
+                        "&.Mui-disabled + .MuiSwitch-track": {
+                            opacity: 0.7,
+                        },
+                    },
+                    "& .MuiSwitch-thumb": {
+                        boxSizing: "border-box",
+                        width: 11,
+                        height: 11,
+                    },
+                    "& .MuiSwitch-track": {
+                        borderRadius: 15 / 2,
+                        backgroundColor: colors.grey,
+                        opacity: 1,
+                        transition: `all .5s`,
+                    },
+                },
+            },
+        },
+        MuiCircularProgress: {
+            defaultProps: {
+                size: "3rem",
+            },
+        },
+        MuiModal: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Modal,
+                },
+            },
+        },
+        MuiDrawer: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Drawer,
+                },
+            },
+        },
+        MuiTooltip: {
+            styleOverrides: {
+                popper: {
+                    zIndex: siteZIndex.Tooltip,
+                },
+            },
+        },
+        MuiSlider: {
+            styleOverrides: {
+                root: {
+                    height: "1px",
+                    borderRadius: 0,
+                    ".MuiSlider-thumb": {
+                        width: "12px",
+                        height: "12px",
+                        ":after": {
+                            width: "100%",
+                            height: "100%",
+                        },
+                        borderRadius: 0,
+                    },
                 },
             },
         },

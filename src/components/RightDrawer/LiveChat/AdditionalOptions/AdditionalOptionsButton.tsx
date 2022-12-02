@@ -1,9 +1,11 @@
-import { Button, Popover, Stack, Typography } from "@mui/material"
+import { Button, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
 import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 
 export const AdditionalOptionsButton = () => {
     const { userID } = useAuth()
@@ -19,22 +21,24 @@ export const AdditionalOptionsButton = () => {
                 ref={popoverRef}
                 onClick={() => toggleIsPopoverOpen()}
                 sx={{
-                    backgroundColor: colors.darkerNavy,
-                    height: "2rem",
+                    backgroundColor: "#00000090",
+                    height: "3rem",
                     width: "100%",
                     borderRadius: 0,
                     "*": {
                         opacity: isPopoverOpen ? 1 : 0.6,
                     },
                     ":hover": {
-                        backgroundColor: colors.darkerNavy,
+                        backgroundColor: "#00000090",
                         "*": {
                             opacity: 1,
                         },
                     },
                 }}
             >
-                <Typography>MORE OPTIONS</Typography>
+                <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                    MORE OPTIONS
+                </Typography>
             </Button>
 
             {isPopoverOpen && (
@@ -75,7 +79,7 @@ const OptionsPopover = ({
     }, [localOpen, onClose])
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -88,30 +92,25 @@ const OptionsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                zIndex: siteZIndex.Popover,
+                mt: "-.4rem",
                 ".MuiPaper-root": {
                     ml: 2,
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
-                    background: "none",
-                    backgroundColor: colors.darkerNavy,
-                    borderRadius: 0.2,
-                    boxShadow: 10,
+                    my: 0,
                 },
             }}
         >
-            <Stack spacing=".32rem" sx={{ px: ".8rem", py: "1.1rem" }}>
-                <Button
+            <Stack spacing=".32rem">
+                <NiceButton
                     onClick={() => {
                         toggleLocalOpen(false)
                         toggleBanModalOpen(true)
                     }}
-                    sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050", borderRadius: 0.1 }}
+                    sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}
                 >
-                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
-                        PROPOSE TO PUNISH A PLAYER
-                    </Typography>
-                </Button>
+                    <Typography sx={{ fontWeight: "bold" }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                </NiceButton>
             </Stack>
-        </Popover>
+        </NicePopover>
     )
 }

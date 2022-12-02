@@ -1,28 +1,29 @@
-import { Stack, Box, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { TooltipHelper } from "../../.."
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { NiceTooltip } from "../../.."
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgLoadoutUtility, SvgLoadoutWeapon } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechBasic, MechDetails } from "../../../../types"
+import { truncateTextLines } from "../../../../helpers"
 
-export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
+export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mechDetails?: MechDetails }) => {
+    const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
-    let hasSkin = false
-    let hasIntroAnimation = false
-    let hasOutroAnimation = false
-    let hasPowerCore = false
-    let weaponCount = 0
-    let utilityCount = 0
+    let hasSkin = !!mech?.chassis_skin_id
+    let hasIntroAnimation = !!mech?.intro_animation_id
+    let hasOutroAnimation = !!mech?.outro_animation_id
+    let hasPowerCore = !!mech?.power_core_id
+    let weaponCount = mech?.equipped_weapon_count || 0
+    let utilityCount = mech?.equipped_utility_count || 0
 
-    let weaponSlots = 0
-    let utilitySlots = 0
+    let weaponSlots = mech?.weapon_hardpoints || 0
+    let utilitySlots = mech?.utility_slots || 0
 
     if (mechDetails) {
         const { chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mechDetails
-        const weapons = mechDetails.weapons?.length
-        const utilities = mechDetails.utility?.length
+        const weapons = mechDetails.weapons?.length || 0
+        const utilities = mechDetails.utility?.length || 0
 
         if (chassis_skin_id) hasSkin = true
         if (intro_animation_id) hasIntroAnimation = true
@@ -44,81 +45,76 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
                         sx={{
                             color: rarityDeets.color,
                             fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
+                            ...truncateTextLines(1),
                         }}
                     >
                         {rarityDeets.label}
                     </Typography>
-                    <SvgSkin fill={rarityDeets.color} size="1.7rem" />
+                    <SvgLoadoutSkin fill={rarityDeets.color} size="1.7rem" />
                 </Stack>
             )}
 
             {!hasSkin && (
-                <TooltipHelper color={colors.chassisSkin} text="Submodel" placement="bottom">
+                <NiceTooltip color={colors.chassisSkin} text="Submodel" placement="bottom">
                     <Box>
-                        <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
+                        <SvgLoadoutSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             )}
 
-            <TooltipHelper color={colors.powerCore} text="Power core" placement="bottom">
+            <NiceTooltip color={colors.powerCore} text="Power core" placement="bottom">
                 <Box>
                     <SvgPowerCore fill={hasPowerCore ? colors.powerCore : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
             {weaponCount > 0 &&
                 new Array(weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
-                            <SvgWeapons fill={colors.weapons} size="1.7rem" />
+                            <SvgLoadoutWeapon fill={colors.weapons} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {weaponSlots - weaponCount > 0 &&
                 new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
-                            <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
+                            <SvgLoadoutWeapon fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {utilityCount > 0 &&
                 new Array(utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
-                            <SvgUtilities fill={colors.utilities} size="1.7rem" />
+                            <SvgLoadoutUtility fill={colors.utilities} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {utilitySlots - utilityCount > 0 &&
                 new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
-                            <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
+                            <SvgLoadoutUtility fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
-            <TooltipHelper color={colors.introAnimation} text="Outro animation" placement="bottom">
+            <NiceTooltip color={colors.introAnimation} text="Outro animation" placement="bottom">
                 <Box>
                     <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
-            <TooltipHelper color={colors.outroAnimation} text="Intro animation" placement="bottom">
+            <NiceTooltip color={colors.outroAnimation} text="Intro animation" placement="bottom">
                 <Box>
                     <SvgOutroAnimation fill={hasOutroAnimation ? colors.outroAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
         </Stack>
     )
 }

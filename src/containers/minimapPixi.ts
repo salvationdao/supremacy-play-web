@@ -1,15 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { PixiMiniMapPixi } from "../components/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
+import { PixiMiniMapPixi } from "../components/BattleArena/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
 import { deepEqual } from "../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
+import { AnyAbility, BattleState, Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
-import { useAuth } from "./auth"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
-import { RecordType, useHotkey } from "./hotkeys"
+
+type hotkey = { [key: string]: () => void }
+
+export enum RecordType {
+    MiniMapCtrl = "CTRL_MAP",
+    MiniMap = "MAP",
+}
+
+// Keys reserved for mech abilities
+export const MECH_ABILITY_KEY = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
 
 export const pixiViewportZIndexes = {
     hiveStatus: 10,
@@ -29,21 +37,14 @@ export const pixiStageZIndexes = {
     mechAbilities: 20,
 }
 
-export interface WinnerStruct {
-    game_ability: GameAbility
-    end_time: Date
-}
-
 export interface MapSelection {
     position?: Position
     mechHash?: string
 }
 
 export const MiniMapPixiContainer = createContainer(() => {
-    const { map, isBattleStarted } = useGame()
-    const { factionID } = useAuth()
+    const { map, battleState } = useGame()
     const { currentArenaID } = useArena()
-    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -57,7 +58,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     // ************************************
     const [pixiMiniMapPixi, setPixiMiniMapPixi] = useState<PixiMiniMapPixi>()
     const mapMousePosition = useRef<Position>()
-    // Cache map related values into ref so it can be used within subscription callbacks
+    // Cache map related values into ref, so it can be used within subscription callbacks
     const mapRef = useRef<Map>()
     const mapScalingRef = useRef<Vector2i>({ x: 0, y: 0 }) // Map co-ordinate from server * mapScaling.x = position in viewport
     const gridSizeRef = useRef<Dimension>({ width: 50, height: 50 })
@@ -96,38 +97,82 @@ export const MiniMapPixiContainer = createContainer(() => {
         }
     })
 
+    // *****************************
+    // ********** Hotkeys **********
+    // *****************************
+    const miniMapHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap
+    const miniMapControlHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap with ctrl
+
+    const addToHotkeyRecord = useCallback(
+        (recordType: RecordType, key: string, value: () => void) => {
+            //keys often come from the index, return if it is more than 10
+            const numKey = parseInt(key)
+
+            if (numKey && numKey > 10) {
+                console.error("Cannot create key more than keyboard number value.")
+            }
+
+            if (numKey === 10) {
+                key = "0"
+            }
+
+            let record = miniMapHotkeyRecord
+            switch (recordType) {
+                //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
+                case RecordType.MiniMapCtrl:
+                    record = miniMapControlHotkeyRecord
+                    break
+                case RecordType.MiniMap:
+                    record = miniMapHotkeyRecord
+                    break
+                default:
+                    break
+            }
+
+            record.current = { ...record.current, [key]: value }
+        },
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
+    )
+
+    const handleMiniMapHotKey = useCallback(
+        (e) => {
+            let handlePress = miniMapHotkeyRecord.current[e.key]
+            if (e.ctrlKey) {
+                handlePress = miniMapControlHotkeyRecord.current[e.key]
+            }
+
+            if (handlePress) {
+                e.stopPropagation()
+                e.preventDefault()
+                handlePress()
+            }
+            handlePress && handlePress()
+        },
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
+    )
+
     // ***************************************
     // ********** Ability use stuff **********
     // ***************************************
-    const winner = useRef<WinnerStruct | undefined>()
-    const playerAbility = useRef<PlayerAbility | undefined>()
+    const anyAbility = useRef<AnyAbility | undefined>()
     const selection = useRef<MapSelection | undefined>()
-    const onAbilityUseCallbacks = useRef<{
-        [name: string]: (winner: WinnerStruct | undefined, playerAbility: PlayerAbility | undefined) => void
+
+    const onAnyAbilityUseCallbacks = useRef<{
+        [name: string]: (anyAbility: AnyAbility | undefined) => void
     }>({})
+
     const onSelectMapPositionCallbacks = useRef<{
-        [name: string]: (mapPos: MapSelection | undefined, winner: WinnerStruct | undefined, playerAbility: PlayerAbility | undefined) => void
+        [name: string]: (mapPos: MapSelection | undefined, anyAbility: AnyAbility | undefined) => void
     }>({})
 
-    const useWinner = useRef((wn: WinnerStruct | undefined) => {
-        const prevValue = winner.current
-        winner.current = wn
+    const useAnyAbility = useRef((aa: AnyAbility | undefined) => {
+        const prevValue = anyAbility.current
+        anyAbility.current = aa
         selectMapPosition.current(undefined)
 
         // Only run if something was changed
-        if (prevValue !== wn || (prevValue && wn && !deepEqual(prevValue, wn))) {
-            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(wn, playerAbility.current))
-        }
-    })
-
-    const usePlayerAbility = useRef((pa: PlayerAbility | undefined) => {
-        const prevValue = playerAbility.current
-        playerAbility.current = pa
-        selectMapPosition.current(undefined)
-
-        // Only run if something was changed
-        if (prevValue !== pa || (prevValue && pa && !deepEqual(prevValue, pa))) {
-            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(winner.current, pa))
+        if (prevValue !== aa || (prevValue && aa && !deepEqual(prevValue, aa))) {
+            Object.values(onAnyAbilityUseCallbacks.current).forEach((cb) => cb(aa))
         }
     })
 
@@ -137,149 +182,93 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== mapPos || (prevValue && mapPos && !deepEqual(prevValue, mapPos))) {
-            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, winner.current, playerAbility.current))
+            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, anyAbility.current))
         }
     })
-
-    // Subscribe on winner announcements
-    useGameServerSubscriptionSecuredUser<WinnerStruct | undefined>(
-        {
-            URI: "",
-            key: GameServerKeys.SubBribeWinnerAnnouncement,
-            ready: !!factionID,
-        },
-        (payload) => {
-            if (!payload) return
-
-            let endTime = payload.end_time
-            const dateNow = new Date()
-            const diff = endTime.getTime() - dateNow.getTime()
-
-            // Just a temp fix, if user's pc time is not correct then at least set for them
-            // Checked by seeing if they have at least 8s to do stuff
-            if (endTime < dateNow || diff < 8000 || diff > 20000) {
-                endTime = new Date(dateNow.getTime() + 15000)
-            }
-
-            useWinner.current({ ...payload, end_time: endTime })
-        },
-    )
 
     // Escape hot key
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
-            usePlayerAbility.current(undefined)
+            useAnyAbility.current(undefined)
             setHighlightedMechParticipantID(undefined)
         })
     }, [addToHotkeyRecord])
 
     // When battle ends, cancel abilities etc.
     useEffect(() => {
-        if (!isBattleStarted) {
-            useWinner.current(undefined)
-            usePlayerAbility.current(undefined)
+        if (battleState != BattleState.BattlingState) {
+            useAnyAbility.current(undefined)
         }
-    }, [isBattleStarted])
+    }, [battleState])
 
     const onTargetConfirm = useCallback(
         ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
-            if (!currentArenaID) return
-
-            let payload: {
-                arena_id: string
-                blueprint_ability_id: string
-                location_select_type: string
-                start_coords?: Position
-                end_coords?: Position
-                mech_hash?: string
-            } | null = null
-
-            let hubKey = GameServerKeys.PlayerAbilityUse
-
             try {
-                // If its a winner (battle ability)
-                if (winner.current?.game_ability) {
-                    if (!startCoord) {
-                        throw new Error("Missing map target location.")
-                    }
+                // If no ability is selected, then return
+                if (!anyAbility.current || !currentArenaID) return
 
-                    payload = {
-                        arena_id: currentArenaID,
-                        blueprint_ability_id: "",
-                        location_select_type: "",
-                        start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                        end_coords:
-                            winner.current.game_ability.location_select_type === LocationSelectType.LineSelect && endCoord
-                                ? viewportPositionToGridCell.current(endCoord.x, endCoord.y)
-                                : undefined,
-                    }
-
-                    hubKey = GameServerKeys.SubmitAbilityLocationSelect
-                    useWinner.current(undefined)
-                } else if (playerAbility.current) {
-                    // Else if its a player ability
-                    switch (playerAbility.current.ability.location_select_type) {
-                        case LocationSelectType.LineSelect:
-                            if (!startCoord || !endCoord) {
-                                throw new Error("Missing map target location(s).")
-                            }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                                end_coords: viewportPositionToGridCell.current(endCoord.x, endCoord.y),
-                            }
-                            break
-                        case LocationSelectType.MechSelect:
-                        case LocationSelectType.MechSelectAllied:
-                        case LocationSelectType.MechSelectOpponent:
-                            if (!mechHash) {
-                                throw new Error("Missing mech hash.")
-                            }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                mech_hash: mechHash,
-                            }
-                            break
-
-                        case LocationSelectType.LocationSelect:
-                        case LocationSelectType.MechCommand:
-                            if (!startCoord) {
-                                throw new Error("Missing map target location.")
-                            }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                                mech_hash: playerAbility.current.mechHash,
-                            }
-                            break
-
-                        case LocationSelectType.Global:
-                            break
-                    }
-
-                    // If it's mech move command, dont reset so player can keep moving the mech
-                    if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
-                        usePlayerAbility.current(undefined)
-                    }
-
-                    if (playerAbility.current?.ability.location_select_type === LocationSelectType.MechSelect) {
-                        setHighlightedMechParticipantID(undefined)
-                    }
-
-                    if (!payload) {
-                        throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                    }
+                // We will construct the payload and then send it off
+                const payload: {
+                    arena_id: string
+                    ability_id: string
+                    blueprint_ability_id: string
+                    location_select_type: string
+                    start_coords?: Position
+                    end_coords?: Position
+                    mech_hash?: string
+                } = {
+                    arena_id: currentArenaID,
+                    ability_id: anyAbility.current.id,
+                    blueprint_ability_id: anyAbility.current.id,
+                    location_select_type: anyAbility.current.location_select_type,
+                    mech_hash: anyAbility.current.mech_hash,
                 }
 
-                send(hubKey, payload)
-                newSnackbarMessage("Successfully submitted target location.", "success")
+                let endpoint = GameServerKeys.PlayerAbilityUse
+                if (anyAbility.current.isSupportAbility) endpoint = GameServerKeys.PlayerSupportAbilityUse
+
+                switch (anyAbility.current.location_select_type) {
+                    case LocationSelectType.LineSelect:
+                        if (!startCoord || !endCoord) {
+                            newSnackbarMessage("Missing map target location(s).", "error")
+                            return
+                        }
+                        payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                        payload.end_coords = viewportPositionToGridCell.current(endCoord.x, endCoord.y)
+                        break
+
+                    case LocationSelectType.MechSelect:
+                    case LocationSelectType.MechSelectAllied:
+                    case LocationSelectType.MechSelectOpponent:
+                        if (!mechHash) {
+                            newSnackbarMessage("Missing mech hash.", "error")
+                            return
+                        }
+                        payload.mech_hash = mechHash
+                        setHighlightedMechParticipantID(undefined)
+                        break
+
+                    case LocationSelectType.MechCommand:
+                    case LocationSelectType.LocationSelect:
+                        if (!startCoord) {
+                            newSnackbarMessage("Missing map target location.", "error")
+                            return
+                        }
+                        payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                        break
+
+                    case LocationSelectType.Global:
+                        break
+                }
+
+                // If it's mech move command, dont reset so player can keep moving the mech
+                if (anyAbility.current?.location_select_type !== LocationSelectType.MechCommand) {
+                    useAnyAbility.current(undefined)
+                }
+
+                send(endpoint, payload)
                 selectMapPosition.current(undefined)
+                newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
                 console.error(err)
@@ -305,15 +294,19 @@ export const MiniMapPixiContainer = createContainer(() => {
         gridCellToViewportPosition,
 
         // Ability use related stuff
-        winner,
-        playerAbility,
+        anyAbility,
         selection,
-        useWinner,
-        usePlayerAbility,
+        useAnyAbility,
         selectMapPosition,
-        onAbilityUseCallbacks,
+        onAnyAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
         onTargetConfirm,
+
+        // Hotkeys
+        miniMapHotkeyRecord,
+        miniMapControlHotkeyRecord,
+        addToHotkeyRecord,
+        handleMiniMapHotKey,
     }
 })
 

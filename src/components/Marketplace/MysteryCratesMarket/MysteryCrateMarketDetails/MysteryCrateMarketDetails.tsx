@@ -1,24 +1,26 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { SafePNG } from "../../../../assets"
+import { useParams } from "react-router-dom"
+import { HangarBg, SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { AuctionDetails } from "../../Common/MarketDetails/AuctionDetails"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { CrateDetails } from "./CrateDetails"
 
-export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
+export const MysteryCrateMarketDetails = () => {
+    const { id } = useParams<{ id: string }>()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
@@ -77,7 +79,7 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -93,23 +95,36 @@ export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
     }, [loadError, marketItem, theme.factionTheme.background, primaryColor])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: primaryColor,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ height: "100%" }}>{content}</Stack>
-        </ClipThing>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ height: "100%" }}>{content}</Stack>
+            </ClipThing>
+        </Box>
     )
 }
 
@@ -137,16 +152,6 @@ const WarMachineMarketDetailsInner = ({
                 pr: "1rem",
                 my: "2rem",
                 direction: "ltr",
-                scrollbarWidth: "none",
-                "::-webkit-scrollbar": {
-                    width: "1rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: primaryColor,
-                },
             }}
         >
             <Box sx={{ direction: "ltr", height: 0 }}>

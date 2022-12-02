@@ -5,9 +5,10 @@ import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIco
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../fetching"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const WarMachineDestroyedInfoBT = ({
     warMachine,
@@ -18,7 +19,7 @@ export const WarMachineDestroyedInfoBT = ({
     warMachine: WarMachineState
     open: boolean
     onClose: () => void
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -42,7 +43,7 @@ export const WarMachineDestroyedInfoBT = ({
         if (!warMachineDestroyedRecord)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                    <CircularProgress size="1.8rem" sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress size="1.8rem" />
                 </Stack>
             )
 
@@ -101,7 +102,7 @@ export const WarMachineDestroyedInfoBT = ({
                 </Stack>
             </Stack>
         )
-    }, [getFaction, theme.factionTheme.primary, warMachineDestroyedRecord])
+    }, [getFaction, warMachineDestroyedRecord])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
@@ -222,9 +223,9 @@ const WarMachineBig = ({
     warMachine?: WarMachineState
     name?: string
     isDead?: boolean
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
@@ -237,12 +238,7 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    ...truncateTextLines(2),
                     color,
                 }}
             >
@@ -261,9 +257,9 @@ const WarMachineSmall = ({
     warMachine?: WarMachineState
     name?: string
     damagePercent: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (
@@ -277,12 +273,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
+                        ...truncateTextLines(1),
                         color,
                     }}
                 >
@@ -305,7 +296,7 @@ const DamageList = ({
     title: string
     damageRecords: DamageRecord[]
     top?: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     return (
         <Box sx={{ flex: 1 }}>

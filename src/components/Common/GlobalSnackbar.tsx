@@ -1,25 +1,21 @@
-import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } from "@mui/material"
-import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ClipThing } from ".."
-import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
+import { SnackbarCloseReason } from "@mui/material"
+import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
+import { SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { SnackBarMessage, useGlobalNotifications } from "../../containers"
-import { useInterval } from "../../hooks"
 import { colors } from "../../theme/theme"
+import { NiceSnackBar } from "./Nice/NiceSnackbar"
 
 export const GlobalSnackbar = () => {
     const [open, setOpen] = useState(false)
     const [messageInfo, setMessageInfo] = useState<SnackBarMessage | undefined>(undefined)
-    const { snackBarMessages } = useGlobalNotifications()
-    const prevSnackBarMessages = useRef<SnackBarMessage[]>(snackBarMessages.current)
+    const { snackBarComponentCallback } = useGlobalNotifications()
     const [messages, setMessages] = useState<SnackBarMessage[]>([])
 
-    // Poll for new snackbar messages, using state on the container causes all other components that use it to re-render
-    useInterval(() => {
-        if (prevSnackBarMessages.current !== snackBarMessages.current) {
-            setMessages(snackBarMessages.current)
-            prevSnackBarMessages.current = snackBarMessages.current
+    useEffect(() => {
+        snackBarComponentCallback.current = (snackBarMessages) => {
+            setMessages(snackBarMessages)
         }
-    }, 1000)
+    }, [snackBarComponentCallback])
 
     useEffect(() => {
         if (messages.length && !messageInfo) {
@@ -27,7 +23,6 @@ export const GlobalSnackbar = () => {
             setMessageInfo({ ...messages[0] })
             setMessages((prev) => {
                 const newValue = prev.slice(1)
-                snackBarMessages.current = newValue
                 return newValue
             })
             setOpen(true)
@@ -35,7 +30,7 @@ export const GlobalSnackbar = () => {
             // Close an active snack when a new one is added
             setOpen(false)
         }
-    }, [messages, messageInfo, open, setMessages, snackBarMessages])
+    }, [messages, messageInfo, open, setMessages])
 
     const handleClose = useCallback(
         (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
@@ -51,7 +46,7 @@ export const GlobalSnackbar = () => {
 
     const severityDeets: { color: string; icon: ReactNode } = useMemo(() => {
         let color = colors.blue
-        let icon = <SvgInfoCircular size="1.4rem" />
+        let icon = <SvgInfoCircular inline size="1.8rem" />
 
         switch (messageInfo?.severity) {
             case "error":
@@ -59,11 +54,11 @@ export const GlobalSnackbar = () => {
                 break
             case "success":
                 color = colors.green
-                icon = <SvgSuccess size="1.4rem" />
+                icon = <SvgSuccess inline size="1.8rem" />
                 break
             case "warning":
                 color = colors.orange
-                icon = <SvgWarnTriangle size="1.4rem" />
+                icon = <SvgWarnTriangle inline size="1.8rem" />
                 break
             case "info":
             default:
@@ -73,61 +68,17 @@ export const GlobalSnackbar = () => {
         return { color, icon }
     }, [messageInfo])
 
-    return useMemo(
-        () => (
-            <Snackbar
-                key={messageInfo ? `global-snackbar-${messageInfo.key}` : undefined}
-                open={open}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                autoHideDuration={4000}
-                onClose={handleClose}
-                TransitionProps={{ onExited: handleExited }}
-            >
-                <Box>
-                    <ClipThing
-                        clipSize="9px"
-                        border={{
-                            borderThickness: ".25rem",
-                            borderColor: "#FFFFFF",
-                        }}
-                        corners={{
-                            topRight: true,
-                            bottomLeft: true,
-                        }}
-                        sx={{
-                            mb: "-1rem",
-                            ml: "-1rem",
-                        }}
-                        backgroundColor={severityDeets.color}
-                        opacity={0.99}
-                    >
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing=".9rem"
-                            sx={{
-                                px: "1.4rem",
-                                pt: ".6rem",
-                                pb: ".5rem",
-                                pr: ".9rem",
-                                borderRadius: 0.4,
-                                boxShadow: 23,
-                            }}
-                        >
-                            {severityDeets.icon}
-
-                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                {messageInfo ? messageInfo.message : undefined}
-                            </Typography>
-
-                            <IconButton size="small" onClick={handleClose}>
-                                <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
-                            </IconButton>
-                        </Stack>
-                    </ClipThing>
-                </Box>
-            </Snackbar>
-        ),
-        [handleClose, handleExited, messageInfo, open, severityDeets.color, severityDeets.icon],
+    return (
+        <NiceSnackBar
+            key={messageInfo ? `global-snackbar-${messageInfo.key}` : undefined}
+            open={open}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            TransitionProps={{ onExited: handleExited }}
+            icon={severityDeets.icon}
+            message={messageInfo?.message}
+            color={severityDeets.color}
+        />
     )
 }

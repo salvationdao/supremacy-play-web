@@ -7,7 +7,7 @@ import { useTheme } from "../../../../containers/theme"
 import { colors } from "../../../../theme/theme"
 import { BattleAbilityStages, LocationSelectType } from "../../../../types"
 import { MechAbilityStages, PlayerAbilityStages } from "../../../../types/training"
-import { TOP_BAR_HEIGHT } from "../../../BigDisplay/MiniMapNew/MiniMapNew"
+import { TOP_BAR_HEIGHT } from "../../../BattleArena/BigDisplay/MiniMapNew/MiniMapNew"
 
 export const TargetHintBT = () => {
     const { isTargeting, winner, playerAbility } = useTraining()
@@ -69,7 +69,7 @@ const WinnerTargetHint = () => {
                     backgroundColor: (theme) => `${theme.factionTheme.background}`,
                 }}
             >
-                <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: colour } }}>
+                <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "bold", color: colour } }}>
                     You have{" "}
                     <WinnerTargetHintInner
                         time={winner.time}
@@ -184,7 +184,7 @@ const PlayerAbilityTargetHint = () => {
                 <ClipThing
                     backgroundColor={theme.factionTheme.primary}
                     corners={{ topRight: true }}
-                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.secondary } }}
+                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.text } }}
                 >
                     {data?.icon}
                 </ClipThing>
@@ -201,7 +201,7 @@ const PlayerAbilityTargetHint = () => {
                         backgroundColor: (theme) => `${theme.factionTheme.background}`,
                     }}
                 >
-                    <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "fontWeightBold", color: ability.colour } }}>
+                    <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "bold", color: ability.colour } }}>
                         {data?.descriptor}&nbsp;
                         <span>{`${ability.label}`}</span>
                     </Typography>
@@ -222,7 +222,7 @@ const PlayerAbilityTargetHint = () => {
                                 resetSelection()
                             }}
                         >
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold" }}>Cancel</Typography>
                         </FancyButton>
                     )}
                 </Stack>

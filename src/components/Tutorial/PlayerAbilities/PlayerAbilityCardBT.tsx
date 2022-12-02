@@ -4,8 +4,9 @@ import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "..
 import { useTraining } from "../../../containers/training"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityStages } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
+import { truncateTextLines } from "../../../helpers"
 
 export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
     const { setPlayerAbility, setTrainingStage, trainingStage } = useTraining()
@@ -32,7 +33,7 @@ export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAb
 
     return (
         <>
-            <TooltipHelper text={playerAbility.ability.description} placement="bottom">
+            <NiceTooltip text={playerAbility.ability.description} placement="bottom">
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",
@@ -126,20 +127,15 @@ export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAb
                             variant="body2"
                             sx={{
                                 lineHeight: 1.2,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                fontWeight: "fontWeightBold",
+                                ...truncateTextLines(2),
+                                fontWeight: "bold",
                             }}
                         >
                             {playerAbility.ability.label}
                         </Typography>
                     </Stack>
                 </FancyButton>
-            </TooltipHelper>
+            </NiceTooltip>
         </>
     )
 }

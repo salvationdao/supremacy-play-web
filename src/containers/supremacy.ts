@@ -4,11 +4,16 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
-import { FactionsAll } from "../types"
+import { useLocalStorage } from "../hooks/useLocalStorage"
+import { FactionWithPalette } from "../types"
 import { useWS } from "./ws/useWS"
 
+interface FactionsAll {
+    [faction_id: string]: FactionWithPalette
+}
+
 export const SupremacyContainer = createContainer(() => {
-    const isTraining = location.pathname.includes("/training")
+    const isTutorial = location.pathname.includes("/tutorial")
     const { newSnackbarMessage } = useGlobalNotifications()
     const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
@@ -20,9 +25,12 @@ export const SupremacyContainer = createContainer(() => {
     const [hasInteracted, setHasInteracted] = useState(false)
     const isWindowFocused = useRef(document.visibilityState === "visible")
 
+    const [isTransparentMode, setIsTransparentMode] = useLocalStorage("isTransparentMode", false)
+
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
+    const [battleID, setBattleID] = useState<string>()
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -67,7 +75,7 @@ export const SupremacyContainer = createContainer(() => {
 
     // If it's been X amount of time and we never connected, then server is probs down
     useEffect(() => {
-        if (isTraining) {
+        if (isTutorial) {
             setFirstConnectTimedOut(true)
             return
         }
@@ -76,7 +84,7 @@ export const SupremacyContainer = createContainer(() => {
         }, 20000)
 
         return () => clearTimeout(timeout)
-    }, [serverConnectedBefore, isTraining])
+    }, [serverConnectedBefore, isTutorial])
 
     // Get main color of each factions
     useEffect(() => {
@@ -118,8 +126,13 @@ export const SupremacyContainer = createContainer(() => {
         getFaction,
         battleIdentifier,
         setBattleIdentifier,
+        battleID,
+        setBattleID,
         haveSups,
         toggleHaveSups,
+
+        isTransparentMode,
+        setIsTransparentMode,
     }
 })
 

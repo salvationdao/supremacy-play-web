@@ -1,10 +1,14 @@
-import { Faction, WarMachineState } from "."
+import { WarMachineState } from "."
+import { OvenStream } from "../containers/oven"
 import { colors } from "../theme/theme"
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
 
-export interface FactionsAll {
-    [faction_id: string]: Faction
+export enum BattleState {
+    EndState = 0,
+    SetupState = 1,
+    IntroState = 2,
+    BattlingState = 3,
 }
 
 export enum BribeStage {
@@ -68,41 +72,27 @@ export interface Vector2i {
     y: number
 }
 
-export interface BattleAbility {
-    id: string
-    label: string
-    colour: string
-    text_colour: string
-    description: string
-    image_url: string
-    cooldown_duration_second: number
-    ability_offering_id: string
-}
-
-export interface GameAbility {
+export interface AnyAbility {
     id: string
     game_client_ability_id: number
-    identity: string
+    location_select_type: LocationSelectType
     label: string
     colour: string
-    text_colour: string
-    description: string
     image_url: string
+    description: string
+    text_colour: string
+    mech_hash?: string
+    isSupportAbility?: boolean // Need a quick flag so when it triggers, it uses diff endpoint
+}
+
+export interface GameAbility extends AnyAbility {
+    identity: string
     sups_cost: string
     current_sups: string
     ability_offering_id: string
-    location_select_type: string
 }
 
-export interface BlueprintPlayerAbility {
-    id: string
-    game_client_ability_id: number
-    label: string
-    colour: string
-    image_url: string
-    description: string
-    text_colour: string
-    location_select_type: LocationSelectType
+export interface BlueprintPlayerAbility extends AnyAbility {
     created_at: Date
     inventory_limit: number
     cooldown_seconds: number
@@ -115,9 +105,6 @@ export interface PlayerAbility {
     last_purchased_at: Date
     cooldown_expires_on: Date
     ability: BlueprintPlayerAbility
-
-    // Used for mech command related abilities
-    mechHash?: string
 }
 
 export interface SaleAbility {
@@ -139,12 +126,6 @@ export interface GameAbilityProgress {
     sups_cost: string
     current_sups: string
     should_reset: boolean
-}
-
-export interface BattleAbilityProgress {
-    faction_id: string
-    sups_cost: string
-    current_sups: string
 }
 
 export interface Battle {
@@ -237,18 +218,16 @@ export interface DisplayedAbility {
     location_in_pixels?: boolean
     grid_size_multiplier?: number // defaults to 1.5
     noAnim?: boolean
-}
-
-export enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
+    is_removed?: boolean
 }
 
 export interface Arena {
     id: string
-    type: ArenaType
+    name: string
     gid: number
     status?: ArenaStatus
+    state: string
+    oven_stream: OvenStream
 }
 
 export interface ArenaStatus {
@@ -320,14 +299,14 @@ export interface LocationSelectAlertProps {
     type: LocationSelectAlertType
     currentUser?: User
     nextUser?: User
-    ability: BattleAbility
+    ability: AnyAbility
     x?: number
     y?: number
 }
 
 export interface WarMachineAbilityAlertProps {
     user: User
-    ability: BattleAbility
+    ability: AnyAbility
     warMachine: WarMachineState
 }
 
@@ -340,7 +319,7 @@ export interface KillAlertProps {
 
 export interface BattleFactionAbilityAlertProps {
     user: User
-    ability: BattleAbility
+    ability: AnyAbility
 }
 
 export interface NotificationStruct {
@@ -348,25 +327,15 @@ export interface NotificationStruct {
     data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }
 
-export const MechMoveCommandAbility: PlayerAbility = {
-    id: "mech_move_command",
-    blueprint_id: "mech_move_command",
-    count: 1,
-    last_purchased_at: new Date(),
-    cooldown_expires_on: new Date(),
-    ability: {
-        id: "",
-        game_client_ability_id: 8,
-        label: "MOVE COMMAND",
-        image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
-        description: "Command the war machine to move to a specific location.",
-        text_colour: "#000000",
-        colour: colors.gold,
-        location_select_type: LocationSelectType.MechCommand,
-        created_at: new Date(),
-        inventory_limit: 10,
-        cooldown_seconds: 5,
-    },
+export const MechMoveCommandAbility: AnyAbility = {
+    id: "",
+    game_client_ability_id: 8,
+    label: "MOVE COMMAND",
+    image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
+    description: "Command the war machine to move to a specific location.",
+    text_colour: "#000000",
+    colour: colors.gold,
+    location_select_type: LocationSelectType.MechCommand,
 }
 
 export interface MechMoveCommand {
@@ -375,8 +344,8 @@ export interface MechMoveCommand {
     battle_id?: string
     mech_id: string
     triggered_by_id: string
-    cell_x: number
-    cell_y: number
+    cell_x: string
+    cell_y: string
     cancelled_at?: string
     reached_at?: string
     is_moving: boolean

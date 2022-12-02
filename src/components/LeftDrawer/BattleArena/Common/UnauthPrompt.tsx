@@ -2,19 +2,17 @@ import { Box, Stack, Typography } from "@mui/material"
 import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { ConnectButton } from "../../../Bar/ProfileCard/ConnectButton"
-import { ClipThing } from "../../../Common/ClipThing"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const UnauthPrompt = () => {
     return (
         <Box sx={{ py: "1rem" }}>
-            <ClipThing
-                clipSize="6px"
+            <NiceBoxThing
                 border={{
-                    borderColor: `${colors.yellow}`,
-                    borderThickness: ".3rem",
+                    color: `${colors.yellow}`,
+                    thickness: "very-lean",
                 }}
-                opacity={0.6}
-                backgroundColor={colors.darkestNeonBlue}
+                background={{ colors: [colors.darkestNeonBlue] }}
                 sx={{ position: "relative" }}
             >
                 <Stack
@@ -31,7 +29,7 @@ export const UnauthPrompt = () => {
                     <Typography fontFamily={fonts.nostromoBold} variant="body2" textAlign={"center"} sx={{ mb: "1.6rem", fontSize: "1.4rem" }}>
                         log in for full access to the battle arena: claim and use abilities, visit the marketplace and deploy mechs!
                     </Typography>
-                    <ConnectButton clipBorderColor={colors.yellow} clipBackgroundColor={colors.yellow} sx={{ minWidth: "18rem" }} />
+                    <ConnectButton changeColor={colors.yellow} sx={{ minWidth: "18rem" }} />
                 </Stack>
 
                 {/* Coin left decorations */}
@@ -84,7 +82,7 @@ export const UnauthPrompt = () => {
                         backgroundSize: "cover",
                     }}
                 />
-            </ClipThing>
+            </NiceBoxThing>
         </Box>
     )
 }

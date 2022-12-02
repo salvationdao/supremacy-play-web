@@ -31,13 +31,13 @@ export const UserInfo = ({ marketUser, title, primaryColor }: { marketUser?: Mar
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
-                            backgroundColor: ownerFactionDeets.primary_color,
+                            backgroundColor: ownerFactionDeets.palette.primary,
                             borderRadius: 0.8,
-                            border: `${ownerFactionDeets.primary_color} 1px solid`,
+                            border: `${ownerFactionDeets.palette.primary} 1px solid`,
                         }}
                     />
                 )}
-                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
+                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.palette.primary, fontWeight: "bold" }}>
                     {username}
                     <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
                     <span style={{ color: colors.neonBlue }}>{isSelfItem ? " (YOU)" : ""}</span>

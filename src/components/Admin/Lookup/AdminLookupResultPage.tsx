@@ -7,11 +7,12 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, RoleType } from "../../../types"
+import { FactionWithPalette, RoleType } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
-import { FancyButton } from "../../Common/FancyButton"
-import { PageHeader } from "../../Common/PageHeader"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ActiveBanPanel } from "./ActiveBanPanel"
 import { AdminBanModal } from "./AdminBanModal"
 import { LookupSearchBox } from "./AdminLookup"
@@ -103,7 +104,7 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             p: "1rem",
                             width: "100%",
                             textAlign: "center",
-                            color: theme.factionTheme.secondary,
+                            color: theme.factionTheme.text,
                             background: theme.factionTheme.primary,
                         }}
                     >
@@ -125,7 +126,7 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             p: "1rem",
                             width: "100%",
                             textAlign: "center",
-                            color: theme.factionTheme.secondary,
+                            color: theme.factionTheme.text,
                             background: theme.factionTheme.primary,
                         }}
                     >
@@ -137,16 +138,6 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-                            scrollbarWidth: "thin",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: "#FFFFFF15",
-                            },
                         }}
                     >
                         <Box
@@ -169,7 +160,6 @@ interface LookupResultProps {
 }
 
 const LookupResult = ({ playerGIDString }: LookupResultProps) => {
-    const theme = useTheme()
     const { user } = useAuth()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -177,7 +167,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
     const [userData, setUserData] = useState<GetUserResp>()
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
-    const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
+    const [faction, setFaction] = useState<FactionWithPalette>(getFaction(user.faction_id))
     const [currentTab, setCurrentTab] = useState<string>("PLAYER-INFO")
 
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
@@ -266,15 +256,15 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: faction.primary_color,
+                    borderColor: faction.palette.primary,
                     borderThickness: ".3rem",
                 }}
-                backgroundColor={faction.background_color}
+                backgroundColor={faction.palette.background}
                 opacity={0.9}
                 sx={{ flex: 1, height: "100%" }}
             >
                 <Stack height="100%" alignItems="center" justifyContent="center">
-                    <CircularProgress sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress />
                 </Stack>
             </ClipThing>
         )
@@ -285,10 +275,10 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: faction.primary_color,
+                    borderColor: faction.palette.primary,
                     borderThickness: ".3rem",
                 }}
-                backgroundColor={faction.background_color}
+                backgroundColor={faction.palette.background}
                 opacity={0.9}
                 sx={{ flex: 1, height: "100%" }}
                 contentSx={{
@@ -310,12 +300,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                 sx={{
                                     fontSize: "1.8rem",
                                     color: "#FFFFFF",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {userData.user.username}
@@ -326,7 +311,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                     imageUrl={faction.logo_url}
                     imageHeight={"7rem"}
                     imageWidth={"7rem"}
-                    primaryColor={faction.primary_color}
+                    primaryColor={faction.palette.primary}
                 >
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
                         <FancyButton
@@ -346,7 +331,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         </FancyButton>
                     </Stack>
                 </PageHeader>
-                <Box sx={{ borderBottom: `${faction.primary_color}70 1.5px solid` }}>
+                <Box sx={{ borderBottom: `${faction.palette.primary}70 1.5px solid` }}>
                     <Tabs
                         value={currentTab}
                         onChange={handleChange}
@@ -354,12 +339,12 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         scrollButtons="auto"
                         sx={{
                             flexShrink: 0,
-                            color: faction.primary_color,
+                            color: faction.palette.primary,
                             minHeight: 0,
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                             ".Mui-selected": {
-                                color: `${faction.secondary_color} !important`,
-                                background: `linear-gradient(${faction.primary_color} 26%, ${faction.primary_color}BB)`,
+                                color: `${faction.palette.text} !important`,
+                                background: `linear-gradient(${faction.palette.primary} 26%, ${faction.palette.primary}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                             ".MuiTabScrollButton-root": { display: "none" },
@@ -377,16 +362,6 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-                        scrollbarWidth: "thin",
-                        "::-webkit-scrollbar": {
-                            width: "1rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: "#FFFFFF15",
-                        },
                     }}
                 >
                     <Box height={0}>

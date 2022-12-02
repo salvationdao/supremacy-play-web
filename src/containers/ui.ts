@@ -2,22 +2,17 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
-import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
-import { useAuth } from "./auth"
+import { LeftRoutes, RightRoutes } from "../routes"
 import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
 const uiContainer = createContainer(() => {
-    const isTraining = location.pathname.includes("/training")
+    const isTutorial = location.pathname.includes("/tutorial")
     const { pathname } = useLocation()
     const { isMobile } = useMobile()
-    const { userID } = useAuth()
-    const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
-    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(
-        !userID ? "" : localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "",
-    )
+    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LeftRoutes[0]?.id || undefined)
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
-        isTraining ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
+        isTutorial ? "" : localStorage.getItem("rightDrawerActiveTabID") || RightRoutes[0]?.id || undefined,
     )
     // Big display vs left drawer
     const [smallDisplayRef, setSmallDisplayRef] = useState<HTMLDivElement | null>(null)
@@ -26,27 +21,20 @@ const uiContainer = createContainer(() => {
     const prevIsStreamBigDisplay = useRef<boolean>()
 
     const [showTrailer, toggleShowTrailer] = useToggle()
-    const [showUpcomingBattle, toggleShowUpcomingBattle] = useToggle()
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
     const [stopMapRender, setStopMapRender] = useState(false)
+    const [showMainMenu, toggleShowMainMenu] = useToggle()
 
     useEffect(() => {
-        if (userID && showUpcomingBattle) {
-            setLeftDrawerActiveTabID("quick_deploy")
-            return
-        }
-    }, [showUpcomingBattle, setLeftDrawerActiveTabID, userID])
-
-    useEffect(() => {
-        localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID)
+        localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID || "")
     }, [leftDrawerActiveTabID])
 
     useEffect(() => {
-        localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID)
+        localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID || "")
     }, [rightDrawerActiveTabID])
 
     useEffect(() => {
-        if (pathname.includes("/training")) {
+        if (pathname.includes("/tutorial")) {
             setRightDrawerActiveTabID("")
         }
     }, [pathname])
@@ -96,9 +84,6 @@ const uiContainer = createContainer(() => {
         toggleIsStreamBigDisplayMemorized,
         restoreIsStreamBigDisplayMemorized,
 
-        isNavLinksDrawerOpen,
-        toggleIsNavLinksDrawerOpen,
-
         leftDrawerActiveTabID,
         setLeftDrawerActiveTabID,
 
@@ -109,12 +94,12 @@ const uiContainer = createContainer(() => {
         isBattleHistoryOpen,
         toggleShowTrailer,
         toggleIsBattleHistoryOpen,
-        showUpcomingBattle,
-        toggleShowUpcomingBattle,
 
         hasModalsOpen,
         stopMapRender,
         setStopMapRender,
+        showMainMenu,
+        toggleShowMainMenu,
     }
 })
 

@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { colors, fonts } from "../../../../theme/theme"
+import { truncateTextLines } from "../../../../helpers"
 
 export const General = ({
     isGridView,
@@ -33,13 +34,8 @@ export const General = ({
                 <Typography
                     sx={{
                         color: textColor || "#FFFFFF",
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
+                        fontWeight: "bold",
+                        ...truncateTextLines(2),
                     }}
                 >
                     {text}

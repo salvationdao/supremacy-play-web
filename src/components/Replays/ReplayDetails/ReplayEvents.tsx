@@ -15,13 +15,13 @@ import {
     ReplayEvent,
     WarMachineAbilityAlertProps,
 } from "../../../types"
-import { BattleAbilityAlert } from "../../Notifications/Alerts/BattleAbilityAlert"
-import { BattleZoneAlert } from "../../Notifications/Alerts/BattleZoneAlert"
-import { FactionAbilityAlert } from "../../Notifications/Alerts/FactionAbilityAlert"
-import { KillAlert } from "../../Notifications/Alerts/KillAlert"
-import { LocationSelectAlert } from "../../Notifications/Alerts/LocationSelectAlert"
-import { TextAlert } from "../../Notifications/Alerts/TextAlert"
-import { WarMachineAbilityAlert } from "../../Notifications/Alerts/WarMachineAbilityAlert"
+import { BattleAbilityAlert } from "../../BattleArena/Notifications/Alerts/BattleAbilityAlert"
+import { BattleZoneAlert } from "../../BattleArena/Notifications/Alerts/BattleZoneAlert"
+import { FactionAbilityAlert } from "../../BattleArena/Notifications/Alerts/FactionAbilityAlert"
+import { KillAlert } from "../../BattleArena/Notifications/Alerts/KillAlert"
+import { LocationSelectAlert } from "../../BattleArena/Notifications/Alerts/LocationSelectAlert"
+import { TextAlert } from "../../BattleArena/Notifications/Alerts/TextAlert"
+import { WarMachineAbilityAlert } from "../../BattleArena/Notifications/Alerts/WarMachineAbilityAlert"
 
 export const ReplayEvents = ({
     battleReplay,
@@ -71,17 +71,6 @@ export const ReplayEvents = ({
                     overflowX: "hidden",
                     pr: ".8rem",
                     direction: "ltr",
-                    scrollBehavior: "smooth",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: ".8rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: (theme) => theme.factionTheme.primary,
-                    },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>

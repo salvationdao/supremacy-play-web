@@ -1,6 +1,7 @@
 import { keyframes } from "@emotion/react"
 import { Box, Skeleton, Stack, styled, Typography } from "@mui/material"
 import { colors, fonts } from "../../../../../theme/theme"
+import { truncateTextLines } from "../../../../../helpers"
 
 interface PercentageDisplayProps {
     displayValue: string
@@ -74,12 +75,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, circleSize,
                     lineHeight: 1.2,
                     fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBold,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    ...truncateTextLines(2),
                 }}
             >
                 {label}

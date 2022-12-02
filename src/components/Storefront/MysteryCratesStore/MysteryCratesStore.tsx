@@ -1,20 +1,20 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { SafePNG } from "../../../assets"
+import { HangarBg, SafePNG } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MysteryCrate, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
-import { PageHeader } from "../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { CrateRewardsModal } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardsModal"
-import { CrateRewardVideo } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardVideo"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
+import { OpeningCrate } from "../../FleetCrates/FleetCrates"
+import { CrateRewardsModal } from "../../FleetCrates/OpenCrate/CrateRewardsModal"
+import { CrateRewardVideo } from "../../FleetCrates/OpenCrate/CrateRewardVideo"
 import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 export const MysteryCratesStore = () => {
@@ -46,7 +46,7 @@ export const MysteryCratesStore = () => {
                 page_size: pageSize,
             })
 
-            updateQuery({
+            updateQuery.current({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
@@ -96,7 +96,7 @@ export const MysteryCratesStore = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -105,36 +105,56 @@ export const MysteryCratesStore = () => {
         if (crates && crates.length > 0) {
             if (enlargedView) {
                 return (
-                    <Box
-                        sx={{
-                            width: "100%",
-                            pt: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
-                            gridTemplateRows: "min-content",
-                            gap: "5rem",
-                            alignItems: "center",
-                            alignContent: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
-                        {crates.map((crate, index) => (
-                            <MysteryCrateStoreItem
-                                key={`storefront-mystery-crate-${crate.id}-${index}`}
-                                enlargedView={enlargedView}
-                                crate={crate}
-                                setOpeningCrate={setOpeningCrate}
-                                setOpenedRewards={setOpenedRewards}
-                                setFutureCratesToOpen={setFutureCratesToOpen}
-                            />
-                        ))}
-                    </Box>
+                    <>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                pt: "1rem",
+                                display: "grid",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
+                                gridTemplateRows: "min-content",
+                                gap: "5rem",
+                                alignItems: "center",
+                                alignContent: "center",
+                                justifyContent: "center",
+                                overflow: "visible",
+                            }}
+                        >
+                            {crates.map((crate, index) => (
+                                <MysteryCrateStoreItem
+                                    key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                    enlargedView={enlargedView}
+                                    crate={crate}
+                                    setOpeningCrate={setOpeningCrate}
+                                    setOpenedRewards={setOpenedRewards}
+                                    setFutureCratesToOpen={setFutureCratesToOpen}
+                                />
+                            ))}
+                        </Box>
+                        <Typography
+                            sx={{
+                                mt: "2rem",
+                                fontSize: "2.1rem",
+                                textAlign: "center",
+                            }}
+                        >
+                            Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
+                        </Typography>
+                    </>
                 )
             }
 
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Typography
+                        sx={{
+                            mb: "2rem",
+                            fontSize: "1.6rem",
+                            textAlign: "center",
+                        }}
+                    >
+                        Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
+                    </Typography>
                     <Box
                         sx={{
                             width: "100%",
@@ -185,139 +205,130 @@ export const MysteryCratesStore = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates on sale at this time, come back later."}
+                        There are no mystery crates on sale at this time, come back later.
                     </Typography>
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError, theme.factionTheme.primary])
+    }, [crates, enlargedView, isLoading, loadError])
 
     return (
         <>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+            <Box
+                alignItems="center"
+                sx={{
+                    height: "100%",
+                    p: "1rem",
+                    zIndex: siteZIndex.RoutePage,
+                    backgroundImage: `url(${HangarBg})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
                 }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
             >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader
-                            title={
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    MYSTERY CRATES <span style={{ color: colors.lightNeonBlue }}>(LIMITED SUPPLY)</span>
-                                </Typography>
-                            }
-                            description={
-                                <Typography sx={{ fontSize: "1.85rem" }}>Gear up for the battle arena with a variety of War Machines and Weapons.</Typography>
-                            }
-                            imageUrl={SafePNG}
-                        >
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: theme.factionTheme.primary,
-                                        opacity: 1,
-                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                                    to={`/fleet/mystery-crates`}
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: theme.factionTheme.secondary,
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        OPEN CRATES IN FLEET
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%" }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack sx={{ flex: 1 }}>
+                            <PageHeader
+                                title={
+                                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        MYSTERY CRATES <span style={{ color: colors.lightNeonBlue }}>(LIMITED SUPPLY)</span>
                                     </Typography>
-                                </FancyButton>
-                            </Box>
-                        </PageHeader>
+                                }
+                                description={
+                                    <Typography sx={{ fontSize: "1.85rem" }}>
+                                        Gear up for the battle arena with a variety of War Machines and Weapons.
+                                    </Typography>
+                                }
+                                imageUrl={SafePNG}
+                            >
+                                <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "9px",
+                                            backgroundColor: theme.factionTheme.primary,
+                                            opacity: 1,
+                                            border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                            sx: { position: "relative" },
+                                        }}
+                                        sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.text }}
+                                        to={`/fleet/mystery-crates`}
+                                    >
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                color: theme.factionTheme.text,
+                                                fontFamily: fonts.nostromoBlack,
+                                            }}
+                                        >
+                                            OPEN CRATES IN FLEET
+                                        </Typography>
+                                    </FancyButton>
+                                </Box>
+                            </PageHeader>
 
-                        <TotalAndPageSizeOptions
-                            countItems={crates?.length}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 40]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                        />
+                            <TotalAndPageSizeOptions
+                                countItems={crates?.length}
+                                pageSize={pageSize}
+                                changePageSize={changePageSize}
+                                pageSizeOptions={[10, 20, 40]}
+                                changePage={changePage}
+                                manualRefresh={getItems}
+                            />
 
-                        <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                            <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        ml: "1.9rem",
+                                        mr: ".5rem",
+                                        pr: "1.4rem",
+                                        my: "1rem",
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        direction: "ltr",
+                                    }}
+                                >
+                                    <Box sx={{ height: 0 }}>{content}</Box>
+                                </Box>
+                            </Stack>
+                        </Stack>
+
+                        {totalPages > 1 && (
                             <Box
                                 sx={{
-                                    flex: 1,
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
                             >
-                                <Box sx={{ height: 0 }}>{content}</Box>
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </ClipThing>
+                </ClipThing>
+            </Box>
 
             {openingCrate && (
                 <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />
             )}
 
-            {openedRewards && (
+            {openedRewards && !openingCrate && (
                 <CrateRewardsModal
                     key={JSON.stringify(openedRewards)}
                     openedRewards={openedRewards}

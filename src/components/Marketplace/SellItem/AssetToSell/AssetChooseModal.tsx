@@ -7,17 +7,17 @@ import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Keycard, MechBasic, MysteryCrate, Weapon } from "../../../../types"
+import { Keycard, MechBasic, MysteryCrate, PlayerAsset } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { PageHeader } from "../../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
+import { PageHeader } from "../../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../../Common/Deprecated/TotalAndPageSizeOptions"
 import { AssetToSellStruct, itemTypes } from "../SellItem"
 import { AssetToSellItem } from "./AssetToSellItem"
 
 interface GetAssetsResponse {
     mechs: MechBasic[]
     keycards: Keycard[]
-    weapons: Weapon[]
+    weapons: PlayerAsset[]
     mystery_crates: MysteryCrate[]
     total: number
 }
@@ -46,7 +46,6 @@ export const AssetChooseModal = ({
     const question = itemTypeLabel ? `Choose a ${itemTypeLabel}` : "Choose an item type"
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     const getItems = useCallback(async () => {
@@ -178,7 +177,7 @@ export const AssetChooseModal = ({
                         {isLoading && !loadError && (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                                    <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                                    <CircularProgress />
                                 </Stack>
                             </Stack>
                         )}
@@ -194,16 +193,6 @@ export const AssetChooseModal = ({
                                     pr: ".5rem",
                                     my: "1rem",
                                     direction: "ltr",
-                                    scrollbarWidth: "none",
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: primaryColor,
-                                    },
                                 }}
                             >
                                 <Box sx={{ direction: "ltr", height: 0 }}>
@@ -254,21 +243,7 @@ export const AssetChooseModal = ({
                                     backgroundColor: "#00000070",
                                 }}
                             >
-                                <Pagination
-                                    size="medium"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                        ".Mui-selected": {
-                                            color: secondaryColor,
-                                            backgroundColor: `${primaryColor} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
-                                />
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
                         )}
                     </Stack>

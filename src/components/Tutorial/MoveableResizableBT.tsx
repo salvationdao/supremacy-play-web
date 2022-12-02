@@ -6,8 +6,8 @@ import { useDimension, useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { colors, siteZIndex } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
-import { TooltipHelper } from "../Common/TooltipHelper"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
+import { NiceTooltip } from "../Common/Nice/NiceTooltip"
 import { WindowPortal } from "../Common/WindowPortal/WindowPortal"
 
 import { MoveableResizableBTProvider, MoveableResizableConfig, useMoveableResizableBT } from "./MoveableResizeableContainerBT"
@@ -159,7 +159,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             {topRightContent}
 
                             {infoTooltipText && (
-                                <TooltipHelper text={infoTooltipText} placement="bottom">
+                                <NiceTooltip text={infoTooltipText} placement="bottom">
                                     <Box
                                         sx={{
                                             mr: ".9rem",
@@ -169,7 +169,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                                     >
                                         <SvgInfoCircular fill={colors.text} size="1.6rem" />
                                     </Box>
-                                </TooltipHelper>
+                                </NiceTooltip>
                             )}
 
                             <Box

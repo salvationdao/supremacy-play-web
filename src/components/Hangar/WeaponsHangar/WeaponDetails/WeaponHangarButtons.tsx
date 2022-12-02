@@ -1,11 +1,9 @@
 import { Box, useTheme } from "@mui/material"
-import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { ClipThing } from "../../../Common/ClipThing"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
-import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/MechButtons"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
@@ -14,38 +12,24 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const isInMarketplace = !!weaponDetails.item_sale_id
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: "2.2px",
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ m: "-.3rem" }}
-        >
-            <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(1, 1fr)" }}>
-                <TooltipHelper
-                    placement={"right"}
-                    text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on the marketplace." : ""}
+        <NiceTooltip placement={"right"} text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on the marketplace." : ""}>
+            <Box p="1rem">
+                <NiceButton
+                    corners
+                    disabled={!!weaponDetails.equipped_on}
+                    buttonColor={isInMarketplace ? theme.factionTheme.background : colors.red}
+                    route={{
+                        to: weaponDetails.item_sale_id
+                            ? `/marketplace/weapons/${weaponDetails.item_sale_id}`
+                            : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}`,
+                    }}
+                    sx={{
+                        width: "100%",
+                    }}
                 >
-                    <Box>
-                        <ReusableButton
-                            disabled={!!weaponDetails.equipped_on}
-                            isFancy={!isInMarketplace}
-                            primaryColor={colors.red}
-                            secondaryColor={isInMarketplace ? colors.red : undefined}
-                            backgroundColor={isInMarketplace ? theme.factionTheme.background : colors.red}
-                            label={isInMarketplace ? "VIEW LISTING" : "SELL"}
-                            to={
-                                weaponDetails.item_sale_id
-                                    ? `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}`
-                                    : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}`
-                            }
-                        />
-                    </Box>
-                </TooltipHelper>
+                    {isInMarketplace ? "View Listing" : "Sell"}
+                </NiceButton>
             </Box>
-        </ClipThing>
+        </NiceTooltip>
     )
 }

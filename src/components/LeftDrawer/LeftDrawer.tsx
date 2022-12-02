@@ -1,33 +1,26 @@
-import { Box, Drawer, Fade } from "@mui/material"
-import { useRouteMatch } from "react-router-dom"
+import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
-import { useArena, useAuth, useMobile, useUI } from "../../containers"
-import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
-import { DrawerButtons } from "./DrawerButtons"
+import { useAuth, useMobile, useUI } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { useActiveRouteID } from "../../hooks/useActiveRouteID"
+import { LeftRoutes } from "../../routes"
+import { siteZIndex } from "../../theme/theme"
+import { DRAWER_OFFSET } from "../RightDrawer/RightDrawer"
 
-export const LEFT_DRAWER_WIDTH = 44 // rem
+export const LEFT_DRAWER_WIDTH = 42 // rem
 
 export const LeftDrawer = () => {
-    const { currentArena } = useArena()
-    const { leftDrawerActiveTabID } = useUI()
+    const theme = useTheme()
+    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
-
-    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = "home"
-    if (match) {
-        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.id || ""
-    }
+    const activeRoute = useActiveRouteID()
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0) return null
+    if (isMobile || LeftRoutes.filter((r) => !r.matchRouteIDs || (activeRoute && r.matchRouteIDs.includes(activeRoute.id))).length <= 0) return null
 
-    const isOpen =
-        LEFT_DRAWER_MAP[leftDrawerActiveTabID] &&
-        (LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs === undefined ||
-            LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs?.includes(activeRouteID))
+    const match = LeftRoutes.find((route) => route.id === leftDrawerActiveTabID)
+    const isOpen = match && (match.matchRouteIDs === undefined || (activeRoute && match.matchRouteIDs?.includes(activeRoute.id)))
 
     return (
         <>
@@ -38,33 +31,98 @@ export const LeftDrawer = () => {
                 anchor="left"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${LEFT_DRAWER_WIDTH}rem` : 0,
+                    width: isOpen ? `${LEFT_DRAWER_WIDTH}rem` : DRAWER_OFFSET,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: theme.factionTheme.background,
                         position: "absolute",
-                        borderRight: 0,
+                        borderRight: `1px solid ${theme.factionTheme.s700}`,
                         overflow: "hidden",
+                        transform: !isOpen ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
+                        visibility: !isOpen ? "visible !important" : "",
                     },
                 }}
             >
-                {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
-                    if ((currentArena?.status?.is_idle && r.id !== "quick_deploy") || (!currentArena?.status?.is_idle && r.id === "quick_deploy")) return null
-                    const isActive = r.id === leftDrawerActiveTabID
-                    if (isActive || r.mountAllTime) {
-                        return (
-                            <Fade key={r.id} in>
-                                <Box sx={{ display: isActive ? "block" : "none", height: "100%" }}>{r.Component && <r.Component />}</Box>
-                            </Fade>
-                        )
+                {LeftRoutes.map((route) => {
+                    if (
+                        (!route.Header && !route.Component) ||
+                        (route.requireAuth && !userID) ||
+                        (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
+                    ) {
+                        return null
                     }
-                    return null
+
+                    return (
+                        <Accordion
+                            key={route.id}
+                            expanded={route.id === leftDrawerActiveTabID}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                "&:not(:last-child)": {
+                                    mb: ".5rem",
+                                },
+                                "&.Mui-expanded": {
+                                    flex: 1,
+                                    minHeight: 0,
+                                    m: 0,
+                                    ".MuiCollapse-root": {
+                                        flex: 1,
+                                        ".MuiCollapse-wrapper": {
+                                            height: "100%",
+                                            ".MuiAccordion-region": {
+                                                height: "100%",
+                                            },
+                                        },
+                                    },
+                                },
+                                "&:before": {
+                                    display: "none",
+                                },
+                            }}
+                        >
+                            <AccordionSummary
+                                sx={{
+                                    p: 0,
+                                    minHeight: "auto !important",
+                                    ".MuiAccordionSummary-content": {
+                                        m: 0,
+                                    },
+                                    ".MuiAccordionSummary-content.Mui-expanded": {
+                                        m: 0,
+                                    },
+                                    ":hover": {
+                                        opacity: 1,
+                                    },
+                                }}
+                                onClick={route.id !== leftDrawerActiveTabID ? () => setLeftDrawerActiveTabID(route.id) : undefined}
+                            >
+                                {route.Header && (
+                                    <route.Header
+                                        isDrawerOpen={!!isOpen}
+                                        isOpen={route.id === leftDrawerActiveTabID}
+                                        onClose={() => setLeftDrawerActiveTabID("")}
+                                    />
+                                )}
+                            </AccordionSummary>
+
+                            {route.Component && (route.mountAllTime || route.id === leftDrawerActiveTabID) && (
+                                <AccordionDetails
+                                    sx={{
+                                        height: "100%",
+                                        p: 0,
+                                        backgroundColor: theme.factionTheme.background,
+                                    }}
+                                >
+                                    <route.Component />
+                                </AccordionDetails>
+                            )}
+                        </Accordion>
+                    )
                 })}
             </Drawer>
-            <DrawerButtons />
         </>
     )
 }

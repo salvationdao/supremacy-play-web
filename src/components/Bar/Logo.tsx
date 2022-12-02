@@ -1,17 +1,14 @@
-import { Box, IconButton, Stack, Typography, useMediaQuery } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import { SvgHamburger, SvgSupremacyLogo } from "../../assets"
-import { IS_TESTING_MODE, VERSION } from "../../constants"
-import { useMobile, useUI } from "../../containers"
+import { SvgSupremacyLogo } from "../../assets"
+import { STAGING_ONLY, VERSION } from "../../constants"
+import { useMobile } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
-import { HIDE_NAV_LINKS_WIDTH } from "./NavLinks/NavLinks"
 
 export const Logo = React.memo(function Logo() {
-    const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { isMobile } = useMobile()
-    const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
-    const { toggleIsNavLinksDrawerOpen } = useUI()
+    const [text, setText] = useState<string>(STAGING_ONLY ? "PROVING GROUNDS" : "EARLY ACCESS")
 
     return (
         <Stack
@@ -20,12 +17,6 @@ export const Logo = React.memo(function Logo() {
             spacing="1.3rem"
             sx={{ zIndex: 1, height: "100%", pl: "1.2rem", pr: "2.2rem", borderRight: "#FFFFFF30 1px solid" }}
         >
-            {hideNavLinks && (
-                <IconButton size="small" onClick={() => toggleIsNavLinksDrawerOpen(true)}>
-                    <SvgHamburger size="2.3rem" />
-                </IconButton>
-            )}
-
             <Link to="/">
                 <SvgSupremacyLogo width="15rem" />
             </Link>
@@ -36,7 +27,7 @@ export const Logo = React.memo(function Logo() {
                         setText(`${VERSION.substring(0, 10)}...`)
                     }}
                     onMouseLeave={() => {
-                        setText(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
+                        setText(STAGING_ONLY ? "PROVING GROUNDS" : "EARLY ACCESS")
                     }}
                     sx={{ pb: "2px" }}
                 >

@@ -1,8 +1,10 @@
-import { Button, Divider, Stack } from "@mui/material"
+import { Divider, Stack } from "@mui/material"
 import { useCallback } from "react"
-import { IS_TESTING_MODE, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
+import { SvgSupToken } from "../../../assets"
+import { STAGING_ONLY, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
 import { useAuth } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 export const BuySupsButton = () => {
     const { userID, setPassportPopup } = useAuth()
@@ -17,7 +19,7 @@ export const BuySupsButton = () => {
         setPassportPopup(popup)
     }, [setPassportPopup, userID])
 
-    if (IS_TESTING_MODE) return null
+    if (STAGING_ONLY) return null
 
     return (
         <Stack
@@ -28,24 +30,15 @@ export const BuySupsButton = () => {
                 height: "100%",
             }}
         >
-            <Button
-                sx={{
-                    px: "1.2rem",
-                    pt: ".32rem",
-                    pb: ".16rem",
-                    flexShrink: 0,
-                    justifyContent: "flex-start",
-                    color: colors.neonBlue,
-                    whiteSpace: "nowrap",
-                    borderRadius: 0.2,
-                    border: `1px solid ${colors.neonBlue}`,
-                    overflow: "hidden",
-                    fontFamily: fonts.nostromoBold,
-                }}
+            <NiceButton
+                corners
+                sheen={{ autoSheen: true, sheenSpeedFactor: 0.7 }}
+                sx={{ px: "1rem", py: ".4rem", color: colors.gold }}
                 onClick={openBuySupsPage}
+                buttonColor={colors.gold}
             >
-                GET SUPS
-            </Button>
+                <SvgSupToken inline fill={colors.gold} /> GET SUPS
+            </NiceButton>
 
             <Divider
                 orientation="vertical"

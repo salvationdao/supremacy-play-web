@@ -43,7 +43,7 @@ export class PixiImageIcon {
 
         // Countdown label
         this.countdownLabel = new PIXI.Text("", {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: height,
             fontWeight: "bold",
             fill: "#FFFFFF",

@@ -6,7 +6,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay, MechDetails } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { RelatedReplayVideos } from "./RelatedReplayVideos"
 import { ReplayEvents } from "./ReplayEvents"
 import { ReplayInfo } from "./ReplayInfo"
@@ -51,8 +51,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
         }
     }, [])
 
-    const primaryColor = theme.factionTheme.primary
-
     const content = useMemo(() => {
         if (loadError) {
             return (
@@ -81,7 +79,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -98,16 +96,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                     mr: ".6rem",
                     my: "2rem",
                     direction: "ltr",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: primaryColor,
-                    },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
@@ -128,7 +116,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                 </Box>
             </Box>
         )
-    }, [loadError, primaryColor, replay, seekToSeconds])
+    }, [loadError, replay, seekToSeconds])
 
     return (
         <ClipThing

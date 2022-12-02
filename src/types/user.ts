@@ -1,3 +1,4 @@
+import { FactionTheme } from "@mui/material"
 import { BlueprintPlayerAbility } from "./game"
 
 export interface UserFromPassport {
@@ -7,7 +8,7 @@ export interface UserFromPassport {
     created_at: Date
     deleted_at: Date
     discord_id: string
-    email: string
+    email?: string
     facebook_id: string
     faction_id: string
     first_name: string
@@ -35,10 +36,12 @@ export interface UserFromPassport {
     username: string
     verified: boolean
     withdraw_lock: boolean
+    accepts_marketing?: boolean
 }
 
 export interface User {
     id: string
+    account_id?: string
     username: string
     faction_id: string
     gid: number
@@ -46,6 +49,7 @@ export interface User {
     rank: UserRank
     features: Feature[]
     role_type: RoleType
+    accepts_marketing?: boolean
     created_at?: Date
 }
 
@@ -85,10 +89,11 @@ export interface Faction {
     logo_url: string
     background_url: string
     wallpaper_url: string
-    primary_color: string
-    secondary_color: string
-    background_color: string
     description: string
+}
+
+export interface FactionWithPalette extends Faction {
+    palette: FactionTheme
 }
 
 export interface UserStat {
@@ -111,6 +116,7 @@ export enum FeatureName {
     systemMessages = "SYSTEM_MESSAGES",
     chatBan = "CHAT_BAN",
     profileAvatar = "PROFILE_AVATAR",
+    voiceChat = "VOICE_CHAT",
 }
 
 export enum RoleType {
@@ -126,6 +132,8 @@ export enum SystemMessageDataType {
     Global = "GLOBAL",
     Faction = "FACTION",
     PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
+    ExpiredBattleLobby = "EXPIRED_BATTLE_LOBBY",
+    BattleLobbyInvitation = "BATTLE_LOBBY_INVITATION",
 }
 
 export interface SystemMessage {
@@ -161,10 +169,21 @@ export interface SystemMessageDataMechBattleBegin {
 }
 
 export interface SystemMessageDataMechBattleComplete {
+    player_id: string
+    battle_reward?: BattleReward
+    obtained_bounties?: ObtainedBounty[]
+    mech_battle_briefs?: SystemMessageMechStruct[]
+}
+
+export interface BattleReward {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: SystemMessageMechStruct[]
+}
+
+export interface ObtainedBounty {
+    destroyed_mech: SystemMessageMechStruct
+    Amount: string
 }
 
 export interface KillInfo {

@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 
 interface AuctionDetailsProps {
     id: string
@@ -144,7 +144,7 @@ export const AuctionDetails = ({
                         >
                             <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
                                 <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                                     {formattedCommaCurrentPrice}
                                 </Typography>
                             </Stack>
@@ -238,7 +238,7 @@ export const AuctionDetails = ({
                                 ml: ".3rem",
                                 mt: ".5rem",
                                 color: colors.red,
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             }}
                         >
                             {inputBidPriceError}
@@ -259,11 +259,11 @@ export const AuctionDetails = ({
                     error={bidError}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {numberCommaFormatter(inputBidPrice)})
                             </Typography>
                         </Stack>

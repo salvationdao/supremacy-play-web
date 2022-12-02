@@ -19,9 +19,10 @@ export const ChatFontSize = () => {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
+            spacing=".8rem"
             sx={{ px: "1.2rem", py: ".6rem", backgroundColor: "#FFFFFF05", borderRadius: 1 }}
         >
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Font size:</Typography>
+            <Typography sx={{ lineHeight: 1, fontWeight: "bold" }}>Font size</Typography>
             <ToggleButtonGroup size="small" value={fontSize} exclusive onChange={onChange} sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}>
                 <ToggleButton value={0.8}>
                     <SvgFontCase size="1rem" sx={{ minWidth: "2rem" }} />

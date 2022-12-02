@@ -1,13 +1,13 @@
 import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import QRCode from "react-qr-code"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { colors, fonts } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
-import QRCode from "react-qr-code"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useEffect, useState } from "react"
 import { GameServerKeys } from "../../../../keys"
-import { FancyButton } from "../../../Common/FancyButton"
+import { colors, fonts } from "../../../../theme/theme"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 
 const QR_CODE_SIZE = 180
 
@@ -75,13 +75,11 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 COMPLETE THE FOLLOWING STEPS TO CONFIGURE YOUR MOBILE APP:
                             </Typography>
 
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>
                                 1. Install the Supremacy companion app for Android or iOS.
                             </Typography>
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>
-                                {`2. In the app, click the "Scan QR" button.`}
-                            </Typography>
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>{`2. In the app, click the "Scan QR" button.`}</Typography>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code - displays skeleton while it is loading */}
                             <Box sx={{ ml: "2rem !important" }}>
@@ -118,13 +116,13 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                 sx: { position: "relative", ml: "2rem", width: "9rem" },
                             }}
-                            sx={{ py: ".3rem", color: theme.factionTheme.secondary, minWidth: 0 }}
+                            sx={{ py: ".3rem", color: theme.factionTheme.text, minWidth: 0 }}
                             onClick={onClose}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: theme.factionTheme.secondary,
+                                    color: theme.factionTheme.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

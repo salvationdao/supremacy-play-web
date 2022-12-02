@@ -9,11 +9,10 @@ import { calculateDutchAuctionCurrentPrice, numberCommaFormatter, shadeColor, ti
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { HANGAR_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
-import { SuccessModal } from "../../../Common/SuccessModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
+import { SuccessModal } from "../../../Common/Deprecated/SuccessModal"
 
 interface BuyNowDetailsProps {
     id: string
@@ -109,7 +108,7 @@ export const BuyNowDetails = ({
                             <Typography gutterBottom sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>
                                 PRICE DROP:
                             </Typography>
-                            <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.lightNeonBlue } }}>
+                            <Typography variant="h5" sx={{ fontWeight: "bold", span: { color: colors.lightNeonBlue } }}>
                                 NEXT PRICE DROP IN{" "}
                                 <span>{<PriceDropper createdAt={createdAt} calculateNewPrice={calculateNewPrice} setCurrentPrice={setCurrentPrice} />}</span>{" "}
                                 SECONDS
@@ -121,11 +120,11 @@ export const BuyNowDetails = ({
                                 DROP RATE:
                             </Typography>
                             <Stack direction="row" alignItems="center" sx={{ fontStyle: "italic" }}>
-                                <Typography variant="h5" sx={{ color: colors.dutchAuction, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h5" sx={{ color: colors.dutchAuction, fontWeight: "bold" }}>
                                     -
                                 </Typography>
                                 <SvgSupToken size="2.4rem" fill={colors.dutchAuction} sx={{ transform: "skew(-20deg)" }} />
-                                <Typography variant="h5" sx={{ ml: "-.3rem", fontWeight: "fontWeightBold", color: colors.dutchAuction }}>
+                                <Typography variant="h5" sx={{ ml: "-.3rem", fontWeight: "bold", color: colors.dutchAuction }}>
                                     {formattedCommaDropPrice}/MIN
                                 </Typography>
                             </Stack>
@@ -156,7 +155,7 @@ export const BuyNowDetails = ({
                         >
                             <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
                                 <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                                <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                                     {formattedCommaPrice}
                                 </Typography>
                             </Stack>
@@ -205,11 +204,11 @@ export const BuyNowDetails = ({
                     error={buyError}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {formattedCommaPrice})
                             </Typography>
                         </Stack>
@@ -233,13 +232,13 @@ export const BuyNowDetails = ({
                         let subPath = ""
                         switch (itemType) {
                             case ItemType.WarMachine:
-                                subPath = HANGAR_TABS.WarMachines
+                                subPath = "mechs"
                                 break
                             case ItemType.MysteryCrate:
-                                subPath = HANGAR_TABS.MysteryCrates
+                                subPath = "mystery-crates"
                                 break
                             case ItemType.Keycards:
-                                subPath = HANGAR_TABS.Keycards
+                                subPath = "keycards"
                                 break
                         }
 

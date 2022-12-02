@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors } from "../../../theme/theme"
 import { ItemType } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 import { AssetToSellStruct, itemTypes } from "./SellItem"
 
@@ -21,7 +21,7 @@ export const ItemTypeSelect = ({
     const itemTypeLabel = useMemo(() => itemTypes.find((i) => i.value === itemType)?.label, [itemType])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     return (

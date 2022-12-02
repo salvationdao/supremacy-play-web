@@ -1,19 +1,21 @@
 import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
 import React, { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
+import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { generatePriceText, numberCommaFormatter, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MysteryCrate, OpenCrateResponse, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../../../FleetCrates/FleetCrates"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
@@ -50,8 +52,18 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
     const backgroundColor = theme.factionTheme.background
 
     const priceStr = useMemo(() => (quantity * parseFloat(mysteryCrate.price)).toString(), [quantity, mysteryCrate.price])
-    const formattedPrice = useMemo(() => supFormatterNoFixed(priceStr, 2), [priceStr])
-    const singleCratePrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
+    const formattedPrice = useMemo(() => supFormatter(priceStr, 2), [priceStr])
+    const singleCratePrice = useMemo(() => supFormatter(mysteryCrate.price, 2), [mysteryCrate.price])
+    const singleFiatPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of crate.fiat_product.pricing) {
+            if (p.currency_code === "USD") {
+                pricing = generatePriceText("$USD", new BigNumber(p.amount))
+                break
+            }
+        }
+        return pricing
+    }, [crate])
 
     useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
@@ -63,6 +75,29 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
             setMysteryCrate(payload)
         },
     )
+
+    const addToCart = useCallback(async () => {
+        const errMsg = "Failed to add item to the shopping cart."
+        try {
+            setIsLoading(true)
+            const resp = await send<boolean>(GameServerKeys.FiatShoppingCartItemAdd, {
+                product_id: mysteryCrate.fiat_product_id,
+                quantity,
+            })
+
+            if (!resp) {
+                newSnackbarMessage(errMsg, "error")
+                return
+            }
+
+            newSnackbarMessage(`Successfully added ${quantity} ${mysteryCrate.mystery_crate_type} crate to shopping cart.`, "success")
+        } catch (err) {
+            newSnackbarMessage(typeof err === "string" ? err : errMsg, "error")
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, newSnackbarMessage, mysteryCrate.mystery_crate_type, mysteryCrate.fiat_product_id, quantity])
 
     const confirmBuy = useCallback(async () => {
         try {
@@ -142,6 +177,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         {singleCratePrice}
                                     </Typography>
                                 </Stack>
+                                {STAGING_OR_DEV_ONLY && <Typography sx={{ fontFamily: fonts.nostromoMedium }}>{singleFiatPrice || "N/A"}</Typography>}
                             </Stack>
                             <Box
                                 sx={{
@@ -209,7 +245,6 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         <TextField
                                             variant="outlined"
                                             hiddenLabel
-                                            placeholder={"1"}
                                             onWheel={(event) => {
                                                 event.currentTarget.getElementsByTagName("input")[0]?.blur()
                                             }}
@@ -277,11 +312,31 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                 >
                                     <Typography
                                         variant={enlargedView ? "body1" : "caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                     >
                                         Buy Now
                                     </Typography>
                                 </FancyButton>
+                                {STAGING_OR_DEV_ONLY && (
+                                    <FancyButton
+                                        onClick={() => addToCart()}
+                                        clipThingsProps={{
+                                            clipSize: "5px",
+                                            backgroundColor: colors.green,
+                                            opacity: 1,
+                                            border: { isFancy: true, borderColor: colors.green, borderThickness: "1.5px" },
+                                            sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
+                                        }}
+                                        sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}
+                                    >
+                                        <Typography
+                                            variant={enlargedView ? "body1" : "caption"}
+                                            sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
+                                        >
+                                            Add to Cart
+                                        </Typography>
+                                    </FancyButton>
+                                )}
                             </Stack>
                         </Stack>
                     </Stack>
@@ -300,11 +355,11 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                     error={buyError}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {formattedPrice})
                             </Typography>
                         </Stack>
