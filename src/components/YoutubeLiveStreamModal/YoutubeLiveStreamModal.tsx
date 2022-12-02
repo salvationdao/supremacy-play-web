@@ -23,6 +23,7 @@ export const YoutubeLiveStreamModal = React.memo(function YoutubeLiveStreamModal
     return (
         <NiceModal
             open
+            key={liveStreamPath}
             onClose={() => setLiveStreamPath("")}
             disableBackdropClose
             sx={{
