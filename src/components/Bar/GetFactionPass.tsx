@@ -58,7 +58,7 @@ export const GetFactionPass = () => {
                         sx={{
                             width: "15rem",
                             height: "100%",
-                            background: `url(${isFactionPassValid ? images[factionID].valid : images[factionID].buy})`,
+                            background: `url(${isFactionPassValid ? images[factionID]?.valid : images[factionID]?.buy})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "left center",
                             backgroundSize: "contain",
