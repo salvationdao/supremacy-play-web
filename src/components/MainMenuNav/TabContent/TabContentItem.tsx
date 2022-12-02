@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import React, { useEffect, useMemo } from "react"
 import { useHistory } from "react-router-dom"
 import { useUI } from "../../../containers"
@@ -7,6 +7,7 @@ import { MainMenuStruct } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 import { KeyboardKey } from "../../Common/KeyboardKey"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
 export const TabContentItem = React.memo(function TabContentItem({
     mainMenuStruct,
@@ -71,7 +72,9 @@ export const TabContentItem = React.memo(function TabContentItem({
                 gridColumn: `span ${spanColumn}`,
             }}
         >
-            <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{mainMenuStruct.label}</Typography>
+            <TypographyTruncated variant="h5" sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>
+                {mainMenuStruct.label}
+            </TypographyTruncated>
             <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${keyboardKey}`} />
 
             {/* Background image */}
@@ -98,7 +101,7 @@ export const TabContentItem = React.memo(function TabContentItem({
                     right: 0,
                     bottom: 0,
                     left: 0,
-                    background: `linear-gradient(to top, #00000000 26%, #000000AA)`,
+                    background: `linear-gradient(to top, #00000000 76%, #000000AA)`,
                     zIndex: -1,
                 }}
             />

@@ -1,4 +1,20 @@
-import { BattleArenaPNG, GenericPNG, HangarPNG, MechsPNG, TutorialPNG } from "../assets"
+import {
+    BattleArenaPNG,
+    GenericPNG,
+    HangarPNG,
+    ClaimsPNG,
+    CratesPNG,
+    DashboardPNG,
+    KeycardsPNG,
+    LeaderboardPNG,
+    LobbiesPNG,
+    MechPoolPNG,
+    MechsPNG,
+    ReplaysPNG,
+    StoreCratesPNG,
+    SubmodelsPNG,
+    WeaponsPNG,
+} from "../assets"
 import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
 import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
@@ -184,7 +200,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Lobbies",
-            image: GenericPNG,
+            image: LobbiesPNG,
             path: "/lobbies",
         },
         enable: true,
@@ -203,7 +219,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Tutorial",
-            image: TutorialPNG,
+            image: GenericPNG,
             path: "/tutorial",
         },
         enable: DEV_ONLY,
@@ -226,7 +242,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Leaderboard",
-            image: GenericPNG,
+            image: LeaderboardPNG,
             path: "/leaderboard",
         },
         enable: true,
@@ -311,7 +327,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Weapons",
-            image: GenericPNG,
+            image: WeaponsPNG,
             path: "/fleet/weapons",
         },
         enable: true,
@@ -330,7 +346,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Submodels",
-            image: GenericPNG,
+            image: SubmodelsPNG,
             path: "/fleet/submodels",
         },
         enable: true,
@@ -349,7 +365,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Crates",
-            image: GenericPNG,
+            image: CratesPNG,
             path: "/fleet/mystery-crates",
         },
         enable: true,
@@ -387,7 +403,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Keycards",
-            image: GenericPNG,
+            image: KeycardsPNG,
             path: "/fleet/keycards",
         },
         enable: true,
@@ -423,7 +439,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Store,
             label: "Mystery Crates",
-            image: GenericPNG,
+            image: StoreCratesPNG,
             path: "/storefront/mystery-crates",
         },
         enable: true,
@@ -568,7 +584,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Mechs",
-            image: GenericPNG,
+            image: MechsPNG,
             path: "/marketplace/mechs",
         },
         enable: !STAGING_ONLY,
@@ -587,7 +603,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Weapons",
-            image: GenericPNG,
+            image: WeaponsPNG,
             path: "/marketplace/weapons",
         },
         enable: !STAGING_ONLY,
@@ -606,7 +622,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Keycards",
-            image: GenericPNG,
+            image: KeycardsPNG,
             path: "/marketplace/keycards",
         },
         enable: !STAGING_ONLY,
@@ -625,7 +641,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Mystery Crates",
-            image: GenericPNG,
+            image: CratesPNG,
             path: "/marketplace/mystery-crates",
         },
         enable: !STAGING_ONLY,
@@ -691,7 +707,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Replays",
-            image: GenericPNG,
+            image: ReplaysPNG,
             path: "/replays",
         },
         enable: true,
@@ -760,7 +776,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Store,
             label: "Claims",
-            image: GenericPNG,
+            image: ClaimsPNG,
             path: "/claim",
         },
         enable: true,
@@ -780,7 +796,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: localStorage.getItem("ivan") === "cool" || DEV_ONLY,
+        enable: true,
         tabTitle: "Buy Faction Pass",
     },
     {
@@ -796,7 +812,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.FactionHQ,
             label: "Dashboard",
-            image: GenericPNG,
+            image: DashboardPNG,
             path: "/faction-pass/dashboard",
         },
         enable: true,
@@ -815,7 +831,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.FactionHQ,
             label: "Mech Pool",
-            image: GenericPNG,
+            image: MechPoolPNG,
             path: "/faction-pass/mech-pool",
         },
         enable: true,

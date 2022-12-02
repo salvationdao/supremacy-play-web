@@ -256,13 +256,20 @@ import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import BattleArenaPNG from "./images/MainMenu/BattleArena.png"
-import ExhibitionPNG from "./images/MainMenu/Exhibition.png"
 import GenericPNG from "./images/MainMenu/Generic.png"
 import HangarPNG from "./images/MainMenu/Hangar.png"
+import ClaimsPNG from "./images/MainMenu/Claims.png"
+import CratesPNG from "./images/MainMenu/Crates.png"
+import DashboardPNG from "./images/MainMenu/Dashboard.png"
+import KeycardsPNG from "./images/MainMenu/Keycards.png"
+import LeaderboardPNG from "./images/MainMenu/Leaderboard.png"
+import LobbiesPNG from "./images/MainMenu/Lobbies.png"
+import MechPoolPNG from "./images/MainMenu/MechPool.png"
 import MechsPNG from "./images/MainMenu/Mechs.png"
-import RepairBayPNG from "./images/MainMenu/RepairBay.png"
-import StoryPNG from "./images/MainMenu/Story.png"
-import TutorialPNG from "./images/MainMenu/Tutorial.png"
+import ReplaysPNG from "./images/MainMenu/Replays.png"
+import StoreCratesPNG from "./images/MainMenu/StoreCrates.png"
+import SubmodelsPNG from "./images/MainMenu/Submodels.png"
+import WeaponsPNG from "./images/MainMenu/Weapons.png"
 import MaintenancePNG from "./images/Maintenance.png"
 import CircleParticle from "./images/Particles/circle.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
@@ -420,13 +427,20 @@ export {
     AbilityCancelPNG,
     CircleParticle,
     BattleArenaPNG,
-    ExhibitionPNG,
     GenericPNG,
     HangarPNG,
+    ClaimsPNG,
+    CratesPNG,
+    DashboardPNG,
+    KeycardsPNG,
+    LeaderboardPNG,
+    LobbiesPNG,
+    MechPoolPNG,
     MechsPNG,
-    RepairBayPNG,
-    StoryPNG,
-    TutorialPNG,
+    ReplaysPNG,
+    StoreCratesPNG,
+    SubmodelsPNG,
+    WeaponsPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 

@@ -96,9 +96,9 @@ export const MechSelector = React.memo(function MechSelector({
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
                         if (onlyDeployableMechs) {
-                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
+                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && !mech.is_staked
                         }
-                        return true
+                        return !mech.is_staked
                     })
                 }
 
@@ -117,9 +117,9 @@ export const MechSelector = React.memo(function MechSelector({
 
                 return list.filter((mech) => {
                     if (onlyDeployableMechs) {
-                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
+                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && !mech.is_staked
                     }
-                    return true
+                    return !mech.is_staked
                 })
             })
         },
@@ -145,7 +145,7 @@ export const MechSelector = React.memo(function MechSelector({
                         if (onlyDeployableMechs) {
                             return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                         }
-                        return true
+                        return mech.owner_id !== userID
                     })
                 }
 
