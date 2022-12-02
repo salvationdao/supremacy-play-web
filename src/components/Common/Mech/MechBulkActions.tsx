@@ -1,4 +1,4 @@
-import { Checkbox, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, IconButton, Stack, Typography } from "@mui/material"
 import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { SvgArrow } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
@@ -7,7 +7,6 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechStatusEnum, NewMechStruct } from "../../../types"
-import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceButton } from "../Nice/NiceButton"
 import { NiceModal } from "../Nice/NiceModal"
 import { NicePopover } from "../Nice/NicePopover"
@@ -33,7 +32,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
 
     return (
         <>
-            <NiceBoxThing ref={bulkPopoverRef} border={{ color: "#FFFFFF20" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
+            <Box ref={bulkPopoverRef} sx={{ backgroundColor: "#FFFFFF15", border: `${"#FFFFFF"}50 1px inset` }}>
                 <Stack direction="row" alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "4.3rem", p: ".3rem .8rem" }}>
                     <Checkbox
                         checked={(selectedCount || 0) >= totalItems}
@@ -46,7 +45,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                         <SvgArrow size="6px" sx={{ opacity: isDisabled ? 0.3 : 1, transform: "translateY(-1px) scaleY(-1)" }} />
                     </IconButton>
                 </Stack>
-            </NiceBoxThing>
+            </Box>
 
             <BulkActionPopover
                 open={isBulkPopoverOpen}
