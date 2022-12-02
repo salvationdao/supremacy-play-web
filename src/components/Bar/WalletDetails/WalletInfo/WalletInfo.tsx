@@ -15,13 +15,15 @@ import { WalletPopover } from "./WalletPopover"
 
 export const WalletInfo = () => {
     const { onWorldSupsRaw } = useWallet()
-    const { userID, user } = useAuth()
+    const { user } = useAuth()
     const startTime = useRef(new Date())
     // Transactions
     const [transactions, setTransactions] = useState<Transaction[]>([])
     // Accruing transaction spend / ticks
     const supsSpent = useRef<BigNumber>(new BigNumber(0))
     const supsEarned = useRef<BigNumber>(new BigNumber(0))
+
+    const accountID = user.account_id || ""
 
     usePassportSubscriptionAccount<Transaction[]>(
         {
@@ -31,11 +33,11 @@ export const WalletInfo = () => {
         (payload) => {
             if (!payload) return
             setTransactions((prev) => {
-                if (!payload || payload.length <= 0 || !userID) return prev
+                if (!payload || payload.length <= 0 || !accountID) return prev
 
                 // Accrue stuff
                 payload.forEach((tx) => {
-                    const isCredit = userID === tx.credit
+                    const isCredit = accountID === tx.credit
                     const summary = (tx.description + tx.sub_group + tx.group).toLowerCase()
 
                     // For inflows
@@ -60,7 +62,7 @@ export const WalletInfo = () => {
             onWorldSupsRaw={onWorldSupsRaw}
             startTime={startTime}
             user={user}
-            userID={userID}
+            accountID={accountID}
             transactions={transactions}
             supsSpent={supsSpent}
             supsEarned={supsEarned}
@@ -72,7 +74,7 @@ const WalletInfoInner = ({
     onWorldSupsRaw,
     startTime,
     user,
-    userID,
+    accountID,
     transactions,
     supsSpent,
     supsEarned,
@@ -80,7 +82,7 @@ const WalletInfoInner = ({
     onWorldSupsRaw: string
     startTime: MutableRefObject<Date>
     user: User
-    userID: string
+    accountID: string
     transactions: Transaction[]
     supsSpent: MutableRefObject<BigNumber>
     supsEarned: MutableRefObject<BigNumber>
@@ -132,7 +134,7 @@ const WalletInfoInner = ({
                 <WalletPopover
                     open={isWalletPopoverOpen}
                     sups={onWorldSupsRaw}
-                    userID={userID}
+                    accountID={accountID}
                     transactions={transactions}
                     supsSpent={supsSpent}
                     supsEarned={supsEarned}

@@ -9,15 +9,16 @@ export interface NiceModalProps extends ModalProps {
     sx?: SxProps
     onClose?: () => void
     backdropColor?: string
+    disableBackdropClose?: boolean
 }
 
-export const NiceModal = ({ modalSx, sx, children, onClose, backdropColor, ...props }: NiceModalProps) => {
+export const NiceModal = ({ modalSx, sx, children, onClose, backdropColor, disableBackdropClose, ...props }: NiceModalProps) => {
     const theme = useTheme()
 
     return (
         <Modal
             {...props}
-            onClose={onClose}
+            onClose={disableBackdropClose ? undefined : onClose}
             closeAfterTransition
             sx={{
                 ".MuiBackdrop-root": {

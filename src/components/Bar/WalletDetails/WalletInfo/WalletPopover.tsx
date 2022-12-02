@@ -17,7 +17,7 @@ export const WalletPopover = ({
     sups,
     transactions,
     supsEarned,
-    userID,
+    accountID,
     onClose,
     popoverRef,
     startTime,
@@ -27,7 +27,7 @@ export const WalletPopover = ({
     transactions: Transaction[]
     supsSpent: MutableRefObject<BigNumber>
     supsEarned: MutableRefObject<BigNumber>
-    userID: string
+    accountID: string
     onClose: () => void
     popoverRef: MutableRefObject<null>
     startTime: Date
@@ -102,7 +102,7 @@ export const WalletPopover = ({
 
                         <Stack spacing=".3rem">
                             {transactions.slice(0, 5).map((t, i) => (
-                                <TransactionItem userID={userID} key={i} transaction={t} />
+                                <TransactionItem accountID={accountID} key={i} transaction={t} />
                             ))}
                         </Stack>
                     </Box>

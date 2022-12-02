@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import { BCBuyFactionPassPNG, BCFactionPassPNG, RMBuyFactionPassPNG, RMFactionPassPNG, ZHIBuyFactionPassPNG, ZHIFactionPassPNG } from "../../assets"
 import { DEV_ONLY, FactionIDs } from "../../constants"
@@ -37,7 +37,7 @@ export const GetFactionPass = () => {
 
     return (
         <Link style={{ margin: "0 1rem", height: "100%" }} to={isFactionPassValid ? "/faction-pass/dashboard" : "/faction-pass/buy"}>
-            <Box sx={{ height: "100%" }}>
+            <Stack justifyContent="center" sx={{ height: "100%" }}>
                 <NiceTooltip
                     placement="bottom-start"
                     renderNode={
@@ -52,15 +52,15 @@ export const GetFactionPass = () => {
                             )}
                         </Typography>
                     }
-                    parentSx={{ mt: "-2rem" }}
+                    parentSx={{ mt: "-1rem" }}
                 >
                     <Box
                         sx={{
-                            width: "15rem",
-                            height: "100%",
+                            width: "22rem",
+                            height: "4rem",
                             background: `url(${isFactionPassValid ? images[factionID]?.valid : images[factionID]?.buy})`,
                             backgroundRepeat: "no-repeat",
-                            backgroundPosition: "left center",
+                            backgroundPosition: "right center",
                             backgroundSize: "contain",
                             transition: "all .2s",
 
@@ -70,7 +70,7 @@ export const GetFactionPass = () => {
                         }}
                     />
                 </NiceTooltip>
-            </Box>
+            </Stack>
         </Link>
     )
 }

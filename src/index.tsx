@@ -24,6 +24,7 @@ import { AuthPage } from "./components/Signup/AuthPage"
 import { EnlistPage } from "./components/Signup/EnlistPage"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
 import { TutorialPage } from "./components/Tutorial/TutorialPage"
+import { YoutubeLiveStreamModal } from "./components/YoutubeLiveStreamModal/YoutubeLiveStreamModal"
 import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
@@ -242,6 +243,8 @@ const AppInner = () => {
                     {!isServerDown && <RightDrawer />}
                 </Stack>
             </Stack>
+
+            <YoutubeLiveStreamModal />
 
             <GlobalSnackbar />
         </>
