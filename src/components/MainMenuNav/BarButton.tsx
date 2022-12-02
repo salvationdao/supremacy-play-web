@@ -11,7 +11,13 @@ export const BarButton = () => {
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
+            // If playing repair stack game, return
+            if (document.getElementById("repair-game-stack")) {
+                return
+            }
+
             if (e.repeat) return
+
             if (e.key.toLowerCase() === "m") toggleShowMainMenu()
         }
 
