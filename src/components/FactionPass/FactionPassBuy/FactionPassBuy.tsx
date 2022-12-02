@@ -13,7 +13,7 @@ import { FactionPassOption } from "./FactionPassOption"
 export const DAYS_IN_A_MONTH = 28
 
 export const FactionPassBuy = () => {
-    const { factionID } = useAuth()
+    const { factionID, factionPassExpiryDate } = useAuth()
     const { getFaction } = useSupremacy()
 
     const { faction, hueRotate } = useMemo(() => {
@@ -88,12 +88,22 @@ export const FactionPassBuy = () => {
                 />
 
                 <Stack spacing="4rem" sx={{ position: "relative", p: "4.2rem 5.5rem" }}>
+                    {/* Heading */}
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="2rem">
                         <Typography variant="h4" sx={{ color: faction.palette.primary, fontFamily: fonts.nostromoHeavy }}>
                             {faction.label} FACTION PASS
                         </Typography>
                         <SvgFactionPassArrow size="5.5rem" fill={faction.palette.primary} />
                     </Stack>
+
+                    {factionPassExpiryDate && factionPassExpiryDate > new Date() && (
+                        <NiceBoxThing border={{ color: colors.green }} background={{ colors: [colors.green], opacity: 0.4 }} sx={{ p: "1rem 2rem" }}>
+                            <Typography variant="h5" fontWeight="bold">
+                                Your current Faction Pass is valid until:{" "}
+                                <span style={{ color: colors.neonBlue }}>{factionPassExpiryDate.toLocaleDateString()}</span>
+                            </Typography>
+                        </NiceBoxThing>
+                    )}
 
                     <Stack spacing="5rem" direction="row" alignItems="center">
                         {/* Brief description */}
@@ -106,17 +116,32 @@ export const FactionPassBuy = () => {
                                 sx={{
                                     mt: "1rem",
                                     ml: ".5rem",
+                                    color: colors.neonBlue,
                                     span: {
-                                        color: colors.neonBlue,
+                                        opacity: 0.8,
+                                        color: colors.grey,
+
+                                        span: {
+                                            color: "#FFFFFF",
+                                        },
                                     },
                                 }}
                             >
                                 • Borrow staked mechs from the faction Mech Pool
                                 <br />
                                 • Earn $SUPS on staked mechs wins
-                                <br />• Enable direct repairs from other faction pass holders <span>(coming soon)</span>
-                                <br />• Earn multipliers by staking mechs <span>(coming soon)</span>
-                                <br />• See comprehensive statistics <span>(coming soon)</span>
+                                <br />
+                                <span>
+                                    • Enable direct repairs from other faction pass holders <span>(coming soon)</span>
+                                </span>
+                                <br />
+                                <span>
+                                    • Earn multipliers by staking mechs <span>(coming soon)</span>
+                                </span>
+                                <br />
+                                <span>
+                                    • See comprehensive statistics <span>(coming soon)</span>
+                                </span>
                                 <br />
                             </Typography>
                         </Box>
@@ -165,7 +190,7 @@ export const FactionPassBuy = () => {
                     </Stack>
 
                     {/* Buy options */}
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="flex-start">
                         {factionPasses.map((fp) => (
                             <FactionPassOption key={fp.id} factionPass={fp} faction={faction} />
                         ))}

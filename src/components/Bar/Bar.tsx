@@ -9,6 +9,7 @@ import { useTheme } from "../../containers/theme"
 import { hexToRGB, shadeColor } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
+import { NiceButton } from "../Common/Nice/NiceButton"
 import { BarButton } from "../MainMenuNav/BarButton"
 import { BarSocials } from "./BarSocials"
 import { GetFactionPass } from "./GetFactionPass"
@@ -150,6 +151,10 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {userID && <Messages />}
             {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             <ProfileCard userID={userID} user={user} />
+
+            <NiceButton corners buttonColor={colors.red} sx={{ p: ".5rem 1.2rem" }}>
+                Cancel
+            </NiceButton>
         </>
     )
 }

@@ -98,40 +98,7 @@ export const GameContainer = createContainer(() => {
             setWarMachines(payload.war_machines)
             setSpawnedAI(payload.spawned_ai)
             setIsAIDrivenMatch(payload.is_ai_driven_match)
-
-            // Map images
-            let mapImageUrl = payload.game_map.Image_Url
-            switch (payload.game_map.Name) {
-                case "Arctic Bay":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/ArcticBay.webp"
-                    break
-                case "Aokigahara Sea of Trees":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/AokigaharaForest.webp"
-                    break
-                case "Kazuya City":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CityBlockArena.webp"
-                    break
-                case "CloudKu 9":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CloudKu.webp"
-                    break
-                case "Desert City":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/DesertCity.webp"
-                    break
-                case "NyuTokyo":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/NeoTokyo.webp"
-                    break
-                case "IronDust 5":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/RedMountainMine.webp"
-                    break
-                case "TheHive":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/TheHive.webp"
-                    break
-                case "MIBT":
-                    mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/UrbanBuildings.webp"
-                    break
-            }
-
-            setMap({ ...payload.game_map, Image_Url: mapImageUrl })
+            setMap(payload.game_map)
         },
     )
 
