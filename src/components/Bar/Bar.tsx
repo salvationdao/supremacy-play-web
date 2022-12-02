@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, STAGING_ONLY, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { hexToRGB, shadeColor } from "../../helpers"
@@ -25,7 +25,7 @@ export const Bar = () => {
 
     return (
         <>
-            {IS_TESTING_MODE && (
+            {STAGING_ONLY && (
                 <>
                     <Box
                         sx={{
@@ -52,7 +52,7 @@ export const Bar = () => {
                     position: "fixed",
                     height: "100%",
                     width: "100%",
-                    border: (theme) => (IS_TESTING_MODE ? `${colors.lightRed} 3px solid` : `${theme.factionTheme.s700} 1px solid`),
+                    border: (theme) => (STAGING_ONLY ? `${colors.lightRed} 3px solid` : `${theme.factionTheme.s700} 1px solid`),
                     zIndex: siteZIndex.Modal * 99,
                     pointerEvents: "none",
                 }}

@@ -1,7 +1,7 @@
 import { Divider, Stack } from "@mui/material"
 import { useCallback } from "react"
 import { SvgSupToken } from "../../../assets"
-import { IS_TESTING_MODE, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
+import { STAGING_ONLY, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -19,7 +19,7 @@ export const BuySupsButton = () => {
         setPassportPopup(popup)
     }, [setPassportPopup, userID])
 
-    if (IS_TESTING_MODE) return null
+    if (STAGING_ONLY) return null
 
     return (
         <Stack
