@@ -7,7 +7,7 @@ import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
 
-export const TransactionItem = ({ transaction, userID }: { transaction: Transaction; userID: string }) => {
+export const TransactionItem = ({ transaction, accountID }: { transaction: Transaction; accountID: string }) => {
     const [copySuccess, toggleCopySuccess] = useToggle()
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
         }
     }, [copySuccess, toggleCopySuccess])
 
-    const isCredit = useMemo(() => userID === transaction.credit, [userID, transaction])
+    const isCredit = useMemo(() => accountID === transaction.credit, [accountID, transaction])
     const color = useMemo(() => (isCredit ? colors.supsCredit : colors.supsDebit), [isCredit])
     const tooltipText = useMemo(() => transaction.description || transaction.sub_group || transaction.group, [transaction])
 
