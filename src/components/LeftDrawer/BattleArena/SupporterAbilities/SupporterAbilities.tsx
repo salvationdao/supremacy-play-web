@@ -3,10 +3,11 @@ import { useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
 import { useArena, useAuth, useGame, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { BinaryDataKey, useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { AnyAbility, BattleState, LocationSelectType } from "../../../../types"
+import { AnyAbility, BattleState, LocationSelectType, WarMachineLiveState } from "../../../../types"
 import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
 import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
@@ -25,20 +26,21 @@ export interface PlayerAbilitiesResponse {
 
 export const SupporterAbilities = () => {
     const { userID } = useAuth()
+    const { battleID } = useSupremacy()
     const { battleState } = useGame()
 
     if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box key={battleID} sx={{ position: "relative" }}>
             <SectionCollapsible label={"SUPPORT ABILITIES"} tooltip="Your supporter abilities" initialExpanded={true} localStoragePrefix="supportAbility">
                 <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <SupporterAbilitiesInner />
                 </Box>
 
-                {/* {battleState !== BattleState.BattlingState && (
+                {battleState !== BattleState.BattlingState && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
-                )} */}
+                )}
             </SectionCollapsible>
         </Box>
     )
@@ -67,6 +69,28 @@ const SupporterAbilitiesInner = () => {
                 return
             }
             setAbilities(payload.supporter_abilities || [])
+        },
+    )
+
+    // If all my faction mechs are dead, then disable my player abilities
+    const { factionWarMachines } = useGame()
+    const [disableAbilities, setDisableAbilities] = useState(true)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID && !!factionWarMachines,
+        },
+        (payload) => {
+            if (!payload || !factionWarMachines) return
+
+            const deadMechs = payload.filter((p) => {
+                if (p.health > 0) return false
+                return factionWarMachines.find((w) => w.participantID === p.participant_id)
+            })
+
+            setDisableAbilities(deadMechs.length === 3)
         },
     )
 
@@ -108,7 +132,11 @@ const SupporterAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((ab) => (
-                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={{ ...ab, isSupportAbility: true }} onClickAction="use" />
+                        <PlayerAbilitySmallCard
+                            key={`${ab.id}`}
+                            anyAbility={{ ...ab, isSupportAbility: true }}
+                            onClickAction={disableAbilities ? "nothing" : "use"}
+                        />
                     ))}
                 </Box>
             ) : (
