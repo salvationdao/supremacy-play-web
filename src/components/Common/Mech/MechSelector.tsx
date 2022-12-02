@@ -95,10 +95,12 @@ export const MechSelector = React.memo(function MechSelector({
             setOwnedMechs((prev) => {
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
+                        if (mech.is_staked) return false
+
                         if (onlyDeployableMechs) {
-                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && !mech.is_staked
+                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                         }
-                        return !mech.is_staked
+                        return true
                     })
                 }
 
@@ -116,10 +118,13 @@ export const MechSelector = React.memo(function MechSelector({
                 })
 
                 return list.filter((mech) => {
+                    if (mech.is_staked) return false
+
                     if (onlyDeployableMechs) {
-                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && !mech.is_staked
+                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                     }
-                    return !mech.is_staked
+
+                    return true
                 })
             })
         },
@@ -143,9 +148,9 @@ export const MechSelector = React.memo(function MechSelector({
                         if (!mech.is_staked) return false
 
                         if (onlyDeployableMechs) {
-                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
+                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && mech.owner.id !== userID
                         }
-                        return mech.owner_id !== userID
+                        return true
                     })
                 }
 
@@ -165,9 +170,9 @@ export const MechSelector = React.memo(function MechSelector({
                 return list.filter((mech) => {
                     if (!mech.is_staked) return false
                     if (onlyDeployableMechs) {
-                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
+                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy && mech.owner.id !== userID
                     }
-                    return mech.owner_id !== userID
+                    return true
                 })
             })
         },
