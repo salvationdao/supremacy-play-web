@@ -65,13 +65,15 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     }}
                 >
                     {/* Weapon image */}
-                    <NiceBoxThing
-                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                        background={{ colors: [ownerFaction.palette.background] }}
-                        sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
-                    >
-                        <MediaPreview imageUrl={image} objectFit="contain" allowModal />
-                    </NiceBoxThing>
+                    <Link to={`/weapon/${weapon.id}`}>
+                        <NiceBoxThing
+                            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                            background={{ colors: [ownerFaction.palette.background] }}
+                            sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
+                        >
+                            <MediaPreview imageUrl={image} objectFit="contain" />
+                        </NiceBoxThing>
+                    </Link>
 
                     {/* Weapon name */}
                     <Link to={`/weapon/${weapon.id}`}>
@@ -128,13 +130,15 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                 </Link>
 
                 {/* Weapon image */}
-                <NiceBoxThing
-                    border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ boxShadow: 0.4, flex: 1 }}
-                >
-                    <MediaPreview imageUrl={image} objectFit="contain" sx={{ height: "20rem" }} allowModal />
-                </NiceBoxThing>
+                <Link to={`/weapon/${weapon.id}`}>
+                    <NiceBoxThing
+                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                        background={{ colors: [ownerFaction.palette.background] }}
+                        sx={{ boxShadow: 0.4, flex: 1 }}
+                    >
+                        <MediaPreview imageUrl={image} objectFit="contain" sx={{ height: "20rem" }} />
+                    </NiceBoxThing>
+                </Link>
 
                 {/* Weapon stats */}
                 {!hide?.stats && (

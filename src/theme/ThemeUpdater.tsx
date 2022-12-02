@@ -43,19 +43,29 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                     color: theme.factionTheme.primary,
                     ".MuiSlider-thumb": { boxShadow: 1 },
                 },
+
+                ".MuiCheckbox-root": {
+                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${theme.factionTheme.primary}` },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                    "&.MuiCheckbox-indeterminate > .MuiSvgIcon-root": { color: theme.factionTheme.primary },
+                },
+
                 ".MuiSwitch-root": {
                     ".MuiSwitch-switchBase": {
                         "&.Mui-checked": {
                             color: theme.factionTheme.primary,
+                            fill: theme.factionTheme.primary,
                             "& + .MuiSwitch-track": {
                                 backgroundColor: `${theme.factionTheme.primary}44`,
                             },
                         },
                         "&.Mui-focusVisible .MuiSwitch-thumb": {
                             color: theme.factionTheme.primary,
+                            fill: theme.factionTheme.primary,
                         },
                         "&.Mui-disabled .MuiSwitch-thumb": {
                             color: `${theme.factionTheme.primary}66`,
+                            fill: `${theme.factionTheme.primary}66`,
                         },
                     },
                 },

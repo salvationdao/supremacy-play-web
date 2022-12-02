@@ -1,5 +1,6 @@
-import { Checkbox, Stack, Typography } from "@mui/material"
+import { Checkbox, IconButton, Stack, Typography } from "@mui/material"
 import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
+import { SvgArrow } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -28,26 +29,27 @@ export const MechBulkActions = React.memo(function MechBulkActions({
 
     const selectedCount = selectedMechs.length
     const totalItems = mechs.length
+    const isDisabled = selectedMechs.length <= 0
 
     return (
         <>
-            <Stack direction="row" alignItems="center" spacing=".6rem">
-                {/* Checkbox */}
-                <NiceBoxThing
-                    border={{ color: "#FFFFFF20" }}
-                    background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
-                    sx={{ height: "4.3rem", p: ".3rem .8rem", display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
+            <NiceBoxThing ref={bulkPopoverRef} border={{ color: "#FFFFFF20" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
+                <Stack direction="row" alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "4.3rem", p: ".3rem .8rem" }}>
                     <Checkbox
                         checked={(selectedCount || 0) >= totalItems}
                         indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < totalItems)}
                         onClick={(selectedCount || 0) >= totalItems ? () => setSelectedMechs([]) : () => setSelectedMechs(mechs)}
                         sx={{ ".MuiSvgIcon-root": { width: "2rem", height: "2rem", color: `${theme.factionTheme.primary} !important` } }}
                     />
-                </NiceBoxThing>
 
+                    <IconButton size="small" disabled={isDisabled} onClick={() => setIsBulkPopoverOpen(true)}>
+                        <SvgArrow size="6px" sx={{ opacity: isDisabled ? 0.3 : 1, transform: "translateY(-1px) scaleY(-1)" }} />
+                    </IconButton>
+                </Stack>
+            </NiceBoxThing>
+
+            {/* <Stack direction="row" alignItems="center" spacing=".6rem">
                 <NiceButton
-                    ref={bulkPopoverRef}
                     buttonColor={theme.factionTheme.primary}
                     sx={{ p: ".85rem 1rem" }}
                     disabled={selectedMechs.length <= 0}
@@ -57,7 +59,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                         Actions ({selectedMechs.length})
                     </Typography>
                 </NiceButton>
-            </Stack>
+            </Stack> */}
 
             <BulkActionPopover
                 open={isBulkPopoverOpen}

@@ -404,15 +404,15 @@ export const FactionPassMechPool = () => {
 
                         <Box flex={1} />
 
-                        {/* Bulk actions */}
-                        <MechBulkActions mechs={displayMechs} selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
-
                         {/* Show total */}
                         <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayMechs?.length || 0} ITEMS
                             </Typography>
                         </Stack>
+
+                        {/* Bulk actions */}
+                        <MechBulkActions mechs={displayMechs} selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
                         {/* Page layout options */}
                         <NiceButtonGroup
