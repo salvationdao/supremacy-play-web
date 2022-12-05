@@ -37,6 +37,7 @@ export const MechLoadoutDraggables = ({
     excludeWeaponIDs,
     excludeMechSkinIDs,
     includeMechSkinIDs,
+    compareToPowerCore,
     excludePowerCoreIDs,
     mechModelID,
     powerCoreSize,
@@ -129,7 +130,14 @@ export const MechLoadoutDraggables = ({
                                 </Typography>
                             </Stack>
                         ),
-                        content: <PowerCoreDraggables excludePowerCoreIDs={excludePowerCoreIDs} powerCoreSize={powerCoreSize} onClick={onClick} />,
+                        content: (
+                            <PowerCoreDraggables
+                                compareToPowerCore={compareToPowerCore}
+                                excludePowerCoreIDs={excludePowerCoreIDs}
+                                powerCoreSize={powerCoreSize}
+                                onClick={onClick}
+                            />
+                        ),
                     },
                 ]}
             />
