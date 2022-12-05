@@ -38,7 +38,7 @@ export const GlobalBrowserNotifications = React.memo(function GlobalBrowserNotif
             if (payload.title === "MECH_IN_BATTLE") {
                 sendBrowserNotification.current({
                     title: "Your mechs are in battle!",
-                    text: `You have ${payload.data.mech_alerts.length} in battle arena ${payload.data.arena_name}.`,
+                    text: `You have ${payload.data.mech_alerts.length} mechs in battle arena ${payload.data.arena_name}.`,
                     onClick: () => history.push(`/?arenaName=${payload.data.arena_name}`),
                 })
             }
