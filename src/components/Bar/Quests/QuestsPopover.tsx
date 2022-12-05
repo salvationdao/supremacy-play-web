@@ -139,7 +139,7 @@ export const QuestsPopover = ({
 const Countdown = ({ initialTime }: { initialTime?: number }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: initialTime ? Math.round(initialTime) : initialTime,
         endTime: 0,
         timerType: "DECREMENTAL",
     })

@@ -385,7 +385,7 @@ const InfoCard = React.memo(function InfoCard({
 const Countdown = React.memo(function Countdown({ initialTime }: { initialTime: number }) {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: Math.round(initialTime),
         endTime: 0,
         timerType: "DECREMENTAL",
     })

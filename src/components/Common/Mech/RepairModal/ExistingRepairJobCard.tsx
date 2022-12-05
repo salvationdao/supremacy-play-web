@@ -89,7 +89,7 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
 const Countdown = ({ initialTime }: { initialTime: number }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: Math.round(initialTime),
         endTime: 0,
         timerType: "DECREMENTAL",
     })
