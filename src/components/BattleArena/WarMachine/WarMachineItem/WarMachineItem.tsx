@@ -133,7 +133,7 @@ export const WarMachineItem = ({
                     clipSize="8px"
                     corners={{ bottomLeft: true }}
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".25rem" }}
-                    backgroundColor={primaryColor}
+                    backgroundColor={backgroundColor}
                     sx={{ zIndex: 2, flexShrink: 0 }}
                     innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >

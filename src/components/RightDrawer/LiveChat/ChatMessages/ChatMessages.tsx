@@ -40,15 +40,23 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
     }, [chatMessages, autoScroll, userID])
 
     // Scroll related stuff
-    const onClickScrollToBottom = useCallback(() => {
+    const onClickScrollToBottom = useCallback((instant?: boolean) => {
         if (!scrollableRef.current) return
+
+        if (instant) {
+            scrollableRef.current.style.scrollBehavior = "auto"
+
+            setTimeout(() => {
+                if (!scrollableRef.current) return
+                scrollableRef.current.style.scrollBehavior = "smooth"
+            }, 3000)
+        }
+
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
     }, [])
 
     useEffect(() => {
-        setTimeout(() => {
-            onClickScrollToBottom()
-        }, 300)
+        onClickScrollToBottom(true)
     }, [onClickScrollToBottom])
 
     // Scroll related stuff for the div to poll/check
@@ -166,7 +174,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                 {/* Button that scrolls to bottom */}
                 <IconButton
                     size="small"
-                    onClick={onClickScrollToBottom}
+                    onClick={() => onClickScrollToBottom()}
                     sx={{
                         position: "absolute",
                         bottom: "8.2rem",
