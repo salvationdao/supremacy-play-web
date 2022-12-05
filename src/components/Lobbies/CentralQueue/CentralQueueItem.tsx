@@ -223,7 +223,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
     )
 }
 
-const TopUpModal = ({ lobbyID, onClose }: { lobbyID: string; onClose: () => void }) => {
+export const TopUpModal = ({ lobbyID, onClose }: { lobbyID: string; onClose: () => void }) => {
     const [topUpReward, setTopUpReward] = useState(1)
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
