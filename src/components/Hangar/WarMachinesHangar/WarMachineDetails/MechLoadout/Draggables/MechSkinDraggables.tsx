@@ -12,7 +12,30 @@ import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
-import { GetSubmodelsRequest, GetSubmodelsResponse } from "../Modals/MechLoadoutMechSkinModal"
+
+export interface GetSubmodelsRequest {
+    search?: string
+    sort_by?: string
+    sort_dir: string
+    page_size: number
+    page?: number
+    display_xsyn: boolean
+    exclude_market_locked?: boolean
+    include_market_listed: boolean
+    display_genesis_and_limited?: boolean
+    display_unique?: boolean
+    exclude_ids: string[]
+    include_ids: string[]
+    model_id?: string
+    rarities: string[]
+    skin_compatibility: string[]
+    equipped_statuses: string[]
+}
+
+export interface GetSubmodelsDetailedResponse {
+    submodels: MechSkin[]
+    total: number
+}
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]
@@ -79,7 +102,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                     break
             }
 
-            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
+            const resp = await send<GetSubmodelsDetailedResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page,
                 page_size: pageSize,
                 sort_by: sortBy,

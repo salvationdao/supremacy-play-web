@@ -13,7 +13,31 @@ import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
-import { GetPowerCoresRequest } from "../Modals/MechLoadoutPowerCoreModal"
+
+export interface GetPowerCoresRequest {
+    search: string
+    sort_by: string
+    sort_dir: string
+    exclude_ids: string[]
+    page_size: number
+    page: number
+    display_xsyn_locked?: boolean
+    exclude_market_locked?: boolean
+    include_market_listed?: boolean
+    rarities: string[]
+    sizes: string[]
+    equipped_statuses: string[]
+    stat_capacity?: GetPowerCoreStatFilter
+    stat_max_draw_rate?: GetPowerCoreStatFilter
+    stat_recharge_rate?: GetPowerCoreStatFilter
+    stat_armour?: GetPowerCoreStatFilter
+    stat_max_hitpoints?: GetPowerCoreStatFilter
+}
+
+interface GetPowerCoreStatFilter {
+    min?: number
+    max?: number
+}
 
 export interface GetPowerCoresDetailedResponse {
     power_cores: PowerCore[]
