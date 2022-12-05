@@ -250,6 +250,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                       }
                     : undefined,
             })
+            setCompareToPowerCore(undefined)
         },
         [saveSelection],
     )
