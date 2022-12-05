@@ -270,7 +270,11 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 <Stack direction="row" alignItems="center" spacing="2rem" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
                     {battleLobby.will_not_start_until && (
                         <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                            <Typography
+                                variant="body2"
+                                fontFamily={fonts.nostromoBold}
+                                sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
+                            >
                                 Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
                             </Typography>
                         </Stack>
