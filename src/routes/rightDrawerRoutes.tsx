@@ -38,7 +38,7 @@ export const RightRoutes: SideRouteSingle[] = [
         Header: LiveChat.Header,
         requireAuth: false,
         matchRouteIDs: undefined,
-        mountAllTime: true,
+        mountAllTime: false,
     },
     {
         id: RightRouteID.ActivePlayers,
