@@ -17,6 +17,7 @@ import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
+import { PowerCoreTooltip } from "./Tooltips/PowerCoreTooltip"
 import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
 export interface SavedSelection {
@@ -684,7 +685,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         [loadoutDisabled, modifyWeaponSlot, compareToWeapon?.weapon_id, weapons_map],
     )
 
-    const renderPowerCoreSlot = useCallback(() => {
+    const powerCoreSlot = useMemo(() => {
         const powerCore = power_core
 
         if (powerCore) {
@@ -702,6 +703,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                             unequip: true,
                         })
                     }
+                    renderTooltip={() => <PowerCoreTooltip id={powerCore.id} />}
                     shape="square"
                     size="small"
                 />
@@ -721,7 +723,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         )
     }, [loadoutDisabled, modifyPowerCore, power_core])
 
-    const renderMechSkinSlot = useCallback(() => {
+    const mechSkinSlot = useMemo(() => {
         const mechSkin = chassis_skin
 
         if (mechSkin) {
@@ -1023,8 +1025,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 left: "3rem",
                             }}
                         >
-                            {renderPowerCoreSlot()}
-                            {renderMechSkinSlot()}
+                            {powerCoreSlot}
+                            {mechSkinSlot}
                         </Stack>
 
                         {/* Bottom Right Side */}

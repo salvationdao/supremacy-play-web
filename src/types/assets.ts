@@ -324,6 +324,9 @@ export interface PowerCore extends Collection, Images {
     recharge_rate: number
     armour: number
     max_hitpoints: number
+    weapon_share: number
+    movement_share: number
+    utility_share: number
     equipped_on?: string
     created_at: Date
 }

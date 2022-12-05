@@ -13,6 +13,7 @@ import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
+import { PowerCoreTooltip } from "../Tooltips/PowerCoreTooltip"
 
 export interface GetPowerCoresRequest {
     search: string
@@ -45,12 +46,13 @@ export interface GetPowerCoresDetailedResponse {
 }
 
 export interface PowerCoreDraggablesProps {
+    compareToPowerCore?: PowerCore
     powerCoreSize: string
     excludePowerCoreIDs: string[]
     onClick: OnClickEventWithType
 }
 
-export const PowerCoreDraggables = ({ powerCoreSize, excludePowerCoreIDs, onClick }: PowerCoreDraggablesProps) => {
+export const PowerCoreDraggables = ({ compareToPowerCore, powerCoreSize, excludePowerCoreIDs, onClick }: PowerCoreDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -187,11 +189,12 @@ export const PowerCoreDraggables = ({ powerCoreSize, excludePowerCoreIDs, onClic
                         shape="square"
                         size="full-width"
                         onClick={(e) => onClick(e, AssetItemType.PowerCore, pc)}
+                        renderTooltip={() => <PowerCoreTooltip id={pc.id} compareTo={compareToPowerCore} />}
                     />
                 ))}
             </Box>
         )
-    }, [isPowerCoresLoading, onClick, powerCores, powerCoresError, theme.factionTheme.primary])
+    }, [compareToPowerCore, isPowerCoresLoading, onClick, powerCores, powerCoresError, theme.factionTheme.primary])
 
     return (
         <Stack spacing="2rem" minHeight={400}>
