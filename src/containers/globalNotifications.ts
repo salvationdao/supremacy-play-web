@@ -10,6 +10,15 @@ export interface SnackBarMessage {
     severity: Severity
 }
 
+export interface BrowserNotificationConfig {
+    title: string
+    text: string
+    imageUrl?: string
+    requireInteraction?: boolean
+    autoDismissTime?: number
+    onClick?: () => void
+}
+
 export const GlobalNotificationsContainer = createContainer(() => {
     // Global snackbar
     const snackBarMessages = useRef<SnackBarMessage[]>([])
@@ -24,23 +33,30 @@ export const GlobalNotificationsContainer = createContainer(() => {
     }, [])
 
     // Browser notification
-    const sendBrowserNotification = useRef((title: string, body: string, timeOpen?: number) => {
+    const sendBrowserNotification = useRef(({ title, text, imageUrl, requireInteraction, autoDismissTime, onClick }: BrowserNotificationConfig) => {
         if (!("Notification" in window)) {
             return
         }
 
-        const n = new Notification(title, { body: body, badge: SupremacyPNG, icon: SupremacyPNG, image: SupremacyPNG })
-        n.onclick = (e) => {
+        const notification = new Notification(title, {
+            badge: imageUrl || SupremacyPNG,
+            icon: imageUrl || SupremacyPNG,
+            image: imageUrl || SupremacyPNG,
+            body: text,
+            requireInteraction,
+        })
+
+        notification.onclick = (e) => {
             e.preventDefault()
-            window.parent.parent.focus()
+            onClick ? onClick() : window.parent.parent.focus()
         }
 
-        if (timeOpen) {
-            setTimeout(() => n.close(), timeOpen)
+        if (autoDismissTime) {
+            setTimeout(() => notification.close(), autoDismissTime)
         }
 
         if (document.visibilityState === "visible") {
-            n.close()
+            notification.close()
         }
     })
 
