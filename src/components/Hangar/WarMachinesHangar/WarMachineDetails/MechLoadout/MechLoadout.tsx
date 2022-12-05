@@ -772,6 +772,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                     mechModelID={mechDetails.blueprint_id}
                     powerCoreSize={currLoadout.power_core_size}
+                    excludePowerCoreIDs={power_core?.id ? [power_core.id] : []}
                     drag={{
                         onDrag: onItemDrag,
                         onDragStart: onItemDragStart,
@@ -791,6 +792,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             onItemDragStart,
             onItemDragStop,
             owner_id,
+            power_core?.id,
             userID,
             weapons_map,
         ],

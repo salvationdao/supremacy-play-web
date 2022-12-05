@@ -22,10 +22,11 @@ export interface GetPowerCoresDetailedResponse {
 
 export interface PowerCoreDraggablesProps {
     powerCoreSize: string
+    excludePowerCoreIDs: string[]
     onClick: OnClickEventWithType
 }
 
-export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggablesProps) => {
+export const PowerCoreDraggables = ({ powerCoreSize, excludePowerCoreIDs, onClick }: PowerCoreDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -90,7 +91,7 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
                 sort_by: sortBy,
                 sort_dir: sortDir,
                 include_market_listed: false,
-                exclude_ids: [],
+                exclude_ids: excludePowerCoreIDs,
                 rarities: [],
                 sizes: [powerCoreSize],
                 equipped_statuses: ["unequipped"],
@@ -108,7 +109,7 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
         } finally {
             setIsPowerCoresLoading(false)
         }
-    }, [page, pageSize, powerCoreSize, search, send, setTotalItems, sort])
+    }, [excludePowerCoreIDs, page, pageSize, powerCoreSize, search, send, setTotalItems, sort])
     useEffect(() => {
         getPowerCores()
     }, [getPowerCores])
