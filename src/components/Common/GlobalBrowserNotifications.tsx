@@ -14,7 +14,7 @@ type BrowserNotification =
                   id: string
                   name: string
               }[]
-          }
+          }[]
       }
     | {
           title: "TEXT"
@@ -27,23 +27,23 @@ export const GlobalBrowserNotifications = React.memo(function GlobalBrowserNotif
     const { sendBrowserNotification } = useGlobalNotifications()
     const history = useHistory()
 
-    useGameServerSubscriptionSecuredUser<BrowserNotification[]>(
+    useGameServerSubscriptionSecuredUser<BrowserNotification>(
         {
             URI: "/browser_alert",
             key: GameServerKeys.SubBrowserNotifications,
         },
         (payload) => {
-            if (!payload || payload.length <= 0) return
+            if (!payload) return
 
-            payload.forEach((n) => {
-                if (n.title === "MECH_IN_BATTLE") {
+            if (payload.title === "MECH_IN_BATTLE") {
+                payload.data.forEach((d) => {
                     sendBrowserNotification.current({
                         title: "Your mechs are in battle!",
-                        text: `Your deployed ${n.data.mech_alerts.length}x mech has entered battle in arena ${n.data.arena_name}.`,
-                        onClick: () => history.push(`/?arenaName=${n.data.arena_name}`),
+                        text: `Your deployed ${d.mech_alerts.length}x mech has entered battle in arena ${d.arena_name}.`,
+                        onClick: () => history.push(`/?arenaName=${d.arena_name}`),
                     })
-                }
-            })
+                })
+            }
         },
     )
 
