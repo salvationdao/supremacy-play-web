@@ -1,4 +1,4 @@
-import { Box, InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
@@ -11,6 +11,7 @@ import { ConfirmModal } from "../../../../Common/Deprecated/ConfirmModal"
 import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import { NicePopover } from "../../../../Common/Nice/NicePopover"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 enum DurationOptions {
@@ -75,7 +76,7 @@ export const UserDetailsPopover = ({
             await send(GameServerKeys.ChatBanPlayer, {
                 player_id: fromUser.id,
                 reason,
-                duration_minutes: durationMinutes,
+                duration_minutes: parseFloat(durationMinutes),
             })
             newSnackbarMessage(`Successfully banned player ${fromUser.username}`, "success")
             setReason("")
@@ -115,7 +116,7 @@ export const UserDetailsPopover = ({
                 }}
             >
                 <Stack spacing=".8rem" sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
-                    <Box sx={{}}>
+                    <Box>
                         <PlayerNameGid player={fromUser} />
                     </Box>
 
@@ -207,49 +208,13 @@ export const UserDetailsPopover = ({
                     isLoading={loading}
                     error={error}
                     disableConfirm={loading}
+                    innerSx={{ width: "40rem" }}
                 >
                     <Typography variant="h6">
                         Do you wish to chat ban <strong>{fromUser.username}</strong>?
                     </Typography>
 
-                    <TextField
-                        variant="outlined"
-                        hiddenLabel
-                        fullWidth
-                        placeholder="Ban reason"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            fontWeight: "bold",
-                                        }}
-                                    >
-                                        Reason
-                                    </Typography>
-                                </InputAdornment>
-                            ),
-                        }}
-                        sx={{
-                            backgroundColor: "#00000090",
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: "1.5rem",
-                                fontSize: "2rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                        type="text"
-                        value={reason}
-                        onChange={(e) => {
-                            setReason(e.target.value)
-                        }}
-                    />
+                    <NiceTextField value={reason} onChange={(value) => setReason(value)} placeholder="Ban reason" />
 
                     <NiceSelect options={durationOptions} selected={durationMinutes} onSelected={(value) => setDurationMinutes(value as DurationOptions)} />
                 </ConfirmModal>
