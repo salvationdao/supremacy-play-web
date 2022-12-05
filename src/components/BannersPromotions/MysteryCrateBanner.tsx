@@ -155,7 +155,7 @@ export const MysteryCrateBanner = () => {
 const Countdown = ({ initialTime, setUnlocked }: { initialTime: number | undefined; setUnlocked: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: initialTime ? Math.round(initialTime) : initialTime,
         endTime: 0,
         timerType: "DECREMENTAL",
         onTimeOver: () => setUnlocked(true),

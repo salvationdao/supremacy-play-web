@@ -112,7 +112,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
 export const Countdown = ({ initialTime }: { initialTime: number | undefined }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: initialTime ? Math.round(initialTime) : initialTime,
         endTime: 0,
         timerType: "DECREMENTAL",
     })

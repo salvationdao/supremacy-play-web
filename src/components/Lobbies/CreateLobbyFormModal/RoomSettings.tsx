@@ -123,7 +123,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                 </FormField>
 
                 {/* Max deploys */}
-                <FormField label="Max mech deploys per player">
+                <FormField label="Number of mechs a player can deploy">
                     <Controller
                         name="max_deploy_number"
                         control={formMethods.control}

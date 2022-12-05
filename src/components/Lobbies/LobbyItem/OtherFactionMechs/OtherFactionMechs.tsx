@@ -26,7 +26,7 @@ const SIZE = "4rem"
 const SingleColumn = ({ battleLobby, otherFactionLobbySlots }: { battleLobby: BattleLobby; otherFactionLobbySlots: FactionLobbySlots }) => {
     const { userID } = useAuth()
 
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsForFaction = battleLobby.each_faction_mech_amount
 
     return (
         <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ width: SIZE }}>
@@ -62,8 +62,8 @@ const SingleColumn = ({ battleLobby, otherFactionLobbySlots }: { battleLobby: Ba
             })}
 
             {/* Empty slots */}
-            {maxMechs - otherFactionLobbySlots.mechSlots.length > 0 &&
-                new Array(maxMechs - otherFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
+            {maxMechsForFaction - otherFactionLobbySlots.mechSlots.length > 0 &&
+                new Array(maxMechsForFaction - otherFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
                     <Stack
                         key={`empty-slot-${index}`}
                         alignItems="center"

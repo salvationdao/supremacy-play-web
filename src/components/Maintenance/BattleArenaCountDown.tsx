@@ -43,7 +43,7 @@ const Countdown = () => {
 
     const { time } = useTimer({
         autostart: true,
-        initialTime: ((BATTLE_ARENA_OPEN_DATE || new Date()).getTime() - new Date().getTime()) / 1000,
+        initialTime: Math.round(((BATTLE_ARENA_OPEN_DATE || new Date()).getTime() - new Date().getTime()) / 1000),
         endTime: 0,
         timerType: "DECREMENTAL",
         onTimeOver: () => location.reload(),

@@ -153,7 +153,7 @@ export const RepairBayItem = ({
 const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; defaultBlocks?: number; nextRepairTime?: Date }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: ((nextRepairTime || new Date()).getTime() - new Date().getTime()) / 1000,
+        initialTime: Math.round(((nextRepairTime || new Date()).getTime() - new Date().getTime()) / 1000),
         endTime: 0,
         timerType: "DECREMENTAL",
     })

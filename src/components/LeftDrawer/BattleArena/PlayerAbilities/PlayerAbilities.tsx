@@ -6,7 +6,7 @@ import { useArena, useGame, useSupremacy } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
 import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
-import { usePagination } from "../../../../hooks"
+import { usePagination, UsePaginationProps } from "../../../../hooks"
 import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -27,32 +27,8 @@ export const PlayerAbilities = () => {
     const { battleID } = useSupremacy()
     const { battleState, isAIDrivenMatch } = useGame()
 
-    if (battleState !== BattleState.BattlingState || !userID) return null
-
-    return (
-        <Box key={battleID} sx={{ position: "relative" }}>
-            <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
-                <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
-                    <PlayerAbilitiesInner />
-                </Box>
-
-                {(isAIDrivenMatch || battleState !== BattleState.BattlingState) && (
-                    <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
-                )}
-            </SectionCollapsible>
-        </Box>
-    )
-}
-
-const PlayerAbilitiesInner = () => {
-    const theme = useTheme()
-    const { userID } = useAuth()
-
     const [abilities, setAbilities] = useState<PlayerAbility[]>([])
-    const [displayAbilities, setDisplayAbilities] = useState<PlayerAbility[]>([])
-    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType>()
-
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+    const pagination = usePagination({
         pageSize: 8,
         page: 1,
     })
@@ -65,9 +41,33 @@ const PlayerAbilitiesInner = () => {
         (payload) => {
             if (!payload) return
             setAbilities(payload)
-            setTotalItems(payload.length)
+            pagination.setTotalItems(payload.length)
         },
     )
+
+    if (battleState !== BattleState.BattlingState || !userID || pagination.totalItems <= 0) return null
+
+    return (
+        <Box key={battleID} sx={{ position: "relative" }}>
+            <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
+                <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
+                    <PlayerAbilitiesInner abilities={abilities} pagination={pagination} />
+                </Box>
+
+                {(isAIDrivenMatch || battleState !== BattleState.BattlingState) && (
+                    <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
+                )}
+            </SectionCollapsible>
+        </Box>
+    )
+}
+
+const PlayerAbilitiesInner = ({ abilities, pagination }: { abilities: PlayerAbility[]; pagination: UsePaginationProps }) => {
+    const theme = useTheme()
+    const { userID } = useAuth()
+
+    const [displayAbilities, setDisplayAbilities] = useState<PlayerAbility[]>([])
+    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType>()
 
     // If all my faction mechs are dead, then disable my player abilities
     const { currentArenaID } = useArena()
@@ -108,9 +108,9 @@ const PlayerAbilitiesInner = () => {
             return locationSelectType === p.ability.location_select_type
         })
 
-        setTotalItems(result.length)
-        setDisplayAbilities(result.slice((page - 1) * pageSize, page * pageSize))
-    }, [abilities, locationSelectType, setTotalItems, pageSize, page])
+        pagination.setTotalItems(result.length)
+        setDisplayAbilities(result.slice((pagination.page - 1) * pagination.pageSize, pagination.page * pagination.pageSize))
+    }, [abilities, locationSelectType, pagination])
 
     if (!userID) return null
 
@@ -123,7 +123,7 @@ const PlayerAbilitiesInner = () => {
                 selected={locationSelectType}
                 onSelected={(value) => {
                     setLocationSelectType((prev) => (prev === value ? undefined : value))
-                    changePage(1)
+                    pagination.changePage(1)
                 }}
                 sx={{ height: "3rem", "&>*": { flex: "1 !important" } }}
             />
@@ -176,7 +176,7 @@ const PlayerAbilitiesInner = () => {
                 </Typography>
             )}
 
-            {totalPages > 1 && (
+            {pagination.totalPages > 1 && (
                 <Box
                     sx={{
                         px: "1rem",
@@ -185,7 +185,7 @@ const PlayerAbilitiesInner = () => {
                         backgroundColor: "#00000070",
                     }}
                 >
-                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
+                    <Pagination count={pagination.totalPages} page={pagination.page} onChange={(e, p) => pagination.changePage(p)} />
                 </Box>
             )}
         </Stack>

@@ -22,8 +22,8 @@ import { JoinLobbyModal } from "./LobbyItem/JoinLobbyModal"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {
-    SystemLobbies = "SYSTEM_LOBBIES",
     ExhibitionLobbies = "EXHIBITION_LOBBIES",
+    SystemLobbies = "SYSTEM_LOBBIES",
 }
 
 enum UrlQueryParams {
@@ -52,7 +52,7 @@ export const Lobbies = () => {
     })
 
     // Nav tabs at the top
-    const [activeTabID, setActiveTabID] = useState<LobbyTabs | undefined>(LobbyTabs.SystemLobbies)
+    const [activeTabID, setActiveTabID] = useState<LobbyTabs | undefined>(LobbyTabs.ExhibitionLobbies)
     const tabs = useMemo(() => Object.values(LobbyTabs).map((t) => ({ id: t, label: snakeToTitle(t) })), [])
 
     const prevTab = useCallback(
