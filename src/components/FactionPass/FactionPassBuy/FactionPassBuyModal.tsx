@@ -49,11 +49,11 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
     const { icon, unit } = useMemo(() => {
         switch (paymentType) {
             case PaymentType.ETH:
-                return { icon: <SvgEthereum inline sx={{ ml: ".3rem" }} />, unit: "SUPS" }
+                return { icon: <SvgEthereum inline sx={{ ml: ".3rem" }} />, unit: "ETH" }
             case PaymentType.Stripe:
                 return { icon: <SvgCreditCard inline sx={{ ml: ".3rem" }} />, unit: "USD" }
             case PaymentType.SUPS:
-                return { icon: <SvgSupToken fill={colors.gold} inline />, unit: "ETH" }
+                return { icon: <SvgSupToken fill={colors.gold} inline />, unit: "SUPS" }
         }
     }, [paymentType])
 
