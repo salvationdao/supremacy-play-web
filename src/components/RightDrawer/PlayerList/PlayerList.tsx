@@ -1,21 +1,51 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo } from "react"
 import { NiceTooltip, PlayerItem } from "../.."
 import { SvgUserDiamond2 } from "../../../assets"
 import { useChat } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
-import { User } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 
 export const PlayerList = () => {
     const { activePlayers } = useChat()
 
-    return (
-        <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content activePlayers={activePlayers} />
-        </Stack>
+    const renderIndex = useCallback(
+        (index) => {
+            const player = activePlayers[index]
+            if (!player) {
+                return null
+            }
+            return <PlayerItem key={`active-player-${player.id}`} player={player} isActive />
+        },
+        [activePlayers],
     )
+
+    const content = useMemo(() => {
+        if (activePlayers.length === 0) {
+            return (
+                <Stack justifyContent="center" height="100%">
+                    <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
+                        No lobby is ready
+                    </Typography>
+                </Stack>
+            )
+        }
+
+        return (
+            <VirtualizedGrid
+                uniqueID="active-players"
+                itemWidthConfig={{ columnCount: 1 }}
+                itemHeight={4.7}
+                totalItems={activePlayers.length}
+                renderIndex={renderIndex}
+            />
+        )
+    }, [activePlayers.length, renderIndex])
+
+    return <Box sx={{ width: "100%", height: "100%", p: "1rem" }}>{content}</Box>
 }
 
 const Header = ({ isOpen, onClose }: HeaderProps) => {
@@ -65,28 +95,3 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
     )
 }
 PlayerList.Header = Header
-
-const Content = ({ activePlayers }: { activePlayers: User[] }) => {
-    return (
-        <Stack sx={{ flex: 1 }}>
-            <Box
-                sx={{
-                    flex: 1,
-                    ml: ".8rem",
-                    mr: ".3rem",
-                    pr: ".5rem",
-                    my: "1rem",
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                    direction: "ltr",
-                }}
-            >
-                <Stack spacing=".5rem">
-                    {activePlayers.map((p) => (
-                        <PlayerItem key={`active-player-${p.id}`} player={p} isActive />
-                    ))}
-                </Stack>
-            </Box>
-        </Stack>
-    )
-}
