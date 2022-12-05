@@ -24,7 +24,7 @@ type BrowserNotification =
       }
 
 export const GlobalBrowserNotifications = React.memo(function GlobalBrowserNotifications() {
-    const { sendBrowserNotification } = useGlobalNotifications()
+    const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
     const history = useHistory()
 
     useGameServerSubscriptionSecuredUser<BrowserNotification>(
@@ -37,11 +37,15 @@ export const GlobalBrowserNotifications = React.memo(function GlobalBrowserNotif
 
             if (payload.title === "MECH_IN_BATTLE") {
                 payload.data.forEach((d) => {
+                    const message = `Your deployed ${d.mech_alerts.length}x mech has entered battle in arena ${d.arena_name}.`
+
                     sendBrowserNotification.current({
                         title: "Your mechs are in battle!",
-                        text: `Your deployed ${d.mech_alerts.length}x mech has entered battle in arena ${d.arena_name}.`,
+                        text: message,
                         onClick: () => history.push(`/?arenaName=${d.arena_name}`),
                     })
+
+                    newSnackbarMessage(message, "info")
                 })
             }
         },
