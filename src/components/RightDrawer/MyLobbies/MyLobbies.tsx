@@ -285,6 +285,7 @@ export const MyLobbies = () => {
                     sx={{
                         mb: "1.2rem",
                         p: "1rem",
+                        mr: "1rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
@@ -299,7 +300,6 @@ export const MyLobbies = () => {
                     <Stack
                         sx={{
                             p: "1rem",
-                            pr: 0,
                             flex: 1,
                             overflowY: "auto",
                             overflowX: "hidden",
