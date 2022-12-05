@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, HealthShieldBars, WarMachineDestroyedInfo } from "../../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../../assets"
@@ -6,9 +6,9 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../constants"
 import { useAuth, useMiniMapPixi, useMobile, useSupremacy } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { AIType, WarMachineState } from "../../../../types"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -87,11 +87,11 @@ export const WarMachineItem = ({
             >
                 <Box sx={{ position: "absolute", top: "-3rem", right: 0 }}>
                     {label && (
-                        <Typography sx={{ color: primaryColor }}>
+                        <TypographyTruncated sx={{ color: primaryColor }}>
                             <i>
                                 <strong>[{participantID > 100 ? `CTRL + ${label}` : label}]</strong>
                             </i>
-                        </Typography>
+                        </TypographyTruncated>
                     )}
                 </Box>
 
@@ -161,9 +161,9 @@ export const WarMachineItem = ({
                                 backgroundColor: "#00000090",
                             }}
                         >
-                            <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
+                            <TypographyTruncated variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {label}
-                            </Typography>
+                            </TypographyTruncated>
                         </Box>
 
                         {!isAlive && (
@@ -205,32 +205,24 @@ export const WarMachineItem = ({
                                 zIndex: 1,
                             }}
                         >
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack, color: rarityDeets.color }}>{rarityDeets.label}</Typography>
+                            <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack, color: rarityDeets.color }}>{rarityDeets.label}</TypographyTruncated>
 
-                            <Typography
+                            <TypographyTruncated
                                 variant="h5"
                                 sx={{
                                     mb: ".3rem",
                                     lineHeight: 1,
                                     fontWeight: "bold",
                                     whiteSpace: "normal",
-                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {isMiniMech ? "Support Machine" : name || hash}
-                            </Typography>
+                            </TypographyTruncated>
 
                             {!isMiniMech && (
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        lineHeight: 1,
-                                        whiteSpace: "normal",
-                                        ...truncateTextLines(1),
-                                    }}
-                                >
+                                <TypographyTruncated variant="h6" sx={{ lineHeight: 1, whiteSpace: "normal" }}>
                                     @{ownerUsername}
-                                </Typography>
+                                </TypographyTruncated>
                             )}
                         </Stack>
                     )}
