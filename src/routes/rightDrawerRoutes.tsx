@@ -45,7 +45,7 @@ export const RightRoutes: SideRouteSingle[] = [
         label: "Active Players",
         Component: PlayerList,
         Header: PlayerList.Header,
-        requireAuth: true,
+        requireAuth: false,
         matchRouteIDs: undefined,
         mountAllTime: false,
     },

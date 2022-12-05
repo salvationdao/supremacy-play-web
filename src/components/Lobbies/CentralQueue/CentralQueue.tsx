@@ -84,7 +84,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
 
         return (
             <VirtualizedGrid
-                uniqueID="all-lobbies"
+                uniqueID="central-queue"
                 itemWidthConfig={{ columnCount: 1 }}
                 itemHeight={11.5}
                 totalItems={displayLobbies.length}
