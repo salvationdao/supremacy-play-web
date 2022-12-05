@@ -48,7 +48,7 @@ export const CentralQueueItemTooltipRender = ({
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsTotal = battleLobby.each_faction_mech_amount * 3
 
     const topBanner = useMemo(() => {
         let textColor = colors.grey
@@ -222,11 +222,11 @@ export const CentralQueueItemTooltipRender = ({
                         </Typography>
                         <Typography
                             sx={{
-                                color: battleLobby.battle_lobbies_mechs.length < maxMechs * 3 ? colors.lightGrey : colors.green,
+                                color: battleLobby.battle_lobbies_mechs.length < maxMechsTotal ? colors.lightGrey : colors.green,
                                 fontFamily: fonts.rajdhaniBold,
                             }}
                         >
-                            {battleLobby.battle_lobbies_mechs.length}/{maxMechs * 3}
+                            {battleLobby.battle_lobbies_mechs.length}/{maxMechsTotal}
                         </Typography>
                     </Stack>
 
@@ -292,7 +292,7 @@ const FactionMechList = ({
 
     const isOwnFaction = userFactionID === factionID
 
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsForFaction = battleLobby.each_faction_mech_amount
 
     const leaveLobby = useCallback(
         async (mechID: string) => {
@@ -376,8 +376,8 @@ const FactionMechList = ({
                 })}
 
                 {/* Empty slots */}
-                {maxMechs - mechsFiltered.length > 0 &&
-                    new Array(maxMechs - mechsFiltered.length).fill(0).map((_, index) => {
+                {maxMechsForFaction - mechsFiltered.length > 0 &&
+                    new Array(maxMechsForFaction - mechsFiltered.length).fill(0).map((_, index) => {
                         if (isOwnFaction) {
                             return (
                                 <NiceButton

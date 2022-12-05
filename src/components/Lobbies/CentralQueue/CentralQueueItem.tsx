@@ -21,7 +21,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
 
-    const maxMechsTotal = battleLobby.max_deploy_per_player * 3
+    const maxMechsTotal = battleLobby.each_faction_mech_amount * 3
 
     const lobbyStatus = useMemo(() => {
         let textColor = colors.lightGrey
