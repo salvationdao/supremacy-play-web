@@ -1,13 +1,18 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { SvgContentCopyIcon, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
-import { useAuth } from "../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { pulseEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
+import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceModal } from "../../Common/Nice/NiceModal"
+import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
@@ -18,6 +23,9 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
     const { factionID } = useAuth()
     const theme = useTheme()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
+
+    // For sponsoring battle with more sups
+    const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
 
@@ -119,6 +127,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                         battleLobby={battleLobby}
                         displayAccessCode={displayAccessCode}
                         setShowJoinLobbyModal={setShowJoinLobbyModal}
+                        setIsTopUpModalOpen={setIsTopUpModalOpen}
                     />
                 }
                 color={theme.factionTheme.primary}
@@ -208,6 +217,71 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     accessCode={displayAccessCode}
                 />
             )}
+
+            {isTopUpModalOpen && <TopUpModal lobbyID={battleLobby.id} onClose={() => setIsTopUpModalOpen(false)} />}
         </>
+    )
+}
+
+const TopUpModal = ({ lobbyID, onClose }: { lobbyID: string; onClose: () => void }) => {
+    const [topUpReward, setTopUpReward] = useState(1)
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const [isLoading, setIsLoading] = useState(false)
+
+    const onTopUp = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            await send<boolean>(GameServerKeys.TopUpBattleLobbyReward, {
+                battle_lobby_id: lobbyID,
+                amount: topUpReward,
+            })
+            newSnackbarMessage("Successfully added to reward pool.", "success")
+        } catch (err) {
+            console.log(err)
+            newSnackbarMessage(typeof err === "string" ? err : "Failed to add to reward pool, try again or contact support", "error")
+        } finally {
+            setTimeout(() => setIsLoading(false), 500)
+            setTimeout(() => onClose(), 650)
+            setTopUpReward(0)
+        }
+    }, [lobbyID, newSnackbarMessage, onClose, send, topUpReward])
+
+    return (
+        <NiceModal open onClose={onClose}>
+            <Stack direction="column" sx={{ p: "1rem 1.3rem", width: "35rem" }}>
+                <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb=".4rem">
+                    NOTE
+                </Typography>
+
+                <Typography variant="body1" sx={{ mb: "1rem" }}>
+                    The provided sups will stay in the pool and be distributed after the battle ends.
+                </Typography>
+
+                <Stack direction="row" alignItems="center" spacing="1rem">
+                    <NiceTextField
+                        primaryColor={colors.green}
+                        value={topUpReward}
+                        type="number"
+                        defaultValue={1}
+                        onChange={(value) => {
+                            const valueNumber = parseFloat(value)
+                            setTopUpReward(valueNumber)
+                        }}
+                        placeholder="Enter amount..."
+                        InputProps={{
+                            startAdornment: <SvgSupToken fill={colors.yellow} size="1.9rem" />,
+                        }}
+                        disabled={isLoading}
+                    />
+
+                    <NiceButton sheen={{ autoSheen: true }} loading={isLoading} buttonColor={colors.green} corners onClick={onTopUp}>
+                        <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                            Confirm
+                        </Typography>
+                    </NiceButton>
+                </Stack>
+            </Stack>
+        </NiceModal>
     )
 }

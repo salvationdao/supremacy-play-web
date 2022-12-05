@@ -33,11 +33,13 @@ export const CentralQueueItemTooltipRender = ({
     displayAccessCode,
     width,
     setShowJoinLobbyModal,
+    setIsTopUpModalOpen,
 }: {
     battleLobby: BattleLobby
     displayAccessCode?: string
     width?: string
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
+    setIsTopUpModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { factionID } = useAuth()
     const theme = useTheme()
@@ -171,14 +173,24 @@ export const CentralQueueItemTooltipRender = ({
                 </Stack>
 
                 {/* Reward pool */}
-                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgChest2 inline /> Reward Pool:
                     </Typography>
+
+                    <Box flex={1} />
+
                     <Typography>
                         <SvgSupToken inline fill={colors.gold} />
                         {supFormatter(battleLobby.sups_pool, 2)}
                     </Typography>
+
+                    {/* Top up */}
+                    <NiceButton buttonColor={colors.gold} sx={{ p: ".1rem .6rem", opacity: 0.84 }} onClick={() => setIsTopUpModalOpen(true)}>
+                        <Typography fontFamily={fonts.nostromoBold} variant="subtitle2" color={colors.gold}>
+                            SPONSOR
+                        </Typography>
+                    </NiceButton>
                 </Stack>
 
                 {/* Distribution */}
