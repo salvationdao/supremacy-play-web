@@ -232,29 +232,35 @@ export const theme = createTheme({
             lineHeight: 1.5,
         },
         body1: {
+            // this is the default variant
             fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.7rem",
             lineHeight: 1.5,
+            letterSpacing: ".8px",
         },
         body2: {
             fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.5rem",
             lineHeight: 1.5,
+            letterSpacing: ".8px",
         },
         subtitle1: {
             fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.34rem",
             lineHeight: 1.5,
+            letterSpacing: ".8px",
         },
         subtitle2: {
             fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.18rem",
             lineHeight: 1.5,
+            letterSpacing: ".8px",
         },
         caption: {
             fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.25rem",
             lineHeight: 1.5,
+            letterSpacing: "1px",
         },
     },
     components: {
