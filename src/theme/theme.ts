@@ -470,6 +470,15 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiBadge: {
+            styleOverrides: {
+                root: {
+                    ".MuiBadge-badge": {
+                        pointerEvents: "none",
+                    },
+                },
+            },
+        },
     },
     factionTheme,
 })
