@@ -5,9 +5,10 @@ import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts } from "../../../../../../theme/theme"
+import { fonts } from "../../../../../../theme/theme"
 import { PowerCore } from "../../../../../../types"
 import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
+import { Stat } from "./Stat"
 
 export interface PowerCoreTooltipProps {
     id: string
@@ -123,71 +124,14 @@ interface PowerCoreStatsProps {
 }
 
 const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) => {
-    const renderStat = (icon: React.ReactNode, label: string, stat: string | number, compareStat?: string | number, unit?: string, nonNumeric?: boolean) => {
-        let comparison = <></>
-        let color = "white"
-        if (typeof compareStat !== "undefined") {
-            if (nonNumeric && stat !== compareStat) {
-                comparison = <>→ {compareStat}</>
-            } else if (stat !== compareStat) {
-                let rawStat = 0
-                let rawCompareStat = 0
-                if (typeof stat === "string") {
-                    rawStat = parseFloat(stat)
-                } else {
-                    rawStat = stat
-                }
-                if (typeof compareStat === "string") {
-                    rawCompareStat = parseFloat(compareStat)
-                } else {
-                    rawCompareStat = compareStat
-                }
-
-                const difference = rawCompareStat - rawStat
-                if (difference > 0) {
-                    color = colors.green
-                    comparison = (
-                        <Box component="span" ml=".5rem">
-                            (+{difference}
-                            {unit})
-                        </Box>
-                    )
-                } else if (difference < 0) {
-                    color = colors.red
-                    comparison = (
-                        <Box component="span" ml=".5rem">
-                            ({difference}
-                            {unit})
-                        </Box>
-                    )
-                }
-            }
-        }
-        return (
-            <Stack direction="row">
-                {icon}
-                <Typography ml=".5rem" textTransform="uppercase">
-                    {label}
-                </Typography>
-                <Typography ml="auto" fontWeight="fontWeightBold">
-                    <Box component="span" color={color}>
-                        {stat}
-                        {unit}
-                    </Box>
-                    {comparison}
-                </Typography>
-            </Stack>
-        )
-    }
-
     return (
         <>
-            {renderStat(<SvgPowerCore />, "Size", powerCore.size, compareTo?.size, undefined, true)}
-            {renderStat(<SvgPowerCore />, "Capacity", powerCore.capacity, compareTo?.capacity)}
-            {renderStat(<SvgPowerCore />, "Recharge Rate", powerCore.recharge_rate, compareTo?.recharge_rate, "/sec")}
-            {renderStat(<SvgPowerCore />, "Weapon Share", powerCore.weapon_share, compareTo?.weapon_share, "%")}
-            {renderStat(<SvgPowerCore />, "Movement Share", powerCore.movement_share, compareTo?.movement_share, "%")}
-            {renderStat(<SvgPowerCore />, "Utility Share", powerCore.utility_share, compareTo?.utility_share, "%")}
+            {<Stat icon={<SvgPowerCore />} label={"Size"} stat={powerCore.size} compareStat={compareTo?.size} nonNumeric />}
+            {<Stat icon={<SvgPowerCore />} label={"Capacity"} stat={powerCore.capacity} compareStat={compareTo?.capacity} />}
+            {<Stat icon={<SvgPowerCore />} label={"Recharge Rate"} stat={powerCore.recharge_rate} compareStat={compareTo?.recharge_rate} unit="/sec" />}
+            {<Stat icon={<SvgPowerCore />} label={"Weapon Share"} stat={powerCore.weapon_share} compareStat={compareTo?.weapon_share} unit="%" />}
+            {<Stat icon={<SvgPowerCore />} label={"Movement Share"} stat={powerCore.movement_share} compareStat={compareTo?.movement_share} unit="%" />}
+            {<Stat icon={<SvgPowerCore />} label={"Utility Share"} stat={powerCore.utility_share} compareStat={compareTo?.utility_share} unit="%" />}
         </>
     )
 }
