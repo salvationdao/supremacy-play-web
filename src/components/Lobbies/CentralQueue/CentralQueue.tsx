@@ -1,9 +1,9 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import FlipMove from "react-flip-move"
+import { Divider, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 import { CentralQueueItem } from "./CentralQueueItem"
 
 export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
@@ -60,6 +60,17 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
         })
     }, [lobbies])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const battleLobby = displayLobbies[index]
+            if (!battleLobby) {
+                return null
+            }
+            return <CentralQueueItem battleLobby={battleLobby} />
+        },
+        [displayLobbies],
+    )
+
     const content = useMemo(() => {
         if (displayLobbies.length === 0) {
             return (
@@ -72,24 +83,15 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
         }
 
         return (
-            <FlipMove>
-                {displayLobbies.map((battleLobby) => {
-                    return (
-                        <Box
-                            key={`battle-lobby-${battleLobby.id}`}
-                            sx={{
-                                "&:not(:last-child)": {
-                                    mb: ".8rem",
-                                },
-                            }}
-                        >
-                            <CentralQueueItem battleLobby={battleLobby} />
-                        </Box>
-                    )
-                })}
-            </FlipMove>
+            <VirtualizedGrid
+                uniqueID="all-lobbies"
+                itemWidthConfig={{ columnCount: 1 }}
+                itemHeight={11.5}
+                totalItems={displayLobbies.length}
+                renderIndex={renderIndex}
+            />
         )
-    }, [displayLobbies])
+    }, [displayLobbies.length, renderIndex])
 
     return (
         <NiceBoxThing
