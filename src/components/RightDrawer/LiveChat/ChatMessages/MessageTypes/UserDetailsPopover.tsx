@@ -1,30 +1,31 @@
-import { Box, InputAdornment, MenuItem, Select, Stack, TextField, Typography, useTheme } from "@mui/material"
+import { Box, InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { SvgAbility, SvgDeath, SvgSkull2, SvgView } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors, fonts } from "../../../../../theme/theme"
+import { fonts } from "../../../../../theme/theme"
 import { FeatureName, User, UserStat } from "../../../../../types"
 import { ConfirmModal } from "../../../../Common/Deprecated/ConfirmModal"
 import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import { NicePopover } from "../../../../Common/Nice/NicePopover"
+import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 enum DurationOptions {
-    TwentyFourHours = "24 Hours",
-    ThreeHours = "3 Hours",
-    OneHour = "1 Hour",
-    FifteenMinutes = "15 Minutes",
+    TwentyFourHours = "1440",
+    ThreeHours = "180",
+    OneHour = "60",
+    FifteenMinutes = "15",
 }
 
-const DURATION_OPTIONS = {
-    [DurationOptions.TwentyFourHours]: 1440,
-    [DurationOptions.ThreeHours]: 180,
-    [DurationOptions.OneHour]: 60,
-    [DurationOptions.FifteenMinutes]: 15,
-}
+const durationOptions = [
+    { label: "24 Hours", value: DurationOptions.TwentyFourHours },
+    { label: "3 Hours", value: DurationOptions.ThreeHours },
+    { label: "1 Hour", value: DurationOptions.OneHour },
+    { label: "15 Minutes", value: DurationOptions.FifteenMinutes },
+]
 
 export const UserDetailsPopover = ({
     factionColor,
@@ -46,7 +47,6 @@ export const UserDetailsPopover = ({
     fromUser: User
     toggleBanModalOpen: (value?: boolean | undefined) => void
 }) => {
-    const theme = useTheme()
     const { userHasFeature } = useAuth()
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
@@ -75,7 +75,7 @@ export const UserDetailsPopover = ({
             await send(GameServerKeys.ChatBanPlayer, {
                 player_id: fromUser.id,
                 reason,
-                duration_minutes: DURATION_OPTIONS[durationMinutes],
+                duration_minutes: durationMinutes,
             })
             newSnackbarMessage(`Successfully banned player ${fromUser.username}`, "success")
             setReason("")
@@ -206,11 +206,6 @@ export const UserDetailsPopover = ({
                     }}
                     isLoading={loading}
                     error={error}
-                    confirmSuffix={
-                        <Typography variant="h6" sx={{ fontWeight: "bold", ml: ".4rem" }}>
-                            BAN
-                        </Typography>
-                    }
                     disableConfirm={loading}
                 >
                     <Typography variant="h6">
@@ -256,55 +251,7 @@ export const UserDetailsPopover = ({
                         }}
                     />
 
-                    <Select
-                        sx={{
-                            width: "100%",
-                            borderRadius: 0.5,
-                            "&:hover": {
-                                backgroundColor: theme.factionTheme.primary,
-                                ".MuiTypography-root": { color: theme.factionTheme.text },
-                            },
-                            ".MuiTypography-root": {
-                                px: "1rem",
-                                py: ".5rem",
-                            },
-                            "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
-                            ".MuiOutlinedInput-notchedOutline": {
-                                border: "none !important",
-                            },
-                        }}
-                        value={durationMinutes}
-                        MenuProps={{
-                            variant: "menu",
-                            sx: {
-                                "&& .Mui-selected": {
-                                    ".MuiTypography-root": {
-                                        color: theme.factionTheme.text,
-                                    },
-                                    backgroundColor: theme.factionTheme.primary,
-                                },
-                            },
-                            PaperProps: {
-                                sx: {
-                                    backgroundColor: colors.darkNavy,
-                                    borderRadius: 0.5,
-                                },
-                            },
-                        }}
-                    >
-                        {Object.keys(DURATION_OPTIONS).map((value) => (
-                            <MenuItem
-                                key={value}
-                                value={value}
-                                onClick={() => {
-                                    setDurationMinutes(value as DurationOptions)
-                                }}
-                                sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
-                            >
-                                <Typography textTransform="uppercase">{value}</Typography>
-                            </MenuItem>
-                        ))}
-                    </Select>
+                    <NiceSelect options={durationOptions} selected={durationMinutes} onSelected={(value) => setDurationMinutes(value as DurationOptions)} />
                 </ConfirmModal>
             )}
         </>
