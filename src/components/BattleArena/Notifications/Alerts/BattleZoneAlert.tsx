@@ -9,7 +9,7 @@ import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 export const BattleZoneAlert = ({ data }: { data: BattleZoneStruct }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: Math.round(Date.now() / 1000 + data.warn_time),
+        initialTime: Math.round(data.warn_time),
         endTime: 0,
         timerType: "DECREMENTAL",
     })
