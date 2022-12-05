@@ -15,7 +15,7 @@ export interface BrowserNotificationConfig {
     text: string
     imageUrl?: string
     requireInteraction?: boolean
-    timeOpen?: number
+    autoDismissTime?: number
     onClick?: () => void
 }
 
@@ -33,12 +33,12 @@ export const GlobalNotificationsContainer = createContainer(() => {
     }, [])
 
     // Browser notification
-    const sendBrowserNotification = useRef(({ title, text, imageUrl, requireInteraction, timeOpen, onClick }: BrowserNotificationConfig) => {
+    const sendBrowserNotification = useRef(({ title, text, imageUrl, requireInteraction, autoDismissTime, onClick }: BrowserNotificationConfig) => {
         if (!("Notification" in window)) {
             return
         }
 
-        const n = new Notification(title, {
+        const notification = new Notification(title, {
             badge: imageUrl || SupremacyPNG,
             icon: imageUrl || SupremacyPNG,
             image: imageUrl || SupremacyPNG,
@@ -46,17 +46,17 @@ export const GlobalNotificationsContainer = createContainer(() => {
             requireInteraction,
         })
 
-        n.onclick = (e) => {
+        notification.onclick = (e) => {
             e.preventDefault()
             onClick ? onClick() : window.parent.parent.focus()
         }
 
-        if (timeOpen) {
-            setTimeout(() => n.close(), timeOpen)
+        if (autoDismissTime) {
+            setTimeout(() => notification.close(), autoDismissTime)
         }
 
         if (document.visibilityState === "visible") {
-            n.close()
+            notification.close()
         }
     })
 
