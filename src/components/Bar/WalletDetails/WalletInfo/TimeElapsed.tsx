@@ -4,7 +4,7 @@ import { msToTime } from "../../../../helpers"
 export const TimeElapsed = ({ startTime }: { startTime: Date }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: (new Date().getTime() - new Date(startTime).getTime()) / 1000,
+        initialTime: Math.round((new Date().getTime() - new Date(startTime).getTime()) / 1000),
         timerType: "INCREMENTAL",
     })
 

@@ -311,7 +311,7 @@ export const LineItem = ({ title, children, color }: { title: string; children: 
 const Countdown = ({ initialTime, toggleOutOfTime }: { initialTime: number; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: Math.round(initialTime),
         endTime: 0,
         timerType: "DECREMENTAL",
         onTimeOver: () => toggleOutOfTime(true),

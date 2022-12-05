@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { SvgMoreOptions, SvgRepair } from "../../../assets"
-import { useGlobalNotifications } from "../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getMechStatusDeets, mechHasPowerCoreAndWeapon } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -14,6 +14,7 @@ import { NiceTooltip } from "../Nice/NiceTooltip"
 import { RepairModal } from "./RepairModal/RepairModal"
 
 export const MechIdleStatus = ({ mech, hideMoreOptionButtons }: { mech: NewMechStruct; hideMoreOptionButtons?: boolean }) => {
+    const { userID } = useAuth()
     const theme = useTheme()
     const repairPopoverRef = useRef(null)
     const stakePopoverRef = useRef(null)
@@ -81,7 +82,7 @@ export const MechIdleStatus = ({ mech, hideMoreOptionButtons }: { mech: NewMechS
                     {mech.is_staked ? "STAKED" : "NOT STAKED"}
                 </Typography>
 
-                {!hideMoreOptionButtons && (
+                {(!hideMoreOptionButtons || userID !== mech.owner_id) && (
                     <>
                         <NiceTooltip enterDelay={0} text="Mech must have a Power Core and a weapon equipped" placement="right">
                             <Box ref={stakePopoverRef}>

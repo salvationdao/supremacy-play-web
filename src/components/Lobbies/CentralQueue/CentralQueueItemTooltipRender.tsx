@@ -33,11 +33,13 @@ export const CentralQueueItemTooltipRender = ({
     displayAccessCode,
     width,
     setShowJoinLobbyModal,
+    setIsTopUpModalOpen,
 }: {
     battleLobby: BattleLobby
     displayAccessCode?: string
     width?: string
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
+    setIsTopUpModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { factionID } = useAuth()
     const theme = useTheme()
@@ -48,7 +50,7 @@ export const CentralQueueItemTooltipRender = ({
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsTotal = battleLobby.each_faction_mech_amount * 3
 
     const topBanner = useMemo(() => {
         let textColor = colors.grey
@@ -171,14 +173,24 @@ export const CentralQueueItemTooltipRender = ({
                 </Stack>
 
                 {/* Reward pool */}
-                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgChest2 inline /> Reward Pool:
                     </Typography>
+
+                    <Box flex={1} />
+
                     <Typography>
                         <SvgSupToken inline fill={colors.gold} />
                         {supFormatter(battleLobby.sups_pool, 2)}
                     </Typography>
+
+                    {/* Top up */}
+                    <NiceButton buttonColor={colors.gold} sx={{ p: ".1rem .6rem", opacity: 0.84 }} onClick={() => setIsTopUpModalOpen(true)}>
+                        <Typography fontFamily={fonts.nostromoBold} variant="subtitle2" color={colors.gold}>
+                            SPONSOR
+                        </Typography>
+                    </NiceButton>
                 </Stack>
 
                 {/* Distribution */}
@@ -222,11 +234,11 @@ export const CentralQueueItemTooltipRender = ({
                         </Typography>
                         <Typography
                             sx={{
-                                color: battleLobby.battle_lobbies_mechs.length < maxMechs * 3 ? colors.lightGrey : colors.green,
+                                color: battleLobby.battle_lobbies_mechs.length < maxMechsTotal ? colors.lightGrey : colors.green,
                                 fontFamily: fonts.rajdhaniBold,
                             }}
                         >
-                            {battleLobby.battle_lobbies_mechs.length}/{maxMechs * 3}
+                            {battleLobby.battle_lobbies_mechs.length}/{maxMechsTotal}
                         </Typography>
                     </Stack>
 
@@ -292,7 +304,7 @@ const FactionMechList = ({
 
     const isOwnFaction = userFactionID === factionID
 
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsForFaction = battleLobby.each_faction_mech_amount
 
     const leaveLobby = useCallback(
         async (mechID: string) => {
@@ -376,8 +388,8 @@ const FactionMechList = ({
                 })}
 
                 {/* Empty slots */}
-                {maxMechs - mechsFiltered.length > 0 &&
-                    new Array(maxMechs - mechsFiltered.length).fill(0).map((_, index) => {
+                {maxMechsForFaction - mechsFiltered.length > 0 &&
+                    new Array(maxMechsForFaction - mechsFiltered.length).fill(0).map((_, index) => {
                         if (isOwnFaction) {
                             return (
                                 <NiceButton

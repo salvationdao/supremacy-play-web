@@ -6,6 +6,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceModal } from "../../Common/Nice/NiceModal"
+import { TopUpModal } from "../CentralQueue/CentralQueueItem"
 import { CentralQueueItemTooltipRender } from "../CentralQueue/CentralQueueItemTooltipRender"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
 
@@ -20,6 +21,9 @@ export const PrivateLobbySingleModal = ({
 }) => {
     const [battleLobby, setBattleLobby] = useState<BattleLobby>(_battleLobby)
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
+
+    // For sponsoring battle with more sups
+    const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
 
     useGameServerSubscriptionFaction<BattleLobby>(
         {
@@ -49,6 +53,7 @@ export const PrivateLobbySingleModal = ({
                         displayAccessCode={accessCode}
                         width="100%"
                         setShowJoinLobbyModal={setShowJoinLobbyModal}
+                        setIsTopUpModalOpen={setIsTopUpModalOpen}
                     />
                 </Stack>
             </NiceModal>
@@ -56,6 +61,8 @@ export const PrivateLobbySingleModal = ({
             {showJoinLobbyModal && (
                 <JoinLobbyModal open={showJoinLobbyModal} onClose={() => setShowJoinLobbyModal(false)} battleLobby={battleLobby} accessCode={accessCode} />
             )}
+
+            {isTopUpModalOpen && <TopUpModal lobbyID={battleLobby.id} onClose={() => setIsTopUpModalOpen(false)} />}
         </>
     )
 }

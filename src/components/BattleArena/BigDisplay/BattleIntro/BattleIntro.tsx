@@ -198,20 +198,23 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 {/* Weapon slots */}
                                 <Stack spacing=".5rem" direction={isTablet ? "row" : "column"} flex={1}>
                                     {ms.weapon_slots &&
-                                        ms.weapon_slots.map((w, index) => (
-                                            <Box
-                                                key={index}
-                                                component="img"
-                                                src={w.weapon?.avatar_url}
-                                                sx={{
-                                                    width: "100%",
-                                                    maxWidth: isTablet ? "4rem" : undefined,
-                                                    objectFit: "contain",
-                                                    backgroundColor: theme.background,
-                                                    border: `1px solid ${colors.black2}`,
-                                                }}
-                                            />
-                                        ))}
+                                        ms.weapon_slots.map((w, index) => {
+                                            if (!w.weapon) return null
+                                            return (
+                                                <Box
+                                                    key={index}
+                                                    component="img"
+                                                    src={w.weapon.avatar_url}
+                                                    sx={{
+                                                        width: "100%",
+                                                        maxWidth: isTablet ? "4rem" : undefined,
+                                                        objectFit: "contain",
+                                                        backgroundColor: theme.background,
+                                                        border: `1px solid ${colors.black2}`,
+                                                    }}
+                                                />
+                                            )
+                                        })}
                                 </Stack>
                             </Stack>
 

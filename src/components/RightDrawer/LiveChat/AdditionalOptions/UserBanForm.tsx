@@ -13,6 +13,7 @@ import { RoleType } from "../../../../types"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { NiceModal } from "../../../Common/Nice/NiceModal"
+import { NiceTextField } from "../../../Common/Nice/NiceTextField"
 import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
 interface SubmitRequest {
@@ -237,6 +238,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                         }}
                     >
                         <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>BAN OPTION:</Typography>
+
                         <Select
                             displayEmpty
                             sx={{
@@ -244,7 +246,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                                 "&:hover": {
                                     backgroundColor: colors.darkNavy,
                                 },
-                                "& .MuiSelect-outlined": { px: "1.6rem", py: ".8rem" },
+                                "& .MuiSelect-outlined": { px: "1.6rem", py: ".5rem" },
                             }}
                             value={selectedBanOptionID}
                             MenuProps={{
@@ -289,37 +291,14 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
 
                     <Stack spacing=".3rem">
                         <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>REASON:</Typography>
-                        <TextField
+
+                        <NiceTextField
                             value={reason}
                             placeholder="Type the reason to punish the user..."
-                            onChange={(e) => {
-                                const m = e.currentTarget.value
-                                if (m.length <= MAX_BAN_PROPOSAL_REASON_LENGTH) setReason(e.currentTarget.value)
-                            }}
-                            type="text"
-                            hiddenLabel
                             multiline
                             maxRows={2}
-                            sx={{
-                                borderRadius: 1,
-                                "& .MuiInputBase-root": {
-                                    fontFamily: fonts.rajdhaniMedium,
-                                    px: "1.1em",
-                                    pt: ".9rem",
-                                    pb: ".7rem",
-                                },
-                                ".Mui-disabled": {
-                                    WebkitTextFillColor: "unset",
-                                    color: "#FFFFFF70",
-                                },
-                                ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: `${primaryColor} !important`,
-                                },
-                                textarea: {
-                                    p: 0,
-                                    color: "#FFFFFF",
-                                    overflow: "hidden",
-                                },
+                            onChange={(value) => {
+                                if (value.length <= MAX_BAN_PROPOSAL_REASON_LENGTH) setReason(value)
                             }}
                         />
                     </Stack>
