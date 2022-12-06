@@ -45,7 +45,7 @@ export const PlayerAbilities = () => {
         },
     )
 
-    if (battleState !== BattleState.BattlingState || !userID || pagination.totalItems <= 0) return null
+    if (battleState !== BattleState.BattlingState || !userID || abilities.length <= 0) return null
 
     return (
         <Box key={battleID} sx={{ position: "relative" }}>

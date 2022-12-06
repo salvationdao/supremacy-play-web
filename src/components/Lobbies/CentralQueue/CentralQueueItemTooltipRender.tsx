@@ -80,7 +80,7 @@ export const CentralQueueItemTooltipRender = ({
     }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
-        <Box sx={{ width: width || "40rem", backgroundColor: theme.factionTheme.s800 }}>
+        <Box sx={{ width: width || "43rem", backgroundColor: theme.factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -157,7 +157,7 @@ export const CentralQueueItemTooltipRender = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgHistoryClock inline /> Scheduled time:
                     </Typography>
-                    <TypographyTruncated>
+                    <TypographyTruncated sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}>
                         {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}
                     </TypographyTruncated>
                 </Stack>
