@@ -370,7 +370,7 @@ const FactionMechList = ({
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    opacity: !mech?.is_destroyed ? 1 : 0.6,
+                                    opacity: !mech?.is_destroyed ? 1 : 0.36,
                                 }}
                             />
 

@@ -152,22 +152,12 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             key: GameServerKeys.SubRepairJobListUpdated,
         },
         (payload) => {
-            if (!payload || payload.length <= 0) return
+            if (!payload) return
 
             setRepairJobs((prev) => {
-                let newArray = [...prev]
-
-                for (let index = 0; index < payload.length; index++) {
-                    const foundIndex = newArray.findIndex((rj) => rj.id === payload[index].id)
-                    if (foundIndex >= 0) {
-                        newArray[foundIndex] = payload[index]
-                    } else {
-                        // If repair job is not in the array, then add it
-                        newArray = [...newArray, payload[index]]
-                    }
-                }
-
-                return newArray
+                prev = prev.map((rj) => payload.find((p) => p.id === rj.id) || rj)
+                payload.forEach((p) => (prev.some((rj) => rj.id === p.id) ? undefined : prev.push(p)))
+                return prev.filter((rj) => !rj.closed_at && rj.expires_at > new Date())
             })
         },
     )
