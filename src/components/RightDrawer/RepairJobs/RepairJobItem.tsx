@@ -6,9 +6,10 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatter, timeSinceInWords, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
-import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobItemProps {
@@ -53,21 +54,12 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
     return useMemo(
         () => (
             <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
-                <FancyButton
-                    disableRipple
-                    clipThingsProps={{
-                        clipSize: "7px",
-                        clipSlantSize: "0px",
-                        corners: {},
-                        backgroundColor: backgroundColor,
-                        opacity: isFinished ? 0.6 : 0.9,
-                        border: { borderColor: primaryColor, borderThickness: isFinished ? "0" : ".15rem" },
-                        sx: { position: "relative", height: "100%" },
-                    }}
-                    sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
+                <NiceButton
+                    disableAutoColor
+                    sx={{ position: "relative", width: "100%", height: "100%", border: `${primaryColor}AA 1px solid` }}
                     onClick={() => !isFinished && setRepairJobModal(repairJob)}
                 >
-                    <Stack spacing=".4rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
+                    <Stack sx={{ position: "relative", width: "100%", height: "100%", p: "1rem 1.5rem" }}>
                         <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem", pb: ".6rem" }}>
                             <SvgCubes size="2.8rem" />
                             <Stack>
@@ -95,22 +87,17 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                         <General isGridViewCompact={true} title="REWARD">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="1.8rem" fill={colors.yellow} />
-                                <Typography
-                                    sx={{
-                                        fontWeight: "bold",
-                                        ...truncateTextLines(2),
-                                    }}
-                                >
+                                <TypographyTruncated sx={{ fontWeight: "bold" }}>
                                     {supFormatter(repairJob.sups_worth_per_block || "0", 2)} / BLOCK
-                                </Typography>
+                                </TypographyTruncated>
                             </Stack>
                         </General>
 
                         <General isGridViewCompact={true} title="JOB OWNER">
-                            <Box>
+                            <Stack direction="row" alignItems="center">
                                 <PlayerNameGid player={repairJob.job_owner} />
                                 {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
-                            </Box>
+                            </Stack>
                         </General>
 
                         {isFinished ? (
@@ -136,7 +123,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                             zIndex: -1,
                         }}
                     />
-                </FancyButton>
+                </NiceButton>
             </Box>
         ),
         [backgroundColor, isFinished, primaryColor, remainDamagedBlocks, repairJob, setRepairJobModal, userID],
