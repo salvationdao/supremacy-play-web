@@ -1,7 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useEffect, useMemo, useState } from "react"
-import FlipMove from "react-flip-move"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgRepair } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useArray } from "../../../hooks"
@@ -15,6 +14,7 @@ import { DoRepairModal } from "../../Common/Mech/RepairModal/DoRepairModal"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
+import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 import { RepairJobItem } from "./RepairJobItem"
 
 const sortOptions = [
@@ -77,6 +77,17 @@ export const RepairJobs = () => {
         setRepairJobsRender(sorted)
     }, [sort, setRepairJobsRender, repairJobs])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const repairJob = repairJobsRender[index]
+            if (!repairJob) {
+                return null
+            }
+            return <RepairJobItem repairJob={repairJob} removeByID={removeByID} repairJobModal={repairJobModal} setRepairJobModal={setRepairJobModal} />
+        },
+        [removeByID, repairJobModal, repairJobsRender],
+    )
+
     const content = useMemo(() => {
         if (!repairJobsRender) {
             return (
@@ -90,24 +101,14 @@ export const RepairJobs = () => {
 
         if (repairJobsRender && repairJobsRender.length > 0) {
             return (
-                <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack>
-                        <FlipMove>
-                            {repairJobsRender.map((repairJob) => {
-                                return (
-                                    <div key={`repair-job-${repairJob.id}`} style={{ marginBottom: "1.3rem" }}>
-                                        <RepairJobItem
-                                            repairJob={repairJob}
-                                            removeByID={removeByID}
-                                            repairJobModal={repairJobModal}
-                                            setRepairJobModal={setRepairJobModal}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        </FlipMove>
-                    </Stack>
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="repair-jobs"
+                    itemWidthConfig={{ columnCount: 1 }}
+                    itemHeight={19}
+                    gap={1}
+                    totalItems={repairJobsRender.length}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -125,7 +126,7 @@ export const RepairJobs = () => {
                 </Typography>
             </Stack>
         )
-    }, [removeByID, repairJobModal, repairJobsRender])
+    }, [renderIndex, repairJobsRender])
 
     return (
         <>
@@ -133,21 +134,7 @@ export const RepairJobs = () => {
                 {/* Sort */}
                 <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{}} />
 
-                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                    <Box
-                        sx={{
-                            ml: ".5rem",
-                            pr: ".5rem",
-                            my: ".6rem",
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-                        }}
-                    >
-                        {content}
-                    </Box>
-                </Stack>
+                <Box sx={{ p: "1rem", flex: 1 }}>{content}</Box>
             </Stack>
 
             {repairJobModal && <DoRepairModal repairJob={repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
