@@ -55,6 +55,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
         () => (
             <NiceButton
                 disableAutoColor
+                disabled={true}
                 sx={{ position: "relative", width: "99%", height: "100%", border: `${primaryColor}AA 1px solid` }}
                 onClick={() => !isFinished && setRepairJobModal(repairJob)}
             >
