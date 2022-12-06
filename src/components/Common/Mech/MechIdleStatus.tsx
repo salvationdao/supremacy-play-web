@@ -160,7 +160,6 @@ const RepairActions = ({
                     </NiceButton>
 
                     <NiceButton
-                        disabled={!!mech.has_repair_offer}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={(e) => {
                             e.preventDefault()
