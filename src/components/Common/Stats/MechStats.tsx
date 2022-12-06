@@ -145,10 +145,36 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 hideEmptyComparison
             />
+            {mech.boosted_speed !== mech.speed && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boosted Speed"
+                    stat={{
+                        value: mech.boosted_speed,
+                    }}
+                    compareStat={{
+                        value: mech.speed,
+                    }}
+                    hideEmptyComparison
+                />
+            )}
+            {mech.boosted_shield !== mech.shield && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boosted Max Shield"
+                    stat={{
+                        value: mech.boosted_shield,
+                    }}
+                    compareStat={{
+                        value: mech.shield,
+                    }}
+                    hideEmptyComparison
+                />
+            )}
             {mech.boosted_shield_recharge_rate !== mech.shield_recharge_rate && (
                 <Stat
                     icon={<SvgDoubleChevronUp />}
-                    label="Sprint Spread Modifier"
+                    label="Boosted Shield Recharge Rate"
                     stat={{
                         value: mech.boosted_shield_recharge_rate,
                     }}
@@ -161,7 +187,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
             {mech.boosted_sprint_spread_modifier !== mech.sprint_spread_modifier && (
                 <Stat
                     icon={<SvgDoubleChevronUp />}
-                    label="Sprint Spread Modifier"
+                    label="Boosted Sprint Spread Modifier"
                     stat={{
                         value: mech.boosted_sprint_spread_modifier,
                     }}
@@ -175,7 +201,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
             {mech.boosted_walk_speed_modifier !== mech.walk_speed_modifier && (
                 <Stat
                     icon={<SvgDoubleChevronUp />}
-                    label="Sprint Spread Modifier"
+                    label="Boosted Walk Speed"
                     stat={{
                         value: mech.boosted_walk_speed_modifier,
                     }}
@@ -185,7 +211,6 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     hideEmptyComparison
                 />
             )}
-            hideEmptyComparison
             {/* <Stat
                 icon={<SvgDamageIcon />}
                 label="Melee Force"
