@@ -11,12 +11,12 @@ import { OnConfirmMechSkinSelection } from "../MechLoadoutMechSkinModal"
 interface MechSkinPreviewProps {
     onConfirm: OnConfirmMechSkinSelection
     mech: MechDetails
-    submodel?: MechSkin
+    skin?: MechSkin
     equipped?: MechSkin
     isCompatible: boolean
 }
 
-export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSkinPreviewProps) => {
+export const MechSkinPreview = ({ onConfirm, mech, skin, equipped }: MechSkinPreviewProps) => {
     const theme = useTheme()
 
     const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
@@ -53,8 +53,8 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
     }, [])
 
     const statChanges = useMemo(() => {
-        if (!submodel) return []
-        const newStats = calculateBoostedStats(mech, submodel)
+        if (!skin) return []
+        const newStats = calculateBoostedStats(mech, skin)
         const oldStats = calculateBoostedStats(mech, equipped)
 
         const stats = [
@@ -73,23 +73,18 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
         ]
 
         return stats.filter((s) => !!s)
-    }, [submodel, mech, equipped, renderStatChange])
+    }, [skin, mech, equipped, renderStatChange])
 
-    if (submodel) {
-        const videoUrls = [
-            submodel.swatch_images?.animation_url,
-            submodel.swatch_images?.card_animation_url,
-            submodel?.animation_url,
-            submodel?.card_animation_url,
-        ]
+    if (skin) {
+        const videoUrls = [skin.swatch_images?.animation_url, skin.swatch_images?.card_animation_url, skin?.animation_url, skin?.card_animation_url]
         const videoUrlsFilters = videoUrls ? videoUrls.filter((videoUrl) => !!videoUrl) : []
         const imageUrl =
-            submodel.swatch_images?.avatar_url ||
-            submodel.swatch_images?.image_url ||
-            submodel.swatch_images?.large_image_url ||
-            submodel?.avatar_url ||
-            submodel?.image_url ||
-            submodel?.large_image_url
+            skin.swatch_images?.avatar_url ||
+            skin.swatch_images?.image_url ||
+            skin.swatch_images?.large_image_url ||
+            skin?.avatar_url ||
+            skin?.image_url ||
+            skin?.large_image_url
 
         return (
             <Stack p="1rem 2rem" height="100%">
@@ -142,11 +137,11 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
                         <Typography
                             variant="h6"
                             sx={{
-                                color: getRarityDeets(submodel.tier).color,
+                                color: getRarityDeets(skin.tier).color,
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {getRarityDeets(submodel.tier).label}
+                            {getRarityDeets(skin.tier).label}
                         </Typography>
                         <Typography
                             variant="h4"
@@ -154,7 +149,7 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {submodel.label}
+                            {skin.label}
                         </Typography>
                     </Box>
                 </Box>
@@ -168,7 +163,7 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
                         mt: "1rem",
                     }}
                 >
-                    {submodel.equipped_on && (
+                    {skin.equipped_on && (
                         <Typography
                             sx={{
                                 color: colors.red,
@@ -213,7 +208,7 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
                         clipThingsProps={{
                             backgroundColor: colors.green,
                         }}
-                        onClick={() => onConfirm(submodel)}
+                        onClick={() => onConfirm(skin)}
                     >
                         Equip To Mech
                     </FancyButton>

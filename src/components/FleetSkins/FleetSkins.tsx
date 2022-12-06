@@ -16,18 +16,18 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
-import { SubmodelCard } from "../Common/Submodel/SubmodelCard"
+import { SkinCard } from "../Common/Skin/SkinCard"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
     Search = "search",
-    SubmodelType = "submodelType",
+    SkinType = "skinType",
     EquippedStatus = "equippedStatus",
     Rarities = "rarities",
 }
 
-enum SubmodelType {
+enum SkinType {
     Mech = "MECH",
     Weapon = "WEAPON",
 }
@@ -39,9 +39,9 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-const submodelTypeOpens = [
-    { value: SubmodelType.Mech, render: { label: "Mech Submodel", color: colors.gold } },
-    { value: SubmodelType.Weapon, render: { label: "Weapon Submodel", color: colors.blue2 } },
+const skinTypeOpens = [
+    { value: SkinType.Mech, render: { label: "Mech Skin", color: colors.gold } },
+    { value: SkinType.Weapon, render: { label: "Weapon Skin", color: colors.blue2 } },
 ]
 
 const equippedStatusOptions = [
@@ -63,23 +63,23 @@ const rarityOptions = [
     { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
 ]
 
-export const FleetSubmodels = () => {
+export const FleetSkins = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search
-    const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetSubmodelsFilters", false)
+    const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetSkinsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.RarestDesc)
-    const [submodelType, setSubmodelType] = useState<string[]>((query.get(UrlQueryParams.SubmodelType) || undefined)?.split("||") || [])
+    const [skinType, setSkinType] = useState<string[]>((query.get(UrlQueryParams.SkinType) || undefined)?.split("||") || [])
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get(UrlQueryParams.EquippedStatus) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
 
     // Items
-    const [displaySubmodels, setDisplaySubmodels] = useState<(MechSkin | WeaponSkin)[]>([])
-    const [mechSubmodels, setMechSubmodels] = useState<MechSkin[]>([])
-    const [weaponSubmodels, setWeaponSubmodels] = useState<WeaponSkin[]>([])
+    const [displaySkins, setDisplaySkins] = useState<(MechSkin | WeaponSkin)[]>([])
+    const [mechSkins, setMechSkins] = useState<MechSkin[]>([])
+    const [weaponSkins, setWeaponSkins] = useState<WeaponSkin[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     useGameServerSubscriptionSecuredUser<MechSkin[]>(
@@ -92,18 +92,18 @@ export const FleetSubmodels = () => {
 
             if (!payload) return
 
-            setMechSubmodels((prev) => {
+            setMechSkins((prev) => {
                 if (prev.length === 0) {
                     return payload
                 }
 
                 // Replace current list
-                const list = prev.map((submodel) => payload.find((p) => p.id === submodel.id) || submodel)
+                const list = prev.map((skin) => payload.find((p) => p.id === skin.id) || skin)
 
                 // Append new list
                 payload.forEach((p) => {
                     // If already exists
-                    if (list.some((submodel) => submodel.id === p.id)) {
+                    if (list.some((skin) => skin.id === p.id)) {
                         return
                     }
                     // Otherwise, push to the list
@@ -125,18 +125,18 @@ export const FleetSubmodels = () => {
 
             if (!payload) return
 
-            setWeaponSubmodels((prev) => {
+            setWeaponSkins((prev) => {
                 if (prev.length === 0) {
                     return payload
                 }
 
                 // Replace current list
-                const list = prev.map((submodel) => payload.find((p) => p.id === submodel.id) || submodel)
+                const list = prev.map((skin) => payload.find((p) => p.id === skin.id) || skin)
 
                 // Append new list
                 payload.forEach((p) => {
                     // If already exists
-                    if (list.some((submodel) => submodel.id === p.id)) {
+                    if (list.some((skin) => skin.id === p.id)) {
                         return
                     }
                     // Otherwise, push to the list
@@ -153,36 +153,36 @@ export const FleetSubmodels = () => {
         if (isLoading) return
 
         let result: (MechSkin | WeaponSkin)[] = []
-        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Mech)) {
-            result = [...result, ...mechSubmodels]
+        if ((skinType as unknown as SkinType[]).includes(SkinType.Mech)) {
+            result = [...result, ...mechSkins]
         }
 
-        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Weapon)) {
-            result = [...result, ...weaponSubmodels]
+        if ((skinType as unknown as SkinType[]).includes(SkinType.Weapon)) {
+            result = [...result, ...weaponSkins]
         }
 
-        // If nothing is selected, include all submodel types
-        if (submodelType.length <= 0) {
-            result = [...mechSubmodels, ...weaponSubmodels]
+        // If nothing is selected, include all skin types
+        if (skinType.length <= 0) {
+            result = [...mechSkins, ...weaponSkins]
         }
 
         // Apply search
         if (search) {
-            result = result.filter((submodel) => `${submodel.label.toLowerCase()}`.includes(search.toLowerCase()))
+            result = result.filter((skin) => `${skin.label.toLowerCase()}`.includes(search.toLowerCase()))
         }
 
         // Apply equipped status filter, if only one is selected, then filter, otherwise user has selected both options
         if (equippedStatus && equippedStatus.length === 1) {
             if (equippedStatus[0] === "true") {
-                result = result.filter((submodel) => !!submodel.equipped_on)
+                result = result.filter((skin) => !!skin.equipped_on)
             } else {
-                result = result.filter((submodel) => !submodel.equipped_on)
+                result = result.filter((skin) => !skin.equipped_on)
             }
         }
 
         // Apply rarity filter
         if (rarities && rarities.length) {
-            result = result.filter((submodel) => rarities.includes(submodel.tier))
+            result = result.filter((skin) => rarities.includes(skin.tier))
         }
 
         // Apply sort
@@ -205,23 +205,23 @@ export const FleetSubmodels = () => {
         updateQuery.current({
             [UrlQueryParams.Sort]: sort,
             [UrlQueryParams.Search]: search,
-            [UrlQueryParams.SubmodelType]: submodelType.join("||"),
+            [UrlQueryParams.SkinType]: skinType.join("||"),
             [UrlQueryParams.EquippedStatus]: equippedStatus.join("||"),
             [UrlQueryParams.Rarities]: rarities.join("||"),
         })
 
-        setDisplaySubmodels(result)
-    }, [equippedStatus, isLoading, mechSubmodels, rarities, search, sort, submodelType, updateQuery, weaponSubmodels])
+        setDisplaySkins(result)
+    }, [equippedStatus, isLoading, mechSkins, rarities, search, sort, skinType, updateQuery, weaponSkins])
 
     const renderIndex = useCallback(
         (index) => {
-            const submodel = displaySubmodels[index]
-            if (!submodel) {
+            const skin = displaySkins[index]
+            if (!skin) {
                 return null
             }
-            return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
+            return <SkinCard key={`skin-${skin.id}`} skin={skin} />
         },
-        [displaySubmodels],
+        [displaySkins],
     )
 
     const content = useMemo(() => {
@@ -233,13 +233,13 @@ export const FleetSubmodels = () => {
             )
         }
 
-        if (displaySubmodels && displaySubmodels.length > 0) {
+        if (displaySkins && displaySkins.length > 0) {
             return (
                 <VirtualizedGrid
-                    uniqueID="fleetSubmodelsGrid"
+                    uniqueID="fleetSkinsGrid"
                     itemWidthConfig={{ minWidth: 32.5 }}
                     itemHeight={31.9}
-                    totalItems={displaySubmodels.length}
+                    totalItems={displaySkins.length}
                     gap={1.6}
                     renderIndex={renderIndex}
                 />
@@ -275,7 +275,7 @@ export const FleetSubmodels = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displaySubmodels, isLoading, renderIndex, theme.factionTheme.primary])
+    }, [displaySkins, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -296,11 +296,11 @@ export const FleetSubmodels = () => {
                     open={showFilters}
                     chipFilters={[
                         {
-                            label: "Submodel Type",
-                            options: submodelTypeOpens,
+                            label: "Skin Type",
+                            options: skinTypeOpens,
                             initialExpanded: true,
-                            selected: submodelType,
-                            setSelected: setSubmodelType,
+                            selected: skinType,
+                            setSelected: setSkinType,
                         },
                         {
                             label: "Equipped Status",
@@ -339,7 +339,7 @@ export const FleetSubmodels = () => {
                         {/* Show total */}
                         <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                                {displaySubmodels?.length || 0} ITEMS
+                                {displaySkins?.length || 0} ITEMS
                             </Typography>
                         </Stack>
 

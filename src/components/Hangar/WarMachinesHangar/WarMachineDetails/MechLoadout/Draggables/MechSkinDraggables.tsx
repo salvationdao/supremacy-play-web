@@ -12,7 +12,7 @@ import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
-import { GetSubmodelsRequest, GetSubmodelsResponse } from "../Modals/MechLoadoutMechSkinModal"
+import { GetSkinsRequest, GetSkinsResponse } from "../Modals/MechLoadoutMechSkinModal"
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]
@@ -79,7 +79,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                     break
             }
 
-            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
+            const resp = await send<GetSkinsResponse, GetSkinsRequest>(GameServerKeys.GetMechSkinsDetailed, {
                 page,
                 page_size: pageSize,
                 sort_by: sortBy,
@@ -138,7 +138,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                             textTransform: "uppercase",
                         }}
                     >
-                        No Submodels
+                        No skins
                     </Typography>
                 </Stack>
             )

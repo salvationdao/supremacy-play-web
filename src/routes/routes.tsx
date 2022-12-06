@@ -1,18 +1,18 @@
 import {
     BattleArenaPNG,
-    GenericPNG,
-    HangarPNG,
     ClaimsPNG,
     CratesPNG,
     DashboardPNG,
+    GenericPNG,
+    HangarPNG,
     KeycardsPNG,
     LeaderboardPNG,
     LobbiesPNG,
     MechPoolPNG,
     MechsPNG,
     ReplaysPNG,
+    SkinsPNG,
     StoreCratesPNG,
-    SubmodelsPNG,
     WeaponsPNG,
 } from "../assets"
 import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
@@ -29,7 +29,7 @@ import { FleetCrates } from "../components/FleetCrates/FleetCrates"
 import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
 import { FleetPlayerAbilities } from "../components/FleetPlayerAbilities/FleetPlayerAbilities"
-import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
+import { FleetSkins } from "../components/FleetSkins/FleetSkins"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
@@ -68,7 +68,7 @@ export enum RouteSingleID {
     FleetKeycards = "FLEET_KEYCARDS",
     FleetAbilities = "FLEET_ABILITIES",
     FleetWeapons = "FLEET_WEAPONS",
-    FleetSubmodels = "FLEET_SUBMODELS",
+    FleetSkins = "FLEET_SKINS",
     StoreFrontShoppingCart = "STORE_FRONT_SHOPPING_CART",
     StoreFrontCrates = "STORE_FRONT_CRATES",
     StoreFrontAbilities = "STORE_FRONT_ABILITIES",
@@ -329,10 +329,10 @@ export const Routes: RouteSingle[] = [
         tabTitle: "Fleet - Weapons",
     },
     {
-        id: RouteSingleID.FleetSubmodels,
-        path: "/fleet/submodels",
+        id: RouteSingleID.FleetSkins,
+        path: "/fleet/skins",
         exact: true,
-        Component: FleetSubmodels,
+        Component: FleetSkins,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -340,12 +340,12 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
-            label: "Submodels",
-            image: SubmodelsPNG,
-            path: "/fleet/submodels",
+            label: "Skins",
+            image: SkinsPNG,
+            path: "/fleet/skins",
         },
         enable: true,
-        tabTitle: "Fleet - Submodels",
+        tabTitle: "Fleet - Skins",
     },
     {
         id: RouteSingleID.FleetCrates,

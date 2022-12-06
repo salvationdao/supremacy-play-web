@@ -10,12 +10,12 @@ import { FancyButton } from "../../../../../../Common/Deprecated/FancyButton"
 
 interface MechSkinItemProps {
     levelDifference: number
-    submodelDetails: MechSkin
+    skinDetails: MechSkin
     selected: boolean
     onSelect: (w: MechSkin) => void
 }
 
-export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSelect }: MechSkinItemProps) => {
+export const MechSkinItem = ({ levelDifference, skinDetails, selected, onSelect }: MechSkinItemProps) => {
     const theme = useTheme()
 
     const levelIcon = useMemo(() => {
@@ -41,7 +41,7 @@ export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSel
         }
     }, [levelDifference])
 
-    if (!submodelDetails) {
+    if (!skinDetails) {
         return (
             <ClipThing
                 border={{
@@ -73,9 +73,9 @@ export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSel
                 flexDirection: "column",
                 alignItems: "stretch",
             }}
-            onClick={() => onSelect(submodelDetails)}
+            onClick={() => onSelect(skinDetails)}
         >
-            {submodelDetails.equipped_on && (
+            {skinDetails.equipped_on && (
                 <Box
                     sx={{
                         zIndex: 1,
@@ -137,12 +137,12 @@ export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSel
                     <Box
                         component="img"
                         src={
-                            submodelDetails.swatch_images?.avatar_url ||
-                            submodelDetails.swatch_images?.image_url ||
-                            submodelDetails.swatch_images?.large_image_url ||
-                            submodelDetails.avatar_url ||
-                            submodelDetails.image_url ||
-                            submodelDetails.large_image_url
+                            skinDetails.swatch_images?.avatar_url ||
+                            skinDetails.swatch_images?.image_url ||
+                            skinDetails.swatch_images?.large_image_url ||
+                            skinDetails.avatar_url ||
+                            skinDetails.image_url ||
+                            skinDetails.large_image_url
                         }
                         sx={{
                             position: "absolute",
@@ -158,13 +158,13 @@ export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSel
                 <Typography
                     variant="h6"
                     sx={{
-                        color: getRarityDeets(submodelDetails.tier).color,
+                        color: getRarityDeets(skinDetails.tier).color,
                         fontFamily: fonts.nostromoBlack,
                         fontSize: "1.6rem",
                         textAlign: "center",
                     }}
                 >
-                    {getRarityDeets(submodelDetails.tier).label}
+                    {getRarityDeets(skinDetails.tier).label}
                 </Typography>
                 <Typography
                     variant="body2"
@@ -172,7 +172,7 @@ export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSel
                         textAlign: "center",
                     }}
                 >
-                    {submodelDetails.label}
+                    {skinDetails.label}
                 </Typography>
             </Box>
         </FancyButton>
