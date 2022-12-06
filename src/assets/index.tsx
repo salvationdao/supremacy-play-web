@@ -268,7 +268,7 @@ import MechPoolPNG from "./images/MainMenu/MechPool.png"
 import MechsPNG from "./images/MainMenu/Mechs.png"
 import ReplaysPNG from "./images/MainMenu/Replays.png"
 import StoreCratesPNG from "./images/MainMenu/StoreCrates.png"
-import SubmodelsPNG from "./images/MainMenu/Submodels.png"
+import SkinsPNG from "./images/MainMenu/Submodels.png"
 import WeaponsPNG from "./images/MainMenu/Weapons.png"
 import MaintenancePNG from "./images/Maintenance.png"
 import CircleParticle from "./images/Particles/circle.png"
@@ -439,7 +439,7 @@ export {
     MechsPNG,
     ReplaysPNG,
     StoreCratesPNG,
-    SubmodelsPNG,
+    SkinsPNG,
     WeaponsPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }

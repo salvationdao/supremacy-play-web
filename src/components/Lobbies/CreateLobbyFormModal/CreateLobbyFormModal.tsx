@@ -167,7 +167,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     })
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "95rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "95rem", maxHeight: "calc(100vh - 20rem)", minWidth: "76rem" }}>
             <Stack height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="3rem">
                     Create Lobby

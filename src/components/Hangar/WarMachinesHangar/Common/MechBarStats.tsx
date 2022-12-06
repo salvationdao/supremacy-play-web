@@ -311,7 +311,7 @@ export const BarStat = ({
                     placement="right"
                     text={
                         parsedBoosted && parsedBoosted != parsedCurrent
-                            ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                            ? `The attached skin has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
                             : ""
                     }
                 >
@@ -338,9 +338,7 @@ export const BarStat = ({
             <NiceTooltip
                 placement="right"
                 text={
-                    parsedBoosted && parsedBoosted != parsedCurrent
-                        ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
-                        : ""
+                    parsedBoosted && parsedBoosted != parsedCurrent ? `The attached skin has boosted this stat from ${parsedCurrent} to ${parsedBoosted}` : ""
                 }
             >
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">

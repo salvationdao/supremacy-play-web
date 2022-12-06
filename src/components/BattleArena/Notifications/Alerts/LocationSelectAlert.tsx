@@ -17,7 +17,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
     const mainColor = faction.palette.primary
 
     return (
-        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.6 }} sx={{ p: ".6rem 1.4rem" }}>
             <Typography>
                 <StyledImageText sx={{ color: getFaction((currentUser || FallbackUser).faction_id).palette.primary }} imageUrl={faction.logo_url}>
                     {(currentUser || FallbackUser).username}#{(currentUser || FallbackUser).gid}

@@ -7,7 +7,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { MechDetails, MechSkin, SubmodelStatus } from "../../../../../../types"
+import { MechDetails, MechSkin, SkinStatus } from "../../../../../../types"
 import { SortDir, SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../../../../Common/Deprecated/FancyButton"
@@ -18,7 +18,7 @@ import { TotalAndPageSizeOptions } from "../../../../../Common/Deprecated/TotalA
 import { MechSkinItem } from "./MechSkins/MechSkinItem"
 import { MechSkinPreview } from "./MechSkins/MechSkinPreview"
 
-export interface GetSubmodelsRequest {
+export interface GetSkinsRequest {
     search?: string
     sort_by?: string
     sort_dir: string
@@ -37,7 +37,7 @@ export interface GetSubmodelsRequest {
     equipped_statuses: string[]
 }
 
-export interface GetSubmodelsResponse {
+export interface GetSkinsResponse {
     submodels: MechSkin[]
     total: number
 }
@@ -73,8 +73,8 @@ export const MechLoadoutMechSkinModal = ({
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
 
-    const [submodels, setSubmodels] = useState<MechSkin[]>([])
-    const [selectedSubmodel, setSelectedSubmodel] = useState<MechSkin>()
+    const [skins, setSkins] = useState<MechSkin[]>([])
+    const [selectedSkins, setSelectedSkins] = useState<MechSkin>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -95,8 +95,8 @@ export const MechLoadoutMechSkinModal = ({
     const statusFilterSection = useRef<ChipFilter>({
         label: "EQUIPPED STATUS",
         options: [
-            { value: SubmodelStatus.Equipped, label: "EQUIPPED", color: colors.gold },
-            { value: SubmodelStatus.Unequipped, label: "UNEQUIPPED", color: colors.bronze },
+            { value: SkinStatus.Equipped, label: "EQUIPPED", color: colors.gold },
+            { value: SkinStatus.Unequipped, label: "UNEQUIPPED", color: colors.bronze },
         ],
         initialSelected: equippedStatuses,
         initialExpanded: true,
@@ -129,7 +129,7 @@ export const MechLoadoutMechSkinModal = ({
         },
     })
 
-    const getSubmodels = useCallback(async () => {
+    const getSkins = useCallback(async () => {
         try {
             setIsLoading(true)
 
@@ -147,7 +147,7 @@ export const MechLoadoutMechSkinModal = ({
                     sortBy = "rarity"
             }
 
-            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
+            const resp = await send<GetSkinsResponse, GetSkinsRequest>(GameServerKeys.GetMechSkinsDetailed, {
                 search: search,
                 sort_by: sortBy,
                 sort_dir: sortDir,
@@ -167,7 +167,7 @@ export const MechLoadoutMechSkinModal = ({
 
             if (!resp) return
             setLoadError(undefined)
-            setSubmodels(resp.submodels)
+            setSkins(resp.submodels)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get mech skins.")
@@ -190,8 +190,8 @@ export const MechLoadoutMechSkinModal = ({
     ])
 
     useEffect(() => {
-        getSubmodels()
-    }, [getSubmodels])
+        getSkins()
+    }, [getSkins])
 
     const mechSkinsList = useMemo(() => {
         if (loadError) {
@@ -217,7 +217,7 @@ export const MechLoadoutMechSkinModal = ({
             )
         }
 
-        if (!submodels || isLoading) {
+        if (!skins || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -227,7 +227,7 @@ export const MechLoadoutMechSkinModal = ({
             )
         }
 
-        if (submodels && submodels.length > 0) {
+        if (skins && skins.length > 0) {
             return (
                 <Box
                     sx={{
@@ -236,13 +236,13 @@ export const MechLoadoutMechSkinModal = ({
                         gap: "1rem",
                     }}
                 >
-                    {submodels.map((p) => (
+                    {skins.map((p) => (
                         <MechSkinItem
                             key={p.id}
                             levelDifference={p.level - (mech.chassis_skin?.level || 0)}
-                            submodelDetails={p}
-                            onSelect={(p) => setSelectedSubmodel(p)}
-                            selected={selectedSubmodel?.id === p.id}
+                            skinDetails={p}
+                            onSelect={(p) => setSelectedSkins(p)}
+                            selected={selectedSkins?.id === p.id}
                         />
                     ))}
                 </Box>
@@ -300,7 +300,7 @@ export const MechLoadoutMechSkinModal = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.text, mech.chassis_skin?.level, selectedSubmodel?.id])
+    }, [loadError, skins, isLoading, theme.factionTheme.primary, theme.factionTheme.text, mech.chassis_skin?.level, selectedSkins?.id])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -361,15 +361,15 @@ export const MechLoadoutMechSkinModal = ({
                             }}
                         />
                         <Stack flex={1}>
-                            <PageHeader title="Equip a mech submodel" description="Select a submodel to equip on your mech." />
+                            <PageHeader title="Equip a mech skin" description="Select a skin to equip on your mech." />
                             <TotalAndPageSizeOptions
-                                countItems={submodels?.length}
+                                countItems={skins?.length}
                                 totalItems={totalItems}
                                 pageSize={pageSize}
                                 changePageSize={changePageSize}
                                 pageSizeOptions={[]}
                                 changePage={changePage}
-                                manualRefresh={getSubmodels}
+                                manualRefresh={getSkins}
                                 sortOptions={sortOptions}
                                 selectedSort={sort}
                                 onSetSort={setSort}
@@ -413,7 +413,7 @@ export const MechLoadoutMechSkinModal = ({
                                 backgroundColor: "#00000070",
                             }}
                         >
-                            <MechSkinPreview mech={mech} submodel={selectedSubmodel} equipped={equipped} onConfirm={onConfirm} isCompatible={true} />
+                            <MechSkinPreview mech={mech} skin={selectedSkins} equipped={equipped} onConfirm={onConfirm} isCompatible={true} />
                         </Stack>
                     </Stack>
                 </ClipThing>

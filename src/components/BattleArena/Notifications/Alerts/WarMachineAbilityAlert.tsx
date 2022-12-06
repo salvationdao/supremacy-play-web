@@ -16,7 +16,7 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
     const mainColor = faction.palette.primary
 
     return (
-        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.6 }} sx={{ p: ".6rem 1.4rem" }}>
             <Typography>
                 <StyledImageText sx={{ color: mainColor }} imageUrl={wmImageUrl}>
                     {name || hash}

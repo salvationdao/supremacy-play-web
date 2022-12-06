@@ -239,7 +239,7 @@ export const FleetMechs = () => {
             [UrlQueryParams.Search]: search,
             [UrlQueryParams.Rarities]: rarities.join("||"),
             [UrlQueryParams.Statuses]: status.join("||"),
-            [UrlQueryParams.Staked]: status.join("||"),
+            [UrlQueryParams.Staked]: staked.join("||"),
             [UrlQueryParams.Kills]: kills?.join("||"),
             [UrlQueryParams.Deaths]: deaths?.join("||"),
             [UrlQueryParams.Wins]: wins?.join("||"),

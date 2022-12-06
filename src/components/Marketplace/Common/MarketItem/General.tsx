@@ -1,7 +1,7 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { ReactNode } from "react"
 import { colors, fonts } from "../../../../theme/theme"
-import { truncateTextLines } from "../../../../helpers"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export const General = ({
     isGridView,
@@ -24,23 +24,14 @@ export const General = ({
             spacing={isGridView ? ".1rem" : ".6rem"}
             sx={{ flexShrink: 0 }}
             alignItems={isGridViewCompact ? "center" : "flex-start"}
+            justifyContent={isGridViewCompact ? "space-between" : "flex-start"}
         >
-            <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
+            <TypographyTruncated variant="subtitle1" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
                 {title || "INFO"}
                 {isGridViewCompact ? ":" : ""}
-            </Typography>
+            </TypographyTruncated>
 
-            {text && (
-                <Typography
-                    sx={{
-                        color: textColor || "#FFFFFF",
-                        fontWeight: "bold",
-                        ...truncateTextLines(2),
-                    }}
-                >
-                    {text}
-                </Typography>
-            )}
+            {text && <TypographyTruncated sx={{ color: textColor || "#FFFFFF", fontWeight: "bold" }}>{text}</TypographyTruncated>}
 
             {children}
         </Stack>

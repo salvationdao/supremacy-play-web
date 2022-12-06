@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useTimer } from "use-timer"
-import { FancyButton } from "../../.."
 import { useGlobalNotifications } from "../../../../containers"
 import { supFormatter, timeSinceInWords } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -9,6 +8,8 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairOffer } from "../../../../types/jobs"
 import { AmountItem } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/AmountItem"
+import { NiceBoxThing } from "../../Nice/NiceBoxThing"
+import { NiceButton } from "../../Nice/NiceButton"
 
 export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { repairOffer: RepairOffer; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -35,54 +36,35 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
     }, [send, repairOffer.id, newSnackbarMessage])
 
     return (
-        <Stack
-            spacing="1rem"
-            sx={{
-                p: "2rem",
-                pt: "1.6rem",
-                backgroundColor: "#FFFFFF20",
-                border: `${colors.blue2}30 1px solid`,
-            }}
-        >
-            <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>
-                Repair job posted!
-            </Typography>
+        <NiceBoxThing border={{ color: `${colors.blue2}50`, thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
+            <Stack spacing="1rem" sx={{ p: "2rem", pt: "1.6rem" }}>
+                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>
+                    Repair job posted!
+                </Typography>
 
-            <Stack>
-                <AmountItem title="BLOCKS TO REPAIR:" value={repairOffer.blocks_total} disableIcon />
-                <AmountItem title="REWARD:" value={supFormatter(repairOffer.offered_sups_amount)} />
-                <Countdown initialTime={(repairOffer.expires_at.getTime() - new Date().getTime()) / 1000} />
-            </Stack>
+                <Stack>
+                    <AmountItem title="BLOCKS TO REPAIR:" value={repairOffer.blocks_total} disableIcon />
+                    <AmountItem title="REWARD:" value={supFormatter(repairOffer.offered_sups_amount)} />
+                    <Countdown initialTime={(repairOffer.expires_at.getTime() - new Date().getTime()) / 1000} />
+                </Stack>
 
-            <FancyButton
-                loading={isSubmitting}
-                disabled={remainDamagedBlocks <= 0}
-                clipThingsProps={{
-                    clipSize: "5px",
-                    backgroundColor: "#222222",
-                    border: { borderColor: colors.red },
-                    sx: { position: "relative", width: "100%" },
-                }}
-                sx={{ px: "1.6rem", py: ".8rem", color: colors.red }}
-                onClick={() => onCancelRepair()}
-            >
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.red }}>
+                <NiceButton corners loading={isSubmitting} disabled={remainDamagedBlocks <= 0} buttonColor={colors.red} onClick={() => onCancelRepair()}>
                     CANCEL
-                </Typography>
-            </FancyButton>
+                </NiceButton>
 
-            <Typography sx={{ color: colors.lightGrey }}>
-                <i>
-                    <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original processing fee will be held.
-                </i>
-            </Typography>
-
-            {submitError && (
-                <Typography variant="body2" sx={{ color: colors.red }}>
-                    {submitError}
+                <Typography sx={{ color: colors.lightGrey }}>
+                    <i>
+                        <strong>NOTE:</strong> Your remaining offered reward will be refunded but the original processing fee will be held.
+                    </i>
                 </Typography>
-            )}
-        </Stack>
+
+                {submitError && (
+                    <Typography variant="body2" sx={{ color: colors.red }}>
+                        {submitError}
+                    </Typography>
+                )}
+            </Stack>
+        </NiceBoxThing>
     )
 }
 

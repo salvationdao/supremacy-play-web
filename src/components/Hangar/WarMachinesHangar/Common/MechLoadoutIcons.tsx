@@ -55,7 +55,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
             )}
 
             {!hasSkin && (
-                <NiceTooltip color={colors.chassisSkin} text="Submodel" placement="bottom">
+                <NiceTooltip color={colors.chassisSkin} text="Skin" placement="bottom">
                     <Box>
                         <SvgLoadoutSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
                     </Box>

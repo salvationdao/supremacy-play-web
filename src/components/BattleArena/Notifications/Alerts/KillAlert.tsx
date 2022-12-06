@@ -31,7 +31,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
     }
 
     return (
-        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.6 }} sx={{ p: ".6rem 1.4rem" }}>
             <Typography>
                 {killedBy} <SvgDeath inline size="1.2rem" />
                 <SvgSkull2 inline size="1.2rem" />{" "}
