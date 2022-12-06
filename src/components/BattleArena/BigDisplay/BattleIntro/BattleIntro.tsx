@@ -8,7 +8,7 @@ import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BattleLobby } from "../../../../types/battle_queue"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TypographyTruncated } from "../../../Common/TypographyTruncated"
-import { Supporters } from "../../../Lobbies/CentralQueue/Supporters"
+import { Supporters } from "../../../LeftDrawer/CentralQueue/Supporters"
 import { FactionLobbySlots } from "../../../Lobbies/LobbyItem/LobbyItem"
 
 export interface BattleIntroProps {

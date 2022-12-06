@@ -1,9 +1,9 @@
-import { Fade, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
-import { NiceTooltip, SectionFactions, SectionWinner } from "../.."
-import { SvgLobbies } from "../../../assets"
+import { SectionFactions, SectionWinner } from "../.."
+import { SvgMechWins } from "../../../assets"
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
@@ -93,24 +93,10 @@ export const BattleEndScreen = () => {
 const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
 
-    const button = (
-        <NiceButton
-            onClick={onClose}
-            buttonColor={theme.factionTheme.primary}
-            corners
-            sx={{
-                p: ".8rem",
-                pb: ".6rem",
-            }}
-        >
-            <SvgLobbies size="2.6rem" />
-        </NiceButton>
-    )
-
     return (
         <Stack
             spacing="1rem"
-            direction="row"
+            direction={isDrawerOpen ? "row" : "row-reverse"}
             sx={{
                 width: "100%",
                 p: "1rem",
@@ -120,23 +106,19 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            {button}
-            <Typography
+            <NiceButton
+                onClick={onClose}
+                buttonColor={theme.factionTheme.primary}
+                corners
                 sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.6rem",
+                    p: ".8rem",
+                    pb: ".6rem",
                 }}
             >
-                Previous Battle
-            </Typography>
-            {!isDrawerOpen && <Box flex={1} />}
-            <Fade in={!isDrawerOpen} unmountOnExit>
-                <Box>
-                    <NiceTooltip text="Previous Battle" placement="right">
-                        {button}
-                    </NiceTooltip>
-                </Box>
-            </Fade>
+                <SvgMechWins size="2.6rem" />
+            </NiceButton>
+
+            <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.6rem" }}>Previous Battle</Typography>
         </Stack>
     )
 }

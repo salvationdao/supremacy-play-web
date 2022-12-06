@@ -78,14 +78,8 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     <SvgUserDiamond2 size="2.6rem" />
                 </NiceButton>
             </NiceTooltip>
-            <Typography
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.6rem",
-                }}
-            >
-                Active Players
-            </Typography>
+
+            <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.6rem" }}>Active Players</Typography>
 
             <Box flex={1} />
 
