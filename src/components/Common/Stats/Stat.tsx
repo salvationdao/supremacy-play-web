@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { colors } from "../../../../../../theme/theme"
+import { colors } from "../../../theme/theme"
 
 export interface StatProps {
     icon: React.ReactNode

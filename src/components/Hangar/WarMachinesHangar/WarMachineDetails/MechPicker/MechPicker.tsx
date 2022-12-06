@@ -133,7 +133,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
         [updateInheritSkin],
     )
 
-    const renderBattleStats = useCallback(() => {
+    const battleStats = useMemo(() => {
         if (statsError) {
             return (
                 <Typography
@@ -366,7 +366,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 }}
             >
                 {/* Mech Battle Stats */}
-                {renderBattleStats()}
+                {battleStats}
 
                 {/* Mech Stats */}
                 <MechBarStats
