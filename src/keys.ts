@@ -303,6 +303,7 @@ export enum GameServerKeys {
 
     // Others
     SubYoutubeLiveStream = "PUBLIC:LIVESTREAM",
+    SubBrowserNotifications = "PLAYER:BROWSER:ALERT",
 }
 
 export enum PassportServerKeys {

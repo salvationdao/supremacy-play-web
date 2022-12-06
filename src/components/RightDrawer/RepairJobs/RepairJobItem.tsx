@@ -146,7 +146,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
 const CountdownGeneral = ({ isGridViewCompact, initialTime }: { isGridViewCompact?: boolean; initialTime: number }) => {
     const { time } = useTimer({
         autostart: true,
-        initialTime: initialTime,
+        initialTime: Math.round(initialTime),
         endTime: 0,
         timerType: "DECREMENTAL",
     })

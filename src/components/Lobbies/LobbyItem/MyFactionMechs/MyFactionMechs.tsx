@@ -18,7 +18,7 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
     isLocked: boolean
     onSlotClick: () => void
 }) {
-    const maxMechs = battleLobby.max_deploy_per_player
+    const maxMechsForFaction = battleLobby.each_faction_mech_amount
 
     return (
         <Stack flex={1}>
@@ -29,8 +29,8 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
                 })}
 
                 {/* Empty slots */}
-                {maxMechs - myFactionLobbySlots.mechSlots.length > 0 &&
-                    new Array(maxMechs - myFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
+                {maxMechsForFaction - myFactionLobbySlots.mechSlots.length > 0 &&
+                    new Array(maxMechsForFaction - myFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
                         <Stack key={`empty-slot-${index}`} alignItems="center" justifyContent="center">
                             <NiceButton corners disabled={isLocked} onClick={onSlotClick} sx={{ p: "1.5rem 2rem" }}>
                                 <Stack alignItems="center" justifyContent="center" spacing="1.2rem">

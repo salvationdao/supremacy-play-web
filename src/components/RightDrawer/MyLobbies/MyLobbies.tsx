@@ -19,11 +19,11 @@ import { RIGHT_DRAWER_WIDTH } from "../RightDrawer"
 import { JoinPrivateLobbyField } from "./JoinPrivateLobbyField"
 
 const tabs: NiceTab[] = [
+    { value: 0, label: "Exhibition" },
     {
-        value: 0,
-        label: "Server",
+        value: 1,
+        label: "System",
     },
-    { value: 1, label: "Exhibition" },
 ]
 
 export const MyLobbies = () => {
@@ -167,10 +167,10 @@ export const MyLobbies = () => {
         // Filter for the system or exhibition lobbies
         switch (tabValue) {
             case 0:
-                filteredLobbies = filteredLobbies.filter((lobby) => lobby.generated_by_system)
+                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
                 break
             case 1:
-                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
+                filteredLobbies = filteredLobbies.filter((lobby) => lobby.generated_by_system)
                 break
         }
 

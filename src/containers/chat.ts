@@ -214,11 +214,11 @@ export const ChatContainer = createContainer(() => {
                 ended_at: endTime,
             })
 
-            sendBrowserNotification.current(
-                "Ban Proposal Initialized",
-                `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
-                10000,
-            )
+            sendBrowserNotification.current({
+                title: "Ban Proposal Initialized",
+                text: `Reason: ${payload.reason}\nOn: ${payload.reported_player_username}\nFrom: ${payload.issued_by_username}`,
+                autoDismissTime: 10000,
+            })
         },
     )
 

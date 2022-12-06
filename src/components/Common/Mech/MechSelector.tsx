@@ -44,8 +44,10 @@ export const MechSelector = React.memo(function MechSelector({
     sx?: SxProps
     onlyDeployableMechs?: boolean
 }) {
-    const { userID } = useAuth()
+    const { userID, factionPassExpiryDate } = useAuth()
     const theme = useTheme()
+
+    const validFactionPass = factionPassExpiryDate && factionPassExpiryDate > new Date()
 
     // Filter, search
     const [search, setSearch, searchInstant] = useDebounce("", 300)
@@ -321,7 +323,34 @@ export const MechSelector = React.memo(function MechSelector({
                 </TypographyTruncated>
             )}
 
-            <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem" }}>{content}</Box>
+            <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem", position: "relative" }}>
+                {content}
+
+                {/* Overlay to show user to get faction pass if they dont have it or expired */}
+                {!validFactionPass && onlyStakedMechs && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        spacing="1.6rem"
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            left: 0,
+                            bottom: 0,
+                            backgroundColor: "#00000080",
+                            backdropFilter: "blur(6px)",
+                        }}
+                    >
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, textAlign: "center" }}>
+                            You need a Faction Pass!
+                        </Typography>
+                        <NiceButton route={{ to: `/faction-pass/buy` }} buttonColor={theme.factionTheme.primary}>
+                            GET FACTION PASS
+                        </NiceButton>
+                    </Stack>
+                )}
+            </Box>
         </Stack>
     )
 })

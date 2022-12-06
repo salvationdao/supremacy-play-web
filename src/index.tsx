@@ -14,6 +14,7 @@ import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
+import { GlobalBrowserNotifications } from "./components/Common/GlobalBrowserNotifications"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
@@ -247,6 +248,7 @@ const AppInner = () => {
             <YoutubeLiveStreamModal />
 
             <GlobalSnackbar />
+            <GlobalBrowserNotifications />
         </>
     )
 }

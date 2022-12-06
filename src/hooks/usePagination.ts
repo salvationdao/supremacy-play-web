@@ -5,7 +5,21 @@ interface Props {
     page: number
 }
 
-export const usePagination = ({ pageSize: _pageSize = 10, page: _page = 1 }: Props) => {
+export interface UsePaginationProps {
+    page: number
+    nextPage: () => void
+    prevPage: () => void
+    hasNext: boolean
+    hasPrev: boolean
+    changePage: (newPage: number) => void
+    totalPages: number
+    totalItems: number
+    pageSize: number
+    setTotalItems: React.Dispatch<React.SetStateAction<number>>
+    changePageSize: (newPageSize: number) => void
+}
+
+export const usePagination = ({ pageSize: _pageSize = 10, page: _page = 1 }: Props): UsePaginationProps => {
     const [pageSize, setPageSize] = useState<number>(_pageSize)
     const [page, setPage] = useState<number>(_page)
     const [totalItems, setTotalItems] = useState<number>(0)

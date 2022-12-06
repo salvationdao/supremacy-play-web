@@ -1,5 +1,5 @@
 import { IconButton, Stack, Typography } from "@mui/material"
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { PunishMessage, TextMessage } from "../../.."
 import { SvgScrolldown } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
@@ -40,12 +40,26 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
     }, [chatMessages, autoScroll, userID])
 
     // Scroll related stuff
-    const onClickScrollToBottom = useCallback(() => {
+    const onClickScrollToBottom = useCallback((instant?: boolean) => {
         if (!scrollableRef.current) return
+
+        if (instant) {
+            scrollableRef.current.style.scrollBehavior = "auto"
+
+            setTimeout(() => {
+                if (!scrollableRef.current) return
+                scrollableRef.current.style.scrollBehavior = "smooth"
+            }, 3000)
+        }
+
         scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight
     }, [])
 
-    // Scroll related stuff
+    useEffect(() => {
+        onClickScrollToBottom(true)
+    }, [onClickScrollToBottom])
+
+    // Scroll related stuff for the div to poll/check
     const scrollHandler = useCallback(
         (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
             scrollTimeout.current && clearTimeout(scrollTimeout.current)
@@ -55,7 +69,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
             const extraHeight = currentTarget.scrollHeight - currentTarget.offsetHeight
             const scrollUpTooMuch = currentTarget.scrollTop < extraHeight - 0.5 * currentTarget.offsetHeight
 
-            // Enable autoscroll if they haven't scroll more than half of the container
+            // Enable auto scroll if they haven't scroll more than half of the container
             if (autoScroll && scrollUpTooMuch) {
                 setAutoScroll(false)
             } else if (!autoScroll && !scrollUpTooMuch) {
@@ -157,9 +171,10 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                     )}
                 </Stack>
 
+                {/* Button that scrolls to bottom */}
                 <IconButton
                     size="small"
-                    onClick={onClickScrollToBottom}
+                    onClick={() => onClickScrollToBottom()}
                     sx={{
                         position: "absolute",
                         bottom: "8.2rem",

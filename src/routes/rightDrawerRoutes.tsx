@@ -1,6 +1,5 @@
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
-import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { LeftRouteID } from "./leftDrawerRoutes"
 import { RouteSingleID } from "./routes"
@@ -38,17 +37,17 @@ export const RightRoutes: SideRouteSingle[] = [
         Header: LiveChat.Header,
         requireAuth: false,
         matchRouteIDs: undefined,
-        mountAllTime: true,
-    },
-    {
-        id: RightRouteID.ActivePlayers,
-        label: "Active Players",
-        Component: PlayerList,
-        Header: PlayerList.Header,
-        requireAuth: true,
-        matchRouteIDs: undefined,
         mountAllTime: false,
     },
+    // {
+    //     id: RightRouteID.ActivePlayers,
+    //     label: "Active Players",
+    //     Component: PlayerList,
+    //     Header: PlayerList.Header,
+    //     requireAuth: true,
+    //     matchRouteIDs: undefined,
+    //     mountAllTime: false,
+    // },
     {
         id: RightRouteID.Repairs,
         label: "Repairs Jobs",

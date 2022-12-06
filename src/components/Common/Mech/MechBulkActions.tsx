@@ -33,7 +33,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
     return (
         <>
             <Box ref={bulkPopoverRef} sx={{ backgroundColor: "#FFFFFF15", border: `${"#FFFFFF"}50 1px inset` }}>
-                <Stack direction="row" alignItems="center" justifyContent="center" spacing=".4rem" sx={{ height: "4.3rem", p: ".3rem .8rem" }}>
+                <Stack direction="row" alignItems="center" justifyContent="center" sx={{ height: "4.3rem", p: ".3rem .8rem" }}>
                     <Checkbox
                         checked={(selectedCount || 0) >= totalItems}
                         indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < totalItems)}
@@ -41,7 +41,13 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                         sx={{ ".MuiSvgIcon-root": { width: "2rem", height: "2rem", color: `${theme.factionTheme.primary} !important` } }}
                     />
 
-                    <IconButton size="small" disabled={isDisabled} onClick={() => setIsBulkPopoverOpen(true)}>
+                    {selectedMechs.length > 0 && (
+                        <Typography variant="h6" sx={{ ml: "1rem" }}>
+                            {selectedMechs.length}
+                        </Typography>
+                    )}
+
+                    <IconButton size="small" disabled={isDisabled} onClick={() => setIsBulkPopoverOpen(true)} sx={{ ml: ".4rem" }}>
                         <SvgArrow size="6px" sx={{ opacity: isDisabled ? 0.3 : 1, transform: "translateY(-1px) scaleY(-1)" }} />
                     </IconButton>
                 </Stack>

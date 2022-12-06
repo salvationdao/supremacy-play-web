@@ -8,6 +8,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
 import { UnauthPrompt } from "./Common/UnauthPrompt"
+import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { SupporterAbilities } from "./SupporterAbilities/SupporterAbilities"
 
 export const BattleArena = () => {
@@ -28,7 +29,7 @@ export const BattleArena = () => {
 
                         {!userID && <UnauthPrompt />}
                         <SupporterAbilities />
-                        {/* <PlayerAbilities /> */}
+                        <PlayerAbilities />
                         {/* <QuickPlayerAbilities /> */}
                     </Stack>
                 </Box>

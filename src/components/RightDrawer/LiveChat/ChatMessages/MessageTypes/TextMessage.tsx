@@ -163,7 +163,7 @@ export const TextMessage = React.memo(function TextMessage({
         if (isRead === false && (isHidden || !isActive)) {
             // Check if its the last message
             if (latestMessage?.id === message.id) {
-                sendBrowserNotification.current(`New Chat Message`, `${from_user.username} has tagged you in a message.`)
+                sendBrowserNotification.current({ title: `New Chat Message`, text: `${from_user.username} has tagged you in a message.` })
             }
             return
         }

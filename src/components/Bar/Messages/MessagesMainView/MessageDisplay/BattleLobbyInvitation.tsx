@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { BattleLobby } from "../../../../../types/battle_queue"
+import { TopUpModal } from "../../../../Lobbies/CentralQueue/CentralQueueItem"
 import { CentralQueueItemTooltipRender } from "../../../../Lobbies/CentralQueue/CentralQueueItemTooltipRender"
 import { JoinLobbyModal } from "../../../../Lobbies/LobbyItem/JoinLobbyModal"
 
@@ -14,6 +15,9 @@ interface BattleLobbyInvitationProps {
 export const BattleLobbyInvitation = ({ message, data }: BattleLobbyInvitationProps) => {
     const [battleLobby, setBattleLobby] = useState<BattleLobby>()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
+
+    // For sponsoring battle with more sups
+    const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
 
     useGameServerSubscriptionFaction<BattleLobby>(
         {
@@ -37,6 +41,7 @@ export const BattleLobbyInvitation = ({ message, data }: BattleLobbyInvitationPr
                         displayAccessCode={data.access_code}
                         width="48rem"
                         setShowJoinLobbyModal={setShowJoinLobbyModal}
+                        setIsTopUpModalOpen={setIsTopUpModalOpen}
                     />
                 )}
             </Stack>
@@ -49,6 +54,8 @@ export const BattleLobbyInvitation = ({ message, data }: BattleLobbyInvitationPr
                     accessCode={data.access_code}
                 />
             )}
+
+            {isTopUpModalOpen && <TopUpModal lobbyID={data.id} onClose={() => setIsTopUpModalOpen(false)} />}
         </>
     )
 }
