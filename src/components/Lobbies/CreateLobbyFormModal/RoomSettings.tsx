@@ -90,9 +90,6 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                     <Controller
                         name="name"
                         control={formMethods.control}
-                        rules={{
-                            maxLength: { value: 20, message: "Lobby name is too long." },
-                        }}
                         render={({ field }) => {
                             const errorMessage = formMethods.formState.errors.name?.message
                             return (
@@ -104,7 +101,6 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     type="text"
                                     error={!!errorMessage}
                                     helperText={errorMessage}
-                                    inputProps={{ maxLength: 20 }}
                                 />
                             )
                         }}
