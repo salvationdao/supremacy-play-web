@@ -19,6 +19,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                 compareStat={{
                     value: compareTo?.size,
                 }}
+                hideEmptyComparison={!compareTo}
                 nonNumeric
             />
             <Stat
@@ -30,6 +31,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                 compareStat={{
                     value: compareTo?.capacity,
                 }}
+                hideEmptyComparison={!compareTo}
             />
             <Stat
                 icon={<SvgPowerCore />}
@@ -41,6 +43,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                     value: compareTo?.recharge_rate,
                 }}
                 unit="/sec"
+                hideEmptyComparison={!compareTo}
             />
             <Stat
                 icon={<SvgPowerCore />}
@@ -52,6 +55,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                     value: compareTo?.weapon_share,
                 }}
                 unit="%"
+                hideEmptyComparison={!compareTo}
             />
             <Stat
                 icon={<SvgPowerCore />}
@@ -63,6 +67,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                     value: compareTo?.movement_share,
                 }}
                 unit="%"
+                hideEmptyComparison={!compareTo}
             />
             <Stat
                 icon={<SvgPowerCore />}
@@ -74,6 +79,7 @@ export const PowerCoreStats = ({ powerCore, compareTo }: PowerCoreStatsProps) =>
                     value: compareTo?.utility_share,
                 }}
                 unit="%"
+                hideEmptyComparison={!compareTo}
             />
         </>
     )

@@ -26,6 +26,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.weapon_hardpoints,
                 }}
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgLoadoutUtility />}
@@ -33,6 +34,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.utility_slots,
                 }}
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgLoadoutSpeed />}
@@ -40,6 +42,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(0),
                 }}
+                hideEmptyComparison
             />
             {mech.walk_speed_modifier !== "0" && (
                 <Stat
@@ -48,6 +51,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     stat={{
                         value: mech.speed / 100,
                     }}
+                    hideEmptyComparison
                 />
             )}
             <Stat
@@ -56,6 +60,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.max_hitpoints,
                 }}
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgPowerCoreCapacity />}
@@ -63,6 +68,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.power_core_size,
                 }}
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgLoadoutShield />}
@@ -70,6 +76,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.shield,
                 }}
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgLoadoutShield />}
@@ -78,6 +85,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     value: mech.shield_recharge_rate,
                 }}
                 unit="/sec"
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgLoadoutShieldPowerCost />}
@@ -87,6 +95,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 unit="/sec"
                 invertComparison
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgEnergy />}
@@ -96,6 +105,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 unit="/sec"
                 invertComparison
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgEnergy />}
@@ -105,6 +115,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 unit="/sec"
                 invertComparison
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgEnergy />}
@@ -114,6 +125,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 unit="/sec"
                 invertComparison
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgTarget />}
@@ -123,6 +135,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 unit="%"
                 invertComparison
+                hideEmptyComparison
             />
             <Stat
                 icon={<SvgDoubleChevronUp />}
@@ -130,6 +143,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: mech.boosted_stat.split("_").join(" "),
                 }}
+                hideEmptyComparison
             />
             {mech.boosted_shield_recharge_rate !== mech.shield_recharge_rate && (
                 <Stat
@@ -141,6 +155,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     compareStat={{
                         value: mech.shield_recharge_rate,
                     }}
+                    hideEmptyComparison
                 />
             )}
             {mech.boosted_sprint_spread_modifier !== mech.sprint_spread_modifier && (
@@ -154,6 +169,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                         value: mech.sprint_spread_modifier,
                     }}
                     invertComparison
+                    hideEmptyComparison
                 />
             )}
             {mech.boosted_walk_speed_modifier !== mech.walk_speed_modifier && (
@@ -166,8 +182,10 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     compareStat={{
                         value: mech.walk_speed_modifier,
                     }}
+                    hideEmptyComparison
                 />
             )}
+            hideEmptyComparison
             {/* <Stat
                 icon={<SvgDamageIcon />}
                 label="Melee Force"

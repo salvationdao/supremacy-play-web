@@ -17,9 +17,10 @@ export interface StatProps {
     unit?: string
     nonNumeric?: boolean
     invertComparison?: boolean
+    hideEmptyComparison?: boolean
 }
 
-export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertComparison }: StatProps) => {
+export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertComparison, hideEmptyComparison }: StatProps) => {
     const [color, difference] = useMemo(() => {
         let color = "white"
         let difference = 0
@@ -60,28 +61,46 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertC
     return (
         <Stack direction="row">
             {icon}
-            <Typography ml="1rem" textTransform="uppercase">
+            <Typography ml="1rem" textTransform="uppercase" whiteSpace="nowrap">
                 {label}
             </Typography>
+            <Box minWidth=".5rem" />
             <TypographyTruncated
                 sx={{
                     ml: "auto",
                 }}
             >
-                {typeof compareStat?.value !== "undefined" && difference !== 0 && (
+                {typeof compareStat?.value !== "undefined" ? (
                     <>
-                        <Box component="span" ml=".5rem">
-                            {compareStat.value}
-                            {compareStat.displayMultiplier && ` × ${compareStat.displayMultiplier}`}
-                        </Box>
-                        {unit && (
-                            <Box component="span" ml=".5rem" fontSize="1.6rem">
-                                {unit}
-                            </Box>
+                        {difference !== 0 && (
+                            <>
+                                <Box component="span">
+                                    {compareStat.value}
+                                    {compareStat.displayMultiplier && ` × ${compareStat.displayMultiplier}`}
+                                </Box>
+                                {unit && (
+                                    <Box component="span" ml=".5rem" fontSize="1.6rem">
+                                        {unit}
+                                    </Box>
+                                )}
+                                <Box component="span" ml=".5rem">
+                                    →
+                                </Box>
+                            </>
                         )}
-                        <Box component="span" ml=".5rem">
-                            →
-                        </Box>
+                    </>
+                ) : (
+                    <>
+                        {!hideEmptyComparison && (
+                            <>
+                                <Box component="span" color={colors.darkGrey} fontStyle="italic">
+                                    none
+                                </Box>
+                                <Box component="span" ml=".5rem">
+                                    →
+                                </Box>
+                            </>
+                        )}
                     </>
                 )}
                 {typeof stat?.value !== "undefined" ? (
