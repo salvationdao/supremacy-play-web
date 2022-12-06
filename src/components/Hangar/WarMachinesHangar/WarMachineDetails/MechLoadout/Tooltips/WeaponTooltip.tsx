@@ -1,15 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import {
-    SvgAmmo,
-    SvgDamageFalloff,
-    SvgDamageIcon,
-    SvgEnergy,
-    SvgHistoryClock,
-    SvgLoadoutWeapon,
-    SvgRadius,
-    SvgRadiusDamageFalloffRate,
-} from "../../../../../../assets"
+import { SvgAmmo, SvgDamageIcon, SvgEnergy, SvgHistoryClock, SvgLine, SvgLoadoutWeapon, SvgRateOfFire, SvgTarget } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
@@ -173,7 +164,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 }}
             />
             <Stat
-                icon={<SvgDamageFalloff />}
+                icon={<SvgLine />}
                 label="Max Optimal Range"
                 stat={{
                     value: weapon.damage_falloff ? parseFloat(weapon.damage_falloff) / 100 : undefined,
@@ -184,7 +175,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 unit="m"
             />
             <Stat
-                icon={<SvgDamageFalloff />}
+                icon={<SvgLine />}
                 label="Max Range"
                 stat={{
                     value:
@@ -202,7 +193,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
             />
             {
                 <Stat
-                    icon={<SvgRadius />}
+                    icon={<SvgTarget />}
                     label="Blast Radius"
                     stat={{
                         value: weapon.radius ? parseFloat(weapon.radius) / 100 : undefined,
@@ -215,7 +206,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
             }
             {
                 <Stat
-                    icon={<SvgRadiusDamageFalloffRate />}
+                    icon={<SvgRateOfFire />}
                     label="Rate of Fire"
                     stat={{
                         value: weapon.rate_of_fire,
