@@ -213,54 +213,58 @@ export const theme = createTheme({
         },
         h3: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "4.13rem",
             lineHeight: 1.5,
         },
         h4: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "2.96rem",
             lineHeight: 1.5,
         },
         h5: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "2.13rem",
             lineHeight: 1.5,
         },
         h6: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "1.82rem",
             lineHeight: 1.5,
         },
         body1: {
             // this is the default variant
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "1.7rem",
             lineHeight: 1.5,
-            letterSpacing: ".8px",
         },
         body2: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "1.5rem",
             lineHeight: 1.5,
-            letterSpacing: ".8px",
         },
         subtitle1: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "1.34rem",
             lineHeight: 1.5,
-            letterSpacing: ".8px",
         },
         subtitle2: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: ".8px",
             fontSize: "1.18rem",
             lineHeight: 1.5,
-            letterSpacing: ".8px",
         },
         caption: {
             fontFamily: fonts.rajdhaniMedium,
+            letterSpacing: "1px",
             fontSize: "1.25rem",
             lineHeight: 1.5,
-            letterSpacing: "1px",
         },
     },
     components: {

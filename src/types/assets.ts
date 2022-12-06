@@ -655,7 +655,7 @@ export interface StorefrontPackage {
     price_cents: number
 }
 
-export enum SubmodelStatus {
+export enum SkinStatus {
     Equipped = "equipped",
     Unequipped = "unequipped",
 }

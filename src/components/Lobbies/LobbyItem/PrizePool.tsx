@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import React, { MutableRefObject, useCallback, useRef, useState } from "react"
-import { SvgChest2, SvgFirstPlace, SvgLeaderboard, SvgSecondPlace, SvgSupToken, SvgThirdPlace, SvgWrapperProps } from "../../../assets"
+import { SvgChest2, SvgEmptySet, SvgFirstPlace, SvgLeaderboard, SvgSecondPlace, SvgSupToken, SvgThirdPlace, SvgWrapperProps } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -13,12 +13,24 @@ import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 
 export const PrizePool = React.memo(function PrizePool({ battleLobby }: { battleLobby: BattleLobby }) {
-    const { sups_pool, first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
+    const { sups_pool, first_faction_cut, second_faction_cut, third_faction_cut, entry_fee } = battleLobby
     const [isPopoverOpen, setIsPopoverOpen] = useState(false)
     const popoverRef = useRef(null)
 
     return (
         <>
+            {/* Reward pool */}
+            <Box>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
+                    <SvgEmptySet inline /> ENTRY FEE
+                </Typography>
+
+                <Typography whiteSpace="nowrap">
+                    <SvgSupToken inline size="2rem" fill={colors.gold} />
+                    {supFormatter(entry_fee, 2)}
+                </Typography>
+            </Box>
+
             {/* Reward pool */}
             <Box>
                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>

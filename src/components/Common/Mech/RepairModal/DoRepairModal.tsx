@@ -356,29 +356,28 @@ const InfoCard = React.memo(function InfoCard({
     sx?: SxProps
 }) {
     return (
-        <Stack
-            alignItems="center"
-            justifyContent="space-between"
-            spacing=".8rem"
+        <NiceBoxThing
+            border={{ color: `${primaryColor}40`, thickness: "very-lean" }}
+            background={{ colors: [`${primaryColor}20`] }}
             sx={{
                 flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
                 p: "1.4rem 3rem",
                 pt: "1.8rem",
                 textAlign: "center",
-                border: `${primaryColor}70 2px solid`,
-                backgroundColor: `${primaryColor}30`,
-                boxShadow: 2,
-                borderRadius: 1.3,
                 ...sx,
             }}
         >
-            <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
+            <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, mb: ".8rem" }}>
                 {children}
             </Stack>
             <Typography variant="caption" sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBlack }}>
                 {label}
             </Typography>
-        </Stack>
+        </NiceBoxThing>
     )
 })
 

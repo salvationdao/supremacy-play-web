@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react"
 import {
     SvgChest2,
     SvgContentCopyIcon,
+    SvgEmptySet,
     SvgFirstPlace,
     SvgHistoryClock,
     SvgLeaderboard,
@@ -80,7 +81,7 @@ export const CentralQueueItemTooltipRender = ({
     }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
-        <Box sx={{ width: width || "40rem", backgroundColor: theme.factionTheme.s800 }}>
+        <Box sx={{ width: width || "43rem", backgroundColor: theme.factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -152,12 +153,12 @@ export const CentralQueueItemTooltipRender = ({
                     </Stack>
                 )}
 
-                {/* Map */}
+                {/* Scheduled time */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgHistoryClock inline /> Scheduled time:
                     </Typography>
-                    <TypographyTruncated>
+                    <TypographyTruncated sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}>
                         {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}
                     </TypographyTruncated>
                 </Stack>
@@ -170,6 +171,18 @@ export const CentralQueueItemTooltipRender = ({
                     <TypographyTruncated sx={!battleLobby.game_map?.name ? { fontStyle: "italic", color: colors.lightGrey } : {}}>
                         {camelToTitle(battleLobby.game_map?.name || "To be determined...")}
                     </TypographyTruncated>
+                </Stack>
+
+                {/* Entry fee */}
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
+                        <SvgEmptySet inline /> Entry fee:
+                    </Typography>
+
+                    <Typography>
+                        <SvgSupToken inline fill={colors.gold} />
+                        {supFormatter(battleLobby.entry_fee, 2)}
+                    </Typography>
                 </Stack>
 
                 {/* Reward pool */}

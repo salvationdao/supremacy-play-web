@@ -5,10 +5,10 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../../containers"
+import { HEXToVBColor } from "../../../../../../helpers/index"
 import { ringCloudParticlesConfig } from "../../../../../../pixi/particleConfigs"
 import { colors } from "../../../../../../theme/theme"
-import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE, Map } from "../../../../../../types"
-import { HEXToVBColor } from "../../../../../../helpers/index"
+import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../../types"
 
 export class PixiBattleZone {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -42,7 +42,6 @@ export class PixiBattleZone {
             }
         >,
         battleZone: BattleZoneStruct,
-        mapRef: React.MutableRefObject<Map | undefined>,
     ) {
         this.viewport = viewport
         this.gridSizeRef = gridSizeRef
@@ -75,7 +74,7 @@ export class PixiBattleZone {
 
         // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
         const borderThickness = this.viewport.worldWidth * 3
-        const outsideColor = mapRef.current?.Name === "IronDust 5" ? "#000000" : colors.darkRed
+        const outsideColor = colors.darkRed
         this.darkBackgroundTrick = new PIXI.Graphics()
         this.darkBackgroundTrick.zIndex = 2
         this.darkBackgroundTrick.clear()
@@ -84,7 +83,7 @@ export class PixiBattleZone {
         this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
-        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 1100, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.darkBackgroundTrick, { alpha: 0.45 }, { duration: 1100, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         if (battleZone.warn_time) {
             this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)

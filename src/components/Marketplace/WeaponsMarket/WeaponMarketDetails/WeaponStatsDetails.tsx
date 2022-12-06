@@ -49,7 +49,7 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
                 <Stack direction="row" spacing=".8rem" alignItems="center">
                     <SvgLoadoutSkin fill={colors.chassisSkin} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
-                        SUBMODEL ({skin ? 1 : 0}/1)
+                        SKIN ({skin ? 1 : 0}/1)
                     </Typography>
                 </Stack>
 

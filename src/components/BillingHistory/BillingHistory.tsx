@@ -123,7 +123,7 @@ export const BillingHistory = () => {
                                                         <Typography sx={{ textDecoration: "underline" }}>{order.order_number}</Typography>
                                                     </Link>
                                                 </Typography>,
-                                                <Typography key={2}>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>,
+                                                <Typography key={2}>{moment(order.created_at).format("YYYY-MM-DD")}</Typography>,
                                                 <ClipThing
                                                     key={3}
                                                     clipSize="6px"

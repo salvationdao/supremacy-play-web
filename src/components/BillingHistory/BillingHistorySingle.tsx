@@ -130,7 +130,7 @@ export const BillingHistorySingle = () => {
                                     <Typography>Order Date:</Typography>
                                 </Box>
                                 <td>
-                                    <Typography>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>
+                                    <Typography>{moment(order.created_at).format("YYYY-MM-DD")}</Typography>
                                 </td>
                             </tr>
                             <tr>

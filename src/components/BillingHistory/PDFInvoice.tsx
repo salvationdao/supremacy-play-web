@@ -172,7 +172,7 @@ export const PDFInvoice = ({ order, buyer }: Props) => {
                             <Text>Order Date:</Text>
                         </View>
                         <View>
-                            <Text>{moment(order.created_at).format("DD/MM/YYYY")}</Text>
+                            <Text>{moment(order.created_at).format("YYYY-MM-DD")}</Text>
                         </View>
                     </View>
                     <View style={styles.invoiceDetailsTable}>

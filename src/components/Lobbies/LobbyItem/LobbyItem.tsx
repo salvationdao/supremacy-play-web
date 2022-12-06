@@ -4,13 +4,14 @@ import { SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../asset
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter, truncateTextLines } from "../../../helpers"
+import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { FactionWithPalette } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
 import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
@@ -169,21 +170,14 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                                     }}
                                 />
                             )}
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: ownerFaction.palette.primary,
-                                    fontWeight: "bold",
-                                    ...truncateTextLines(1),
-                                }}
-                            >
+                            <TypographyTruncated variant="h6" sx={{ color: ownerFaction.palette.primary, fontWeight: "bold" }}>
                                 {!ownerFaction.logo_url && (
                                     <>
                                         <SvgUserDiamond2 size="2.2rem" inline fill={ownerFaction.palette.primary} />{" "}
                                     </>
                                 )}
                                 {battleLobby.generated_by_system ? "The Overseer" : `${battleLobby.host_by.username}#${battleLobby.host_by.gid}`}
-                            </Typography>
+                            </TypographyTruncated>
                         </Stack>
 
                         {/* Map logo */}
@@ -270,7 +264,11 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 <Stack direction="row" alignItems="center" spacing="2rem" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
                     {battleLobby.will_not_start_until && (
                         <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                            <Typography
+                                variant="body2"
+                                fontFamily={fonts.nostromoBold}
+                                sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
+                            >
                                 Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
                             </Typography>
                         </Stack>

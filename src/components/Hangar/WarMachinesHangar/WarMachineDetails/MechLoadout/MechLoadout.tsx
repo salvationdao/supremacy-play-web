@@ -742,16 +742,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         }
 
         return (
-            <MechLoadoutItem
-                ref={mechSkinItemRef}
-                disabled={loadoutDisabled}
-                label="SUBMODEL"
-                Icon={SvgLoadoutSkin}
-                shape="square"
-                size="small"
-                isEmpty
-                locked
-            />
+            <MechLoadoutItem ref={mechSkinItemRef} disabled={loadoutDisabled} label="SKIN" Icon={SvgLoadoutSkin} shape="square" size="small" isEmpty locked />
         )
     }, [chassis_skin, loadoutDisabled])
 
