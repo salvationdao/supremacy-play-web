@@ -13,7 +13,32 @@ import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
-import { GetPowerCoresRequest } from "../Modals/MechLoadoutPowerCoreModal"
+import { PowerCoreTooltip } from "../Tooltips/PowerCoreTooltip"
+
+export interface GetPowerCoresRequest {
+    search: string
+    sort_by: string
+    sort_dir: string
+    exclude_ids: string[]
+    page_size: number
+    page: number
+    display_xsyn_locked?: boolean
+    exclude_market_locked?: boolean
+    include_market_listed?: boolean
+    rarities: string[]
+    sizes: string[]
+    equipped_statuses: string[]
+    stat_capacity?: GetPowerCoreStatFilter
+    stat_max_draw_rate?: GetPowerCoreStatFilter
+    stat_recharge_rate?: GetPowerCoreStatFilter
+    stat_armour?: GetPowerCoreStatFilter
+    stat_max_hitpoints?: GetPowerCoreStatFilter
+}
+
+interface GetPowerCoreStatFilter {
+    min?: number
+    max?: number
+}
 
 export interface GetPowerCoresDetailedResponse {
     power_cores: PowerCore[]
@@ -21,11 +46,13 @@ export interface GetPowerCoresDetailedResponse {
 }
 
 export interface PowerCoreDraggablesProps {
+    compareToPowerCore?: PowerCore
     powerCoreSize: string
+    excludePowerCoreIDs: string[]
     onClick: OnClickEventWithType
 }
 
-export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggablesProps) => {
+export const PowerCoreDraggables = ({ compareToPowerCore, powerCoreSize, excludePowerCoreIDs, onClick }: PowerCoreDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -90,7 +117,7 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
                 sort_by: sortBy,
                 sort_dir: sortDir,
                 include_market_listed: false,
-                exclude_ids: [],
+                exclude_ids: excludePowerCoreIDs,
                 rarities: [],
                 sizes: [powerCoreSize],
                 equipped_statuses: ["unequipped"],
@@ -108,7 +135,7 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
         } finally {
             setIsPowerCoresLoading(false)
         }
-    }, [page, pageSize, powerCoreSize, search, send, setTotalItems, sort])
+    }, [excludePowerCoreIDs, page, pageSize, powerCoreSize, search, send, setTotalItems, sort])
     useEffect(() => {
         getPowerCores()
     }, [getPowerCores])
@@ -162,11 +189,12 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
                         shape="square"
                         size="full-width"
                         onClick={(e) => onClick(e, AssetItemType.PowerCore, pc)}
+                        renderTooltip={() => <PowerCoreTooltip id={pc.id} compareTo={compareToPowerCore} />}
                     />
                 ))}
             </Box>
         )
-    }, [isPowerCoresLoading, onClick, powerCores, powerCoresError, theme.factionTheme.primary])
+    }, [compareToPowerCore, isPowerCoresLoading, onClick, powerCores, powerCoresError, theme.factionTheme.primary])
 
     return (
         <Stack spacing="2rem" minHeight={400}>
