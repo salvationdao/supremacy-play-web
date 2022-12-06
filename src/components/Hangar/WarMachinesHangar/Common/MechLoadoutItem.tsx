@@ -96,9 +96,11 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                             side === "right"
                                 ? {
                                       borderRight: "none",
+                                      mr: "-1px",
                                   }
                                 : {
                                       borderLeft: "none",
+                                      ml: "-1px",
                                   }
                         }
                     >

@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback } from "react"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets, getWeaponTypeColor, parseString } from "../../helpers"
@@ -251,8 +250,7 @@ export const FleetWeapons = () => {
         // Apply energy cost range filter
         if (energyCostRange && energyCostRange.length) {
             result = result.filter(
-                (weapon) =>
-                    !weapon.energy_cost || (parseFloat(weapon.energy_cost) >= energyCostRange[0] && parseFloat(weapon.energy_cost) <= energyCostRange[1]),
+                (weapon) => !weapon.power_cost || (parseFloat(weapon.power_cost) >= energyCostRange[0] && parseFloat(weapon.power_cost) <= energyCostRange[1]),
             )
         }
 
@@ -490,7 +488,7 @@ export const FleetWeapons = () => {
                             initialExpanded: false,
                             values: energyCostRange,
                             setValues: setEnergyCostRange,
-                            numberFreq: weapons.map((weapon) => parseFloat(weapon.energy_cost || "0")),
+                            numberFreq: weapons.map((weapon) => parseFloat(weapon.power_cost || "0")),
                         },
                         {
                             label: "Projectile speed",

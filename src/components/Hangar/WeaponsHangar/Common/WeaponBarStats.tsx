@@ -57,7 +57,7 @@ export const WeaponBarStats = ({ weapon, compareTo, color, fontSize: fs, width, 
     const radius = weapon.radius || 0
     const radiusDamageFalloff = weapon.radius_damage_falloff || 0
     const rateOfFire = weapon.rate_of_fire || 0
-    const energyCost = weapon.energy_cost || 0
+    const energyCost = weapon.power_cost || 0
     const projectileSpeed = weapon.projectile_speed || 0
     const spread = weapon.spread || 0
 
@@ -70,7 +70,7 @@ export const WeaponBarStats = ({ weapon, compareTo, color, fontSize: fs, width, 
               radius: compareTo.radius || 0,
               radiusDamageFalloff: compareTo.radius_damage_falloff || 0,
               rateOfFire: compareTo.rate_of_fire || 0,
-              energyCost: compareTo.energy_cost || 0,
+              energyCost: compareTo.power_cost || 0,
               projectileSpeed: compareTo.projectile_speed || 0,
               spread: compareTo.spread || 0,
           }

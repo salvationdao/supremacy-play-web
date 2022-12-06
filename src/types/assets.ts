@@ -148,6 +148,9 @@ export interface MechBasic extends Collection, Images {
     boosted_walk_speed_modifier: string
     sprint_spread_modifier: string
     boosted_sprint_spread_modifier: string
+    idle_drain: string
+    walk_drain: string
+    run_drain: string
     is_default: boolean
     is_insured: boolean
     name: string
@@ -324,6 +327,9 @@ export interface PowerCore extends Collection, Images {
     recharge_rate: number
     armour: number
     max_hitpoints: number
+    weapon_share: number
+    movement_share: number
+    utility_share: number
     equipped_on?: string
     created_at: Date
 }
@@ -356,8 +362,20 @@ export interface Weapon extends Collection, Images {
     radius?: string
     radius_damage_falloff?: string
     projectile_speed?: string
-    energy_cost?: string
+    power_cost?: string
+    power_instant_drain?: boolean
+    is_melee: boolean
     max_ammo?: string
+    projectile_amount?: number
+    dot_tick_damage?: string
+    dot_max_ticks?: number
+    is_arced?: boolean
+    charge_time_seconds?: string
+    burst_rate_of_fire?: string
+    dot_tick_duration: number
+    projectile_life_span: number
+    recoil_force: string
+    idle_power_cost: number
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date

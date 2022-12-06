@@ -10,7 +10,7 @@ import { Weapon } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
-import { WeaponBarStats } from "../Common/WeaponBarStats"
+import { WeaponStats } from "../../../Common/Stats/WeaponStats"
 import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponLoadout } from "./WeaponLoadout"
 import { WeaponViewer } from "./WeaponViewer"
@@ -131,14 +131,9 @@ export const WeaponHangarDetails = () => {
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON STATS</Typography>
                                         </Stack>
 
-                                        <WeaponBarStats
-                                            weapon={weaponDetails}
-                                            color={primaryColor}
-                                            fontSize="1.2rem"
-                                            width="100%"
-                                            spacing="1.2rem"
-                                            barHeight=".9rem"
-                                        />
+                                        <Stack spacing=".5rem">
+                                            <WeaponStats weapon={weaponDetails} />
+                                        </Stack>
                                     </Stack>
                                 </Stack>
                             ) : (

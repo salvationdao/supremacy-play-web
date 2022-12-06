@@ -5,32 +5,32 @@ import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts } from "../../../../../../theme/theme"
-import { Weapon } from "../../../../../../types"
+import { PowerCore } from "../../../../../../types"
 import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
-import { WeaponStats } from "../../../../../Common/Stats/WeaponStats"
+import { PowerCoreStats } from "../../../../../Common/Stats/PowerCoreStats"
 
-export interface WeaponTooltipProps {
+export interface PowerCoreTooltipProps {
     id: string
-    compareTo?: Weapon
+    compareTo?: PowerCore
 }
 
-export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
+export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
     const theme = useTheme()
-    const [weapon, setWeapon] = useState<Weapon>()
+    const [powerCore, setPowerCore] = useState<PowerCore>()
 
-    useGameServerSubscriptionFaction<Weapon>(
+    useGameServerSubscriptionFaction<PowerCore>(
         {
-            URI: `/weapon/${id}/details`,
-            key: GameServerKeys.GetWeaponDetails,
+            URI: `/power_core/${id}/details`,
+            key: GameServerKeys.GetPowerCoreDetails,
         },
         (payload) => {
             if (!payload) return
-            setWeapon(payload)
+            setPowerCore(payload)
         },
     )
 
     const content = useMemo(() => {
-        if (!weapon) {
+        if (!powerCore) {
             return (
                 <Stack
                     sx={{
@@ -44,7 +44,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
             )
         }
 
-        const rarity = getRarityDeets(weapon.tier)
+        const rarity = getRarityDeets(powerCore.tier)
         return (
             <>
                 <Stack
@@ -59,7 +59,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                             fontSize: "1.6rem",
                         }}
                     >
-                        {weapon.label}
+                        {powerCore.label}
                     </Typography>
                     <Stack
                         direction="row"
@@ -67,7 +67,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                             justifyContent: "space-between",
                         }}
                     >
-                        <Typography>{weapon.label}</Typography>
+                        <Typography>{powerCore.label}</Typography>
                         <Typography
                             sx={{
                                 color: rarity.color,
@@ -79,7 +79,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                 </Stack>
                 <Box
                     component="img"
-                    src={weapon.image_url || weapon.avatar_url}
+                    src={powerCore.image_url || powerCore.avatar_url}
                     sx={{
                         width: "100%",
                         height: "100%",
@@ -90,17 +90,17 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                     }}
                 />
                 <Stack spacing=".5rem" p="2rem">
-                    <WeaponStats weapon={weapon} compareTo={compareTo} />
+                    <PowerCoreStats powerCore={powerCore} compareTo={compareTo} />
                 </Stack>
             </>
         )
-    }, [compareTo, theme.factionTheme.background, weapon])
+    }, [compareTo, powerCore, theme.factionTheme.background])
 
     return (
         <NiceBoxThing
             border={{
-                color: weapon ? getRarityDeets(weapon.tier).color : theme.factionTheme.primary,
-                thickness: "lean",
+                color: powerCore ? getRarityDeets(powerCore.tier).color : theme.factionTheme.primary,
+                thickness: "very-lean",
             }}
             background={{
                 colors: [theme.factionTheme.background],

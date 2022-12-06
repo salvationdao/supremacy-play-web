@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgLoadoutDamage, SvgLoadoutEmote, SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgLoadoutDamage, SvgLoadoutEmote, SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon, SvgView } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -17,6 +17,7 @@ import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
+import { PowerCoreTooltip } from "./Tooltips/PowerCoreTooltip"
 import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
 export interface SavedSelection {
@@ -249,6 +250,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                       }
                     : undefined,
             })
+            setCompareToPowerCore(undefined)
         },
         [saveSelection],
     )
@@ -636,17 +638,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 {weapon.damage}
                             </Typography>
                         }
-                        BottomRight={
-                            compareToWeapon?.weapon_id === weapon.id && (
-                                <Typography
-                                    color={{
-                                        color: colors.neonBlue,
-                                    }}
-                                >
-                                    Selected for comparison
-                                </Typography>
-                            )
-                        }
+                        BottomRight={compareToWeapon?.weapon_id === weapon.id && <SvgView fill={colors.neonBlue} />}
                         renderTooltip={() => <WeaponTooltip id={weapon.id} />}
                         rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                         locked={weapon.locked_to_mech}
@@ -684,7 +676,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         [loadoutDisabled, modifyWeaponSlot, compareToWeapon?.weapon_id, weapons_map],
     )
 
-    const renderPowerCoreSlot = useCallback(() => {
+    const [compareToPowerCore, setCompareToPowerCore] = useState<LoadoutPowerCore>()
+    const powerCoreSlot = useMemo(() => {
         const powerCore = power_core
 
         if (powerCore) {
@@ -696,6 +689,14 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     label={powerCore.label}
                     Icon={SvgLoadoutPowerCore}
                     rarity={getRarityDeets(powerCore.tier)}
+                    BottomRight={compareToPowerCore?.power_core_id === powerCore.id && <SvgView fill={colors.neonBlue} />}
+                    onClick={() =>
+                        setCompareToPowerCore({
+                            power_core_id: power_core.id,
+                            power_core: power_core,
+                        })
+                    }
+                    renderTooltip={() => <PowerCoreTooltip id={powerCore.id} />}
                     onUnequip={() =>
                         modifyPowerCore({
                             power_core_id: "",
@@ -719,9 +720,9 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 isEmpty
             />
         )
-    }, [loadoutDisabled, modifyPowerCore, power_core])
+    }, [compareToPowerCore, loadoutDisabled, modifyPowerCore, power_core])
 
-    const renderMechSkinSlot = useCallback(() => {
+    const mechSkinSlot = useMemo(() => {
         const mechSkin = chassis_skin
 
         if (mechSkin) {
@@ -762,7 +763,9 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
                     includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                     mechModelID={mechDetails.blueprint_id}
+                    compareToPowerCore={compareToPowerCore?.power_core}
                     powerCoreSize={currLoadout.power_core_size}
+                    excludePowerCoreIDs={power_core?.id ? [power_core.id] : []}
                     drag={{
                         onDrag: onItemDrag,
                         onDragStart: onItemDragStart,
@@ -773,6 +776,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             ) : undefined,
         [
             chassis_skin,
+            compareToPowerCore?.power_core,
             compareToWeapon?.weapon,
             compatible_blueprint_mech_skin_ids,
             currLoadout.power_core_size,
@@ -782,6 +786,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             onItemDragStart,
             onItemDragStop,
             owner_id,
+            power_core?.id,
             userID,
             weapons_map,
         ],
@@ -1012,8 +1017,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 left: "3rem",
                             }}
                         >
-                            {renderPowerCoreSlot()}
-                            {renderMechSkinSlot()}
+                            {powerCoreSlot}
+                            {mechSkinSlot}
                         </Stack>
 
                         {/* Bottom Right Side */}
