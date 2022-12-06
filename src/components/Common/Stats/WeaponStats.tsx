@@ -52,10 +52,10 @@ export const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 icon={<SvgLine />}
                 label="Max Optimal Range"
                 stat={{
-                    value: weapon.damage_falloff ? parseFloat(weapon.damage_falloff) / 100 : undefined,
+                    value: weapon.damage_falloff ? (parseFloat(weapon.damage_falloff) / 100).toFixed(1) : undefined,
                 }}
                 compareStat={{
-                    value: compareTo?.damage_falloff ? parseFloat(compareTo.damage_falloff) / 100 : undefined,
+                    value: compareTo?.damage_falloff ? (parseFloat(compareTo.damage_falloff) / 100).toFixed(1) : undefined,
                 }}
                 unit="m"
                 hideEmptyComparison={!compareTo}
@@ -66,13 +66,16 @@ export const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 stat={{
                     value:
                         weapon.damage_falloff != null && weapon.damage_falloff_rate != null
-                            ? parseFloat(weapon.damage_falloff) / 100 + parseFloat(weapon.damage) / (parseFloat(weapon.damage_falloff_rate) / 1000)
+                            ? (parseFloat(weapon.damage_falloff) / 100 + parseFloat(weapon.damage) / (parseFloat(weapon.damage_falloff_rate) / 1000)).toFixed(1)
                             : undefined,
                 }}
                 compareStat={{
                     value:
                         compareTo?.damage_falloff != null && compareTo?.damage_falloff_rate != null
-                            ? parseFloat(compareTo.damage_falloff) / 100 + parseFloat(compareTo.damage) / (parseFloat(compareTo.damage_falloff_rate) / 1000)
+                            ? (
+                                  parseFloat(compareTo.damage_falloff) / 100 +
+                                  parseFloat(compareTo.damage) / (parseFloat(compareTo.damage_falloff_rate) / 1000)
+                              ).toFixed(1)
                             : undefined,
                 }}
                 unit="m"
