@@ -15,11 +15,11 @@ import { NiceModal } from "../../Common/Nice/NiceModal"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
-import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
+import { JoinLobbyModal } from "../../Lobbies/LobbyItem/JoinLobbyModal"
 import { CentralQueueItemTooltipRender } from "./CentralQueueItemTooltipRender"
 import { Supporters } from "./Supporters"
 
-export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: BattleLobby; isInvolved?: boolean }) => {
     const { factionID } = useAuth()
     const theme = useTheme()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
@@ -135,7 +135,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                 <Box
                     sx={{
                         width: "100%",
-                        border: `${theme.factionTheme.primary}38 1px solid`,
+                        border: isInvolved ? `${colors.gold}65 1px solid` : `${theme.factionTheme.primary}38 1px solid`,
                     }}
                 >
                     <Stack

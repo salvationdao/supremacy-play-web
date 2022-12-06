@@ -6,8 +6,8 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { TopUpModal } from "../CentralQueue/CentralQueueItem"
-import { CentralQueueItemTooltipRender } from "../CentralQueue/CentralQueueItemTooltipRender"
+import { TopUpModal } from "../../LeftDrawer/CentralQueue/CentralQueueItem"
+import { CentralQueueItemTooltipRender } from "../../LeftDrawer/CentralQueue/CentralQueueItemTooltipRender"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
 
 export const PrivateLobbySingleModal = ({

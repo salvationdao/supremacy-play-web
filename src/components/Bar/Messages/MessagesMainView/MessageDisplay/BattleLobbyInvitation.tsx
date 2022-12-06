@@ -3,8 +3,8 @@ import { useState } from "react"
 import { useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { BattleLobby } from "../../../../../types/battle_queue"
-import { TopUpModal } from "../../../../Lobbies/CentralQueue/CentralQueueItem"
-import { CentralQueueItemTooltipRender } from "../../../../Lobbies/CentralQueue/CentralQueueItemTooltipRender"
+import { TopUpModal } from "../../../../LeftDrawer/CentralQueue/CentralQueueItem"
+import { CentralQueueItemTooltipRender } from "../../../../LeftDrawer/CentralQueue/CentralQueueItemTooltipRender"
 import { JoinLobbyModal } from "../../../../Lobbies/LobbyItem/JoinLobbyModal"
 
 interface BattleLobbyInvitationProps {

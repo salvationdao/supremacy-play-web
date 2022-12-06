@@ -199,14 +199,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 </NiceButton>
             </NiceTooltip>
 
-            <Typography
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.6rem",
-                }}
-            >
-                Repair Jobs
-            </Typography>
+            <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.6rem" }}>Repair Jobs</Typography>
 
             <Box flex={1} />
 

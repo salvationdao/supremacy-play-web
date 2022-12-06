@@ -15,7 +15,6 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
-import { CentralQueue } from "./CentralQueue/CentralQueue"
 import { CreateLobbyFormModal } from "./CreateLobbyFormModal/CreateLobbyFormModal"
 import { AccessCodePopover } from "./JoinPrivateLobby/AccessCodePopover"
 import { JoinLobbyModal } from "./LobbyItem/JoinLobbyModal"
@@ -82,8 +81,8 @@ export const Lobbies = () => {
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.QueuedAmountHighest)
 
     // Items
-    const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
     const [lobbies, setLobbies] = useState<BattleLobby[]>([])
+    const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
@@ -311,8 +310,6 @@ export const Lobbies = () => {
                 <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} width="28rem" />
 
                 <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                    <CentralQueue lobbies={lobbies} />
-
                     <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                         {/* Search, sort, grid view, and other top buttons */}
                         <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>

@@ -1,20 +1,17 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgLobbies } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
-import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTab, NiceTabs } from "../../Common/Nice/NiceTabs"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
-import { CentralQueueItem } from "../../Lobbies/CentralQueue/CentralQueueItem"
-import { RIGHT_DRAWER_WIDTH } from "../RightDrawer"
+import { CentralQueueItem } from "../../LeftDrawer/CentralQueue/CentralQueueItem"
 import { JoinPrivateLobbyField } from "./JoinPrivateLobbyField"
 
 const tabs: NiceTab[] = [
@@ -26,12 +23,11 @@ const tabs: NiceTab[] = [
 ]
 
 export const MyLobbies = () => {
+    const theme = useTheme()
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
     const [allLobbies, setAllLobbies] = useState<BattleLobby[]>([])
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
     const [tabValue, setTabValue] = useState(0)
-    const popoverRef = useRef(null)
-    const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
     // Own lobbies
     useGameServerSubscriptionSecuredUser<BattleLobby[]>(
@@ -200,7 +196,7 @@ export const MyLobbies = () => {
             if (!battleLobby) {
                 return null
             }
-            return <CentralQueueItem battleLobby={battleLobby} />
+            return <CentralQueueItem battleLobby={battleLobby} isInvolved />
         },
         [involvedLobbies],
     )
@@ -309,31 +305,16 @@ export const MyLobbies = () => {
                     </Stack>
                 </Stack>
 
-                <Button
-                    ref={popoverRef}
-                    onClick={() => toggleIsPopoverOpen()}
-                    sx={{
-                        backgroundColor: "#00000090",
-                        height: "3rem",
-                        width: "100%",
-                        borderRadius: 0,
-                        "*": {
-                            opacity: isPopoverOpen ? 1 : 0.6,
-                        },
-                        ":hover": {
-                            backgroundColor: "#00000090",
-                            "*": {
-                                opacity: 1,
-                            },
-                        },
-                    }}
+                {/* Some button */}
+                <NiceButton
+                    buttonColor={theme.factionTheme.primary}
+                    sx={{ mt: "auto !important", p: ".2rem 1rem", pt: ".4rem", opacity: 0.74 }}
+                    route={{ to: "/lobbies" }}
                 >
                     <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                        MORE OPTIONS
+                        Go to lobbies
                     </Typography>
-                </Button>
-
-                {isPopoverOpen && <OptionsPopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} />}
+                </NiceButton>
             </Stack>
         </>
     )
@@ -415,36 +396,3 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
     )
 }
 MyLobbies.Header = Header
-
-const OptionsPopover = ({ open, popoverRef, onClose }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void }) => {
-    return (
-        <NicePopover
-            open={open}
-            anchorEl={popoverRef.current}
-            onClose={onClose}
-            closeAfterTransition
-            anchorOrigin={{
-                vertical: "top",
-                horizontal: "center",
-            }}
-            transformOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-            }}
-            sx={{
-                mt: "-.4rem",
-                ".MuiPaper-root": {
-                    ml: 2,
-                    width: `${RIGHT_DRAWER_WIDTH}rem`,
-                    my: 0,
-                },
-            }}
-        >
-            <Stack spacing=".32rem">
-                <NiceButton route={{ to: "/lobbies" }} sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>GO TO LOBBIES</Typography>
-                </NiceButton>
-            </Stack>
-        </NicePopover>
-    )
-}
