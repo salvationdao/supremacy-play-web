@@ -1,6 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import FlipMove from "react-flip-move"
 import { SvgLobbies } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
@@ -195,7 +194,18 @@ export const MyLobbies = () => {
         )
     }, [allLobbies, involvedLobbies, tabValue])
 
-    const renderIndex = useCallback(
+    const renderIndexInvolvedLobbies = useCallback(
+        (index) => {
+            const battleLobby = involvedLobbies[index]
+            if (!battleLobby) {
+                return null
+            }
+            return <CentralQueueItem battleLobby={battleLobby} />
+        },
+        [involvedLobbies],
+    )
+
+    const renderIndexAllLobbies = useCallback(
         (index) => {
             const battleLobby = displayLobbies[index]
             if (!battleLobby) {
@@ -226,24 +236,15 @@ export const MyLobbies = () => {
         }
 
         return (
-            <FlipMove>
-                {involvedLobbies.map((battleLobby) => {
-                    return (
-                        <Box
-                            key={`battle-lobby-${battleLobby.id}`}
-                            sx={{
-                                "&:not(:last-child)": {
-                                    mb: ".8rem",
-                                },
-                            }}
-                        >
-                            <CentralQueueItem battleLobby={battleLobby} />
-                        </Box>
-                    )
-                })}
-            </FlipMove>
+            <VirtualizedGrid
+                uniqueID="my-lobbies"
+                itemWidthConfig={{ columnCount: 1 }}
+                itemHeight={11.5}
+                totalItems={involvedLobbies.length}
+                renderIndex={renderIndexInvolvedLobbies}
+            />
         )
-    }, [involvedLobbies])
+    }, [involvedLobbies.length, renderIndexInvolvedLobbies])
 
     // Public lobbies
     const publicLobbiesContent = useMemo(() => {
@@ -270,10 +271,10 @@ export const MyLobbies = () => {
                 itemWidthConfig={{ columnCount: 1 }}
                 itemHeight={11.5}
                 totalItems={displayLobbies.length}
-                renderIndex={renderIndex}
+                renderIndex={renderIndexAllLobbies}
             />
         )
-    }, [displayLobbies.length, renderIndex])
+    }, [displayLobbies.length, renderIndexAllLobbies])
 
     return (
         <>
@@ -285,7 +286,6 @@ export const MyLobbies = () => {
                     sx={{
                         mb: "1.2rem",
                         p: "1rem",
-                        mr: "1rem",
                         flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
