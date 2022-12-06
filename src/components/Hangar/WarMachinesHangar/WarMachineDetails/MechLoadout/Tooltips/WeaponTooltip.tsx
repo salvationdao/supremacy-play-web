@@ -1,12 +1,21 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgAmmo, SvgDamage1, SvgDamageFalloff, SvgLoadoutWeapon, SvgRadius, SvgRadiusDamageFalloffRate } from "../../../../../../assets"
+import {
+    SvgAmmo,
+    SvgDamageFalloff,
+    SvgDamageIcon,
+    SvgEnergy,
+    SvgHistoryClock,
+    SvgLoadoutWeapon,
+    SvgRadius,
+    SvgRadiusDamageFalloffRate,
+} from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts } from "../../../../../../theme/theme"
-import { Weapon } from "../../../../../../types"
+import { Weapon, WeaponType } from "../../../../../../types"
 import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
 import { Stat } from "./Stat"
 
@@ -110,7 +119,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                 display: "flex",
                 flexDirection: "column",
                 minHeight: 250,
-                width: 280,
+                width: 400,
             }}
         >
             {content}
@@ -124,12 +133,11 @@ interface WeaponStatsProps {
 }
 
 const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
-    console.log(weapon)
+    console.log(weapon.idle_power_cost)
     return (
         <>
-            {/* multiplied by projectile_amount */}
             <Stat
-                icon={<SvgDamage1 />}
+                icon={<SvgDamageIcon />}
                 label="Damage"
                 stat={{
                     value: weapon.damage,
@@ -140,6 +148,20 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                     displayMultiplier: compareTo?.projectile_amount && compareTo?.projectile_amount > 1 ? compareTo?.projectile_amount : undefined,
                 }}
             />
+            {weapon.dot_tick_damage !== "0" ||
+                (compareTo?.dot_tick_damage && (
+                    <Stat
+                        icon={<SvgDamageIcon />}
+                        label="Damage Over Time (DOT)"
+                        stat={{
+                            value: weapon.dot_tick_damage,
+                        }}
+                        compareStat={{
+                            value: compareTo?.dot_tick_damage,
+                        }}
+                        unit="/tick"
+                    />
+                ))}
             <Stat
                 icon={<SvgLoadoutWeapon />}
                 label="Damage Type"
@@ -160,7 +182,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                     value: compareTo?.damage_falloff ? parseFloat(compareTo.damage_falloff) / 100 : undefined,
                 }}
                 unit="m"
-            />{" "}
+            />
             <Stat
                 icon={<SvgDamageFalloff />}
                 label="Max Range"
@@ -178,7 +200,6 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 }}
                 unit="m"
             />
-            {/* divide by 100 */}
             {
                 <Stat
                     icon={<SvgRadius />}
@@ -202,7 +223,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                     compareStat={{
                         value: compareTo?.rate_of_fire,
                     }}
-                    unit="/min"
+                    unit="shots/min"
                 />
             }
             {
@@ -217,12 +238,64 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                     }}
                 />
             }
-            {/* derived from default_damage_type, if laser beam, lightning gun or flamethrower => power cost per second  blah look here https://kb.supremacy.game/doc/war-machine-weapon-visible-stats-mJ8ft20Anu */}
-            {/* {<Stat icon={<SvgEnergy />} label="Power Cost" stat={weapon.power_cost} compareStat={compareTo?.power_cost} />} */}
-            {/* {<Stat icon={<SvgEnergy />} label="Idle Power Cost" stat={weapon.idle_power_cost} compareStat={compareTo?.idle_power_cost}  />} */}
-            {/* {<Stat icon={<SvgDamageFalloffRate />} label="Damage Over Time (DOT)" stat={weapon.dot_tick_damage} compareStat={compareTo?.dot_tick_damage}/>} */}
-            {/* {<Stat icon={<SvgDamageFalloffRate />} label="DOT Duration" stat={weapon.dot_max_ticks} compareStat={compareTo?.dot_max_ticks} unit="secs" />} */}
-            {/* {<Stat icon={<SvgSpread />} label="Charge Time" stat={weapon.charge_time_seconds} compareStat={compareTo?.charge_time_seconds} unit="secs" />} */}
+            {!weapon.power_instant_drain ||
+            weapon.weapon_type === WeaponType.LaserBeam ||
+            weapon.weapon_type === WeaponType.LightningGun ||
+            weapon.weapon_type === WeaponType.Flamethrower ||
+            (weapon.power_cost && parseFloat(weapon.power_cost) < 1) ? (
+                <Stat
+                    icon={<SvgEnergy />}
+                    label="Power Cost"
+                    stat={{
+                        value:
+                            weapon.rate_of_fire && weapon.power_cost
+                                ? (parseFloat(weapon.rate_of_fire) / (parseFloat(weapon.power_cost) * 60)).toFixed(1)
+                                : undefined,
+                    }}
+                    compareStat={{
+                        value:
+                            compareTo?.rate_of_fire && compareTo?.power_cost
+                                ? (parseFloat(compareTo.rate_of_fire) / (parseFloat(compareTo.power_cost) * 60)).toFixed(1)
+                                : undefined,
+                    }}
+                    unit={"/sec"}
+                />
+            ) : (
+                <Stat
+                    icon={<SvgEnergy />}
+                    label="Power Cost"
+                    stat={{
+                        value: weapon.power_cost,
+                    }}
+                    compareStat={{
+                        value: compareTo?.power_cost,
+                    }}
+                />
+            )}
+            <Stat
+                icon={<SvgEnergy />}
+                label="Idle Power Cost"
+                stat={{
+                    value: weapon.idle_power_cost,
+                }}
+                compareStat={{
+                    value: compareTo?.idle_power_cost,
+                }}
+            />
+            {weapon.charge_time_seconds !== "0" ||
+                (compareTo?.charge_time_seconds !== "0" && (
+                    <Stat
+                        icon={<SvgHistoryClock />}
+                        label="Charge Time"
+                        stat={{
+                            value: weapon.charge_time_seconds,
+                        }}
+                        compareStat={{
+                            value: compareTo?.charge_time_seconds,
+                        }}
+                        unit="secs"
+                    />
+                ))}
             {/* {<Stat icon={<SvgSpread />} label="Melee Damage" stat={weapon.melee_damage} compareStat={compareTo?.melee_damage} />} */}
         </>
     )

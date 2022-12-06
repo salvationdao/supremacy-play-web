@@ -359,7 +359,7 @@ export interface Weapon extends Collection, Images {
     radius?: string
     radius_damage_falloff?: string
     projectile_speed?: string
-    energy_cost?: string
+    power_cost?: string
     power_instant_drain?: boolean
     is_melee: boolean
     max_ammo?: string

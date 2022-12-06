@@ -18,8 +18,9 @@ export interface StatProps {
 }
 
 export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatProps) => {
-    const color = useMemo(() => {
+    const [color, difference] = useMemo(() => {
         let color = "white"
+        let difference = 0
         if ((compareStat?.value || compareStat?.displayMultiplier) && !nonNumeric) {
             if (stat?.value !== compareStat.value || stat?.displayMultiplier !== compareStat.displayMultiplier) {
                 let rawStat = 0
@@ -42,7 +43,7 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatP
                     rawCompareStat *= compareStat.displayMultiplier
                 }
 
-                const difference = rawStat - rawCompareStat
+                difference = rawStat - rawCompareStat
                 if (difference > 0) {
                     color = colors.green
                 } else if (difference < 0) {
@@ -51,7 +52,7 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatP
             }
         }
 
-        return color
+        return [color, difference]
     }, [compareStat, nonNumeric, stat?.displayMultiplier, stat?.value])
 
     return (
@@ -61,24 +62,34 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatP
                 {label}
             </Typography>
             <Typography ml="auto">
-                {compareStat?.value && (
+                {typeof compareStat?.value !== "undefined" && difference !== 0 && (
                     <>
                         <Box component="span" ml=".5rem">
                             {compareStat.value}
                             {compareStat.displayMultiplier && ` × ${compareStat.displayMultiplier}`}
-                            {unit}
                         </Box>
+                        {unit && (
+                            <Box component="span" ml=".5rem" fontSize="1.6rem">
+                                {unit}
+                            </Box>
+                        )}
                         <Box component="span" ml=".5rem">
                             →
                         </Box>
                     </>
                 )}
-                {stat?.value ? (
-                    <Box component="span" ml=".5rem" color={color} fontWeight="fontWeightBold">
-                        {stat.value}
-                        {stat.displayMultiplier && ` × ${stat.displayMultiplier}`}
-                        {unit}
-                    </Box>
+                {typeof stat?.value !== "undefined" ? (
+                    <>
+                        <Box component="span" ml=".5rem" color={color} fontWeight="fontWeightBold">
+                            {stat.value}
+                            {stat.displayMultiplier && ` × ${stat.displayMultiplier}`}
+                        </Box>
+                        {unit && (
+                            <Box component="span" ml=".5rem" fontSize="1.6rem">
+                                {unit}
+                            </Box>
+                        )}
+                    </>
                 ) : (
                     <Box component="span" ml=".5rem" color={colors.darkGrey} fontStyle="italic">
                         none
