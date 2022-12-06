@@ -360,7 +360,19 @@ export interface Weapon extends Collection, Images {
     radius_damage_falloff?: string
     projectile_speed?: string
     energy_cost?: string
+    power_instant_drain?: boolean
+    is_melee: boolean
     max_ammo?: string
+    projectile_amount?: number
+    dot_tick_damage?: string
+    dot_max_ticks?: number
+    is_arced?: boolean
+    charge_time_seconds?: string
+    burst_rate_of_fire?: string
+    dot_tick_duration: number
+    projectile_life_span: number
+    recoil_force: string
+    idle_power_cost: number
     weapon_skin?: WeaponSkin
     updated_at: Date
     created_at: Date

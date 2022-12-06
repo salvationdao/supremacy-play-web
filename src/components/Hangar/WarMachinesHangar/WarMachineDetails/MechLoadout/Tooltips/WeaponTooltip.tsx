@@ -124,18 +124,99 @@ interface WeaponStatsProps {
 }
 
 const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
+    console.log(weapon)
     return (
         <>
             {/* multiplied by projectile_amount */}
-            {<Stat icon={<SvgDamage1 />} label="Damage" stat={weapon.damage} compareStat={compareTo?.damage} />}
-            {<Stat icon={<SvgLoadoutWeapon />} label="Damage Type" stat={weapon.default_damage_type} compareStat={compareTo?.default_damage_type} />}
-            {<Stat icon={<SvgDamageFalloff />} label="Max Optimal Range" stat={weapon.damage_falloff} compareStat={compareTo?.damage_falloff} unit="m" />}
-            {/* derived from damage_falloff / 100 + damage / (damage_falloff_rate * 1000) */}
-            {<Stat icon={<SvgDamageFalloff />} label="Max Range" stat={weapon.damage_falloff} compareStat={compareTo?.damage_falloff} unit="m" />}
+            <Stat
+                icon={<SvgDamage1 />}
+                label="Damage"
+                stat={{
+                    value: weapon.damage,
+                    displayMultiplier: weapon.projectile_amount && weapon.projectile_amount > 1 ? weapon.projectile_amount : undefined,
+                }}
+                compareStat={{
+                    value: compareTo?.damage,
+                    displayMultiplier: compareTo?.projectile_amount && compareTo?.projectile_amount > 1 ? compareTo?.projectile_amount : undefined,
+                }}
+            />
+            <Stat
+                icon={<SvgLoadoutWeapon />}
+                label="Damage Type"
+                stat={{
+                    value: weapon.default_damage_type,
+                }}
+                compareStat={{
+                    value: compareTo?.default_damage_type,
+                }}
+            />
+            <Stat
+                icon={<SvgDamageFalloff />}
+                label="Max Optimal Range"
+                stat={{
+                    value: weapon.damage_falloff ? parseFloat(weapon.damage_falloff) / 100 : undefined,
+                }}
+                compareStat={{
+                    value: compareTo?.damage_falloff ? parseFloat(compareTo.damage_falloff) / 100 : undefined,
+                }}
+                unit="m"
+            />{" "}
+            <Stat
+                icon={<SvgDamageFalloff />}
+                label="Max Range"
+                stat={{
+                    value:
+                        weapon.damage_falloff != null && weapon.damage_falloff_rate != null
+                            ? parseFloat(weapon.damage_falloff) / 100 + parseFloat(weapon.damage) / (parseFloat(weapon.damage_falloff_rate) / 1000)
+                            : undefined,
+                }}
+                compareStat={{
+                    value:
+                        compareTo?.damage_falloff != null && compareTo?.damage_falloff_rate != null
+                            ? parseFloat(compareTo.damage_falloff) / 100 + parseFloat(compareTo.damage) / (parseFloat(compareTo.damage_falloff_rate) / 1000)
+                            : undefined,
+                }}
+                unit="m"
+            />
             {/* divide by 100 */}
-            {<Stat icon={<SvgRadius />} label="Blast Radius" stat={weapon.radius} compareStat={compareTo?.radius} unit="m" />}
-            {<Stat icon={<SvgRadiusDamageFalloffRate />} label="Rate of Fire" stat={weapon.rate_of_fire} compareStat={compareTo?.rate_of_fire} unit="/min" />}
-            {<Stat icon={<SvgAmmo />} label="Max Ammo" stat={weapon.max_ammo} compareStat={compareTo?.max_ammo} />}
+            {
+                <Stat
+                    icon={<SvgRadius />}
+                    label="Blast Radius"
+                    stat={{
+                        value: weapon.radius ? parseFloat(weapon.radius) / 100 : undefined,
+                    }}
+                    compareStat={{
+                        value: compareTo?.radius ? parseFloat(compareTo.radius) / 100 : undefined,
+                    }}
+                    unit="m"
+                />
+            }
+            {
+                <Stat
+                    icon={<SvgRadiusDamageFalloffRate />}
+                    label="Rate of Fire"
+                    stat={{
+                        value: weapon.rate_of_fire,
+                    }}
+                    compareStat={{
+                        value: compareTo?.rate_of_fire,
+                    }}
+                    unit="/min"
+                />
+            }
+            {
+                <Stat
+                    icon={<SvgAmmo />}
+                    label="Max Ammo"
+                    stat={{
+                        value: weapon.max_ammo,
+                    }}
+                    compareStat={{
+                        value: compareTo?.max_ammo,
+                    }}
+                />
+            }
             {/* derived from default_damage_type, if laser beam, lightning gun or flamethrower => power cost per second  blah look here https://kb.supremacy.game/doc/war-machine-weapon-visible-stats-mJ8ft20Anu */}
             {/* {<Stat icon={<SvgEnergy />} label="Power Cost" stat={weapon.power_cost} compareStat={compareTo?.power_cost} />} */}
             {/* {<Stat icon={<SvgEnergy />} label="Idle Power Cost" stat={weapon.idle_power_cost} compareStat={compareTo?.idle_power_cost}  />} */}
