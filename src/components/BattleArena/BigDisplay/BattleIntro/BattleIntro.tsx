@@ -6,6 +6,7 @@ import { useAuth, useDimension, useSupremacy } from "../../../../containers"
 import { pulseEffect } from "../../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BattleLobby } from "../../../../types/battle_queue"
+import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 import { Supporters } from "../../../Lobbies/CentralQueue/Supporters"
 import { FactionLobbySlots } from "../../../Lobbies/LobbyItem/LobbyItem"
@@ -144,14 +145,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                         }}
                     >
                         {/* Faction logo */}
-                        <Box
-                            component="img"
-                            src={lobby.faction.logo_url}
-                            sx={{
-                                width: "100%",
-                                objectFit: "contain",
-                            }}
-                        />
+                        <Box component="img" src={lobby.faction.logo_url} alt={lobby.faction.label} sx={{ width: "100%", objectFit: "contain" }} />
 
                         {/* Supporters */}
                         <Stack alignItems="center" spacing="1.4rem">
@@ -173,6 +167,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             )}
                         </Stack>
                     </Stack>
+
                     {lobby.mechSlots.map((ms, index) => (
                         <Stack
                             key={index}
@@ -181,16 +176,15 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 maxWidth: 200,
                             }}
                         >
-                            <Stack direction={isTablet ? "column" : "row"} spacing=".5rem">
+                            <Stack direction={isTablet ? "column" : "row"} spacing=".5rem" sx={{ mb: "1rem" }}>
                                 {/* Mech avatar */}
-                                <Box
-                                    component="img"
-                                    src={ms.avatar_url}
+                                <MediaPreview
+                                    imageUrl={ms.avatar_url}
+                                    objectFit="cover"
                                     sx={{
                                         width: "100%",
                                         maxWidth: isTablet ? "100%" : 160,
                                         height: isTablet ? "8rem" : undefined,
-                                        objectFit: "cover",
                                         border: `1px solid ${colors.black2}`,
                                     }}
                                 />
@@ -221,12 +215,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             </Stack>
 
                             {/* Mech label */}
-                            <TypographyTruncated
-                                sx={{
-                                    fontFamily: fonts.nostromoBold,
-                                    fontSize: "2rem",
-                                }}
-                            >
+                            <TypographyTruncated variant="h5" sx={{ fontFamily: fonts.nostromoBold }}>
                                 {ms.name || ms.label}
                             </TypographyTruncated>
 
@@ -234,8 +223,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             <TypographyTruncated
                                 variant="h6"
                                 sx={{
-                                    color: ms.owner_id === userID ? colors.gold : "white",
-                                    fontWeight: "bold",
+                                    color: ms.owner_id === userID ? colors.gold : lobby.faction.palette.primary,
                                     mt: ".3rem !important",
                                 }}
                             >
