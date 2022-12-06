@@ -81,7 +81,7 @@ export const CentralQueueItemTooltipRender = ({
     }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
-        <Box sx={{ width: width || "43rem", backgroundColor: theme.factionTheme.s800 }}>
+        <Box sx={{ width: width || "43rem", backgroundColor: theme.factionTheme.u800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -433,7 +433,7 @@ const FactionMechList = ({
                                     width: SIZE,
                                     height: SIZE,
                                     opacity: 0.4,
-                                    backgroundColor: faction.palette.s900,
+                                    backgroundColor: faction.palette.u800,
                                 }}
                             >
                                 <Typography fontFamily={fonts.nostromoBold} color={faction.palette.primary}>

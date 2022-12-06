@@ -92,7 +92,7 @@ export const QuestsPopover = ({
                                     sx={{
                                         m: "0 !important",
                                         ".MuiAccordionSummary-root": {
-                                            backgroundColor: (theme) => theme.factionTheme.s900,
+                                            backgroundColor: (theme) => theme.factionTheme.u800,
                                             "&.Mui-expanded": {
                                                 backgroundColor: `${colors.purple}40`,
                                                 minHeight: 0,

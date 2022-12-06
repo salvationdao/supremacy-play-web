@@ -73,7 +73,7 @@ const SingleColumn = ({ battleLobby, otherFactionLobbySlots }: { battleLobby: Ba
                             width: "100%",
                             height: SIZE,
                             opacity: 0.6,
-                            backgroundColor: otherFactionLobbySlots.faction.palette.s900,
+                            backgroundColor: otherFactionLobbySlots.faction.palette.s800,
                         }}
                     >
                         <Typography fontFamily={fonts.nostromoBold} color={otherFactionLobbySlots.faction.palette.primary}>
