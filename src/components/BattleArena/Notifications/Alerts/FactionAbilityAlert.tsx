@@ -14,7 +14,7 @@ export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionA
     const mainColor = faction.palette.primary
 
     return (
-        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.6 }} sx={{ p: ".6rem 1.4rem" }}>
             <Typography>
                 <StyledImageText sx={{ color: mainColor || "grey !important" }} imageUrl={faction.logo_url}>
                     {user ? acronym(faction.label) : "GABS"}

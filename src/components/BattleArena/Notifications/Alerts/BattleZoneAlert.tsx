@@ -15,7 +15,7 @@ export const BattleZoneAlert = ({ data }: { data: BattleZoneStruct }) => {
     })
 
     return (
-        <NiceBoxThing border={{ color: `${colors.red}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+        <NiceBoxThing border={{ color: `${colors.red}80` }} background={{ colors: [colors.darkNavy], opacity: 0.6 }} sx={{ p: ".6rem 1.4rem" }}>
             <Typography>
                 <SvgEmergency inline fill={colors.red} size="1.2rem" />{" "}
                 <StyledImageText>{time <= 0 ? "Battle Zone Shrinking" : `Battle Zone Shrinking in ${time} second${time === 1 ? "" : "s"}`}</StyledImageText>
