@@ -155,7 +155,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
             } else {
                 setTimeout(() => {
                     restoreIsStreamBigDisplayMemorized()
-                }, 3000)
+                }, 600)
             }
         }
     }, [onAnyAbilityUseCallbacks, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])

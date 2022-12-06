@@ -204,7 +204,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                                 <Box
                                                     key={index}
                                                     component="img"
-                                                    src={w.weapon.avatar_url}
+                                                    src={w.weapon.avatar_url || w.weapon.image_url}
                                                     alt={`Weapon - ${w.weapon.label}`}
                                                     sx={{
                                                         height: "4rem",
