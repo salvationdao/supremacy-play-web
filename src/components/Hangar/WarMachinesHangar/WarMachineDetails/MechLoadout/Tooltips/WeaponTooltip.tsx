@@ -259,6 +259,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                                 : undefined,
                     }}
                     unit={"/sec"}
+                    invertComparison
                 />
             ) : (
                 <Stat
@@ -270,6 +271,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                     compareStat={{
                         value: compareTo?.power_cost,
                     }}
+                    invertComparison
                 />
             )}
             <Stat
@@ -281,6 +283,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                 compareStat={{
                     value: compareTo?.idle_power_cost,
                 }}
+                invertComparison
             />
             {weapon.charge_time_seconds !== "0" ||
                 (compareTo?.charge_time_seconds !== "0" && (
@@ -294,6 +297,7 @@ const WeaponStats = ({ weapon, compareTo }: WeaponStatsProps) => {
                             value: compareTo?.charge_time_seconds,
                         }}
                         unit="secs"
+                        invertComparison
                     />
                 ))}
             {/* {<Stat icon={<SvgSpread />} label="Melee Damage" stat={weapon.melee_damage} compareStat={compareTo?.melee_damage} />} */}

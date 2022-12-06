@@ -15,9 +15,10 @@ export interface StatProps {
     }
     unit?: string
     nonNumeric?: boolean
+    invertComparison?: boolean
 }
 
-export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatProps) => {
+export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertComparison }: StatProps) => {
     const [color, difference] = useMemo(() => {
         let color = "white"
         let difference = 0
@@ -45,15 +46,15 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric }: StatP
 
                 difference = rawStat - rawCompareStat
                 if (difference > 0) {
-                    color = colors.green
+                    color = invertComparison ? colors.red : colors.green
                 } else if (difference < 0) {
-                    color = colors.red
+                    color = invertComparison ? colors.green : colors.red
                 }
             }
         }
 
         return [color, difference]
-    }, [compareStat, nonNumeric, stat?.displayMultiplier, stat?.value])
+    }, [compareStat?.displayMultiplier, compareStat?.value, invertComparison, nonNumeric, stat?.displayMultiplier, stat?.value])
 
     return (
         <Stack direction="row">
