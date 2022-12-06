@@ -32,7 +32,7 @@ export const BarButton = () => {
         <Stack direction="row" alignItems="center" sx={{ mx: "1.4rem" }}>
             <NiceButton sx={{ border: "none" }} onClick={() => toggleShowMainMenu()} disableAutoColor>
                 <Stack direction="row" alignItems="center" spacing=".7rem">
-                    <SvgMainMenu fill="#ffffff" size="1.5rem" />
+                    <SvgMainMenu fill="#FFFFFF" size="1.5rem" />
 
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         MAIN MENU
@@ -45,13 +45,9 @@ export const BarButton = () => {
             <SvgArrow size=".8rem" sx={{ transform: "rotate(90deg)" }} />
 
             <NiceButton sx={{ border: "none" }} route={{ to: "/lobbies" }} disableAutoColor>
-                <Stack direction="row" alignItems="center" spacing=".7rem">
-                    <SvgLobbies fill="#ffffff" size="1.3rem" />
-
-                    <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBold }}>
-                        LOBBIES
-                    </Typography>
-                </Stack>
+                <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBold }}>
+                    <SvgLobbies inline fill="#FFFFFF" size="1.3rem" /> LOBBIES
+                </Typography>
             </NiceButton>
         </Stack>
     )

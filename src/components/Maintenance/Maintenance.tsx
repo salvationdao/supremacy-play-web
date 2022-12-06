@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { LogoWEBP, MaintenancePNG, SvgDiscord, SvgTwitter, SvgYouTube } from "../../assets"
+import { HangarBg, LogoWEBP, SvgDiscord, SvgTwitter, SvgYouTube } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
@@ -13,7 +13,7 @@ export const Maintenance = () => {
                 width: "100%",
                 height: "100%",
                 backgroundColor: "#040B10",
-                backgroundImage: `url(${MaintenancePNG})`,
+                backgroundImage: `url(${HangarBg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -26,8 +26,9 @@ export const Maintenance = () => {
                 justifyContent="center"
                 sx={{
                     position: "absolute",
-                    left: "12rem",
-                    top: "10rem",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
                     zIndex: siteZIndex.RoutePage,
                 }}
             >
@@ -45,34 +46,18 @@ export const Maintenance = () => {
                 </a>
 
                 <Box sx={{ backgroundColor: "#00000099" }}>
-                    <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{
-                            px: "4rem",
-                            py: "2.4rem",
-                            borderRadius: 1,
-                            backgroundColor: "#00000099",
-                        }}
-                    >
+                    <Stack alignItems="center" justifyContent="center" spacing=".6rem" sx={{ px: "4rem", py: "2.8rem", backgroundColor: "#00000099" }}>
                         <Typography
                             sx={{
+                                fontSize: "3.26rem",
                                 textAlign: "center",
                                 fontFamily: fonts.nostromoHeavy,
-                                fontSize: "3.26rem",
                             }}
                         >
                             {"WE'LL BE BACK SOON"}
                         </Typography>
 
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                mb: ".4rem",
-                                color: colors.neonBlue,
-                                textAlign: "center",
-                            }}
-                        >
+                        <Typography variant="h5" sx={{ color: colors.neonBlue, textAlign: "center" }}>
                             FOLLOW OUR SOCIALS FOR MORE UPDATES
                         </Typography>
 
