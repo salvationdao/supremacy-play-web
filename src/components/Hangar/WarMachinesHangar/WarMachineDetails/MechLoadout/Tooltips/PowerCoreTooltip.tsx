@@ -110,7 +110,7 @@ export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
                 display: "flex",
                 flexDirection: "column",
                 minHeight: 250,
-                width: 280,
+                width: 400,
             }}
         >
             {content}
