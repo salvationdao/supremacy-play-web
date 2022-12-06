@@ -191,7 +191,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                             type="date"
                                             error={!!errorMessage}
                                             helperText={errorMessage}
-                                            inputProps={{ maxLength: 20 }}
+                                            inputProps={{ min: new Date().toString() }}
                                         />
                                     )
                                 }}
@@ -213,7 +213,6 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                             type="time"
                                             error={!!errorMessage}
                                             helperText={errorMessage}
-                                            inputProps={{ maxLength: 20 }}
                                         />
                                     )
                                 }}

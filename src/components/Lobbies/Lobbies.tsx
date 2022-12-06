@@ -248,7 +248,7 @@ export const Lobbies = () => {
                 <VirtualizedGrid
                     uniqueID="lobbyList"
                     itemWidthConfig={{ columnCount: 1 }}
-                    itemHeight={39.5}
+                    itemHeight={46}
                     totalItems={displayLobbies.length}
                     gap={1.6}
                     renderIndex={renderIndex}

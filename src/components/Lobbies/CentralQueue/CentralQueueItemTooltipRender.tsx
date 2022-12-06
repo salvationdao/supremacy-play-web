@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react"
 import {
     SvgChest2,
     SvgContentCopyIcon,
+    SvgEmptySet,
     SvgFirstPlace,
     SvgHistoryClock,
     SvgLeaderboard,
@@ -152,7 +153,7 @@ export const CentralQueueItemTooltipRender = ({
                     </Stack>
                 )}
 
-                {/* Map */}
+                {/* Scheduled time */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgHistoryClock inline /> Scheduled time:
@@ -170,6 +171,18 @@ export const CentralQueueItemTooltipRender = ({
                     <TypographyTruncated sx={!battleLobby.game_map?.name ? { fontStyle: "italic", color: colors.lightGrey } : {}}>
                         {camelToTitle(battleLobby.game_map?.name || "To be determined...")}
                     </TypographyTruncated>
+                </Stack>
+
+                {/* Entry fee */}
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
+                        <SvgEmptySet inline /> Entry fee:
+                    </Typography>
+
+                    <Typography>
+                        <SvgSupToken inline fill={colors.gold} />
+                        {supFormatter(battleLobby.entry_fee, 2)}
+                    </Typography>
                 </Stack>
 
                 {/* Reward pool */}
