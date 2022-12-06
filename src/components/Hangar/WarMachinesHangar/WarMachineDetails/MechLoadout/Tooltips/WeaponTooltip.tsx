@@ -89,9 +89,9 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                         borderBottom: `1px solid ${rarity.color}`,
                     }}
                 />
-                <Box p="2rem">
+                <Stack spacing=".5rem" p="2rem">
                     <WeaponStats weapon={weapon} compareTo={compareTo} />
-                </Box>
+                </Stack>
             </>
         )
     }, [compareTo, theme.factionTheme.background, weapon])

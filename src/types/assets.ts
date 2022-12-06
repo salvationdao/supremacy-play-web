@@ -148,6 +148,9 @@ export interface MechBasic extends Collection, Images {
     boosted_walk_speed_modifier: string
     sprint_spread_modifier: string
     boosted_sprint_spread_modifier: string
+    idle_drain: string
+    walk_drain: string
+    run_drain: string
     is_default: boolean
     is_insured: boolean
     name: string

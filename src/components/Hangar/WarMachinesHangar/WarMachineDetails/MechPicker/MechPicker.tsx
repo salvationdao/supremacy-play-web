@@ -15,7 +15,7 @@ import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
-import { MechBarStats } from "../../Common/MechBarStats"
+import { MechStats } from "../../../../Common/Stats/MechStats"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 import { MechPickerItem } from "./MechPickerItem"
@@ -369,15 +369,9 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 {battleStats}
 
                 {/* Mech Stats */}
-                <MechBarStats
-                    mech={mechDetails}
-                    mechDetails={mechDetails}
-                    color={theme.factionTheme.primary}
-                    fontSize="1.2rem"
-                    width="100%"
-                    spacing="1.2rem"
-                    barHeight=".9rem"
-                />
+                <Stack spacing=".5rem">
+                    <MechStats mech={mechDetails} />
+                </Stack>
             </Stack>
         </NiceBoxThing>
     )

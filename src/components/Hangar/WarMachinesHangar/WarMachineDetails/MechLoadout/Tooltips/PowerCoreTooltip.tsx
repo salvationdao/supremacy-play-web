@@ -89,7 +89,7 @@ export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
                         borderBottom: `1px solid ${rarity.color}`,
                     }}
                 />
-                <Stack p="2rem">
+                <Stack spacing=".5rem" p="2rem">
                     <PowerCoreStats powerCore={powerCore} compareTo={compareTo} />
                 </Stack>
             </>

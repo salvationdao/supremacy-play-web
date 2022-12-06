@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { colors } from "../../../theme/theme"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 export interface StatProps {
     icon: React.ReactNode
@@ -59,10 +60,14 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertC
     return (
         <Stack direction="row">
             {icon}
-            <Typography ml=".5rem" textTransform="uppercase">
+            <Typography ml="1rem" textTransform="uppercase">
                 {label}
             </Typography>
-            <Typography ml="auto">
+            <TypographyTruncated
+                sx={{
+                    ml: "auto",
+                }}
+            >
                 {typeof compareStat?.value !== "undefined" && difference !== 0 && (
                     <>
                         <Box component="span" ml=".5rem">
@@ -96,7 +101,7 @@ export const Stat = ({ icon, label, stat, compareStat, unit, nonNumeric, invertC
                         none
                     </Box>
                 )}
-            </Typography>
+            </TypographyTruncated>
         </Stack>
     )
 }
