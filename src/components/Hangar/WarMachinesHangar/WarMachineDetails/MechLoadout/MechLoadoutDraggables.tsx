@@ -65,15 +65,10 @@ export const MechLoadoutDraggables = ({
                         id: "weapons",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutWeapon
-                                    width="5rem"
-                                    height="auto"
-                                    fill={expanded === "weapons" ? theme.factionTheme.u800 : theme.factionTheme.primary}
-                                />
+                                <SvgLoadoutWeapon width="5rem" height="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "weapons" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Weapons
@@ -86,16 +81,10 @@ export const MechLoadoutDraggables = ({
                         id: "mech skins",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutSkin
-                                    ml=".5rem"
-                                    height="3rem"
-                                    width="auto"
-                                    fill={expanded === "mech skins" ? theme.factionTheme.u800 : theme.factionTheme.primary}
-                                />
+                                <SvgLoadoutSkin ml=".5rem" height="3rem" width="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "mech skins" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Skins
@@ -115,15 +104,10 @@ export const MechLoadoutDraggables = ({
                         id: "power cores",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutPowerCore
-                                    width="4rem"
-                                    height="auto"
-                                    fill={expanded === "power cores" ? theme.factionTheme.u800 : theme.factionTheme.primary}
-                                />
+                                <SvgLoadoutPowerCore width="4rem" height="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "power cores" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Power Cores

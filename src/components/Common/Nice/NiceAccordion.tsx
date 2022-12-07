@@ -26,8 +26,8 @@ export const NiceAccordion = ({ items, expandID, onExpand, ...props }: NiceAccor
     return (
         <NiceBoxThing
             border={{
-                color: theme.factionTheme.primary,
-                thickness: "thicc",
+                color: theme.factionTheme.s700,
+                thickness: "very-lean",
             }}
             background={{
                 colors: [theme.factionTheme.u800],
@@ -49,11 +49,12 @@ export const NiceAccordion = ({ items, expandID, onExpand, ...props }: NiceAccor
                         aria-controls={`${item.id}-content`}
                         id={`${item.id}-header`}
                         sx={{
-                            backgroundColor: item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.u800,
-                            color: item.id === expanded ? theme.factionTheme.u800 : theme.factionTheme.primary,
+                            background:
+                                item.id === expanded ? `linear-gradient(${theme.factionTheme.s600}, ${theme.factionTheme.s700})` : theme.factionTheme.u800,
+                            color: theme.factionTheme.text,
                             "& .MuiAccordionSummary-expandIconWrapper": {
                                 svg: {
-                                    fill: item.id === expanded ? theme.factionTheme.u800 : theme.factionTheme.primary,
+                                    fill: theme.factionTheme.text,
                                 },
                             },
                         }}
@@ -81,7 +82,7 @@ const Accordion = styled(({ borderColor, sx, ...props }: MyAccordionProps) => {
             square
             sx={{
                 "&:not(:last-child)": {
-                    borderBottom: borderColor ? `2px solid ${borderColor}` : `2px solid ${theme.factionTheme.primary}`,
+                    borderBottom: borderColor ? `1px solid ${borderColor}` : `1px solid ${theme.factionTheme.s700}`,
                 },
                 "&:before": {
                     display: "none",
@@ -102,7 +103,7 @@ const AccordionSummary = styled(({ sx, children, ...props }: AccordionSummaryPro
             expandIcon={<ArrowRight sx={{ fontSize: "4rem" }} />}
             sx={{
                 px: "0",
-                backgroundColor: theme.factionTheme.primary,
+                background: `linear-gradient(${theme.factionTheme.s600}, ${theme.factionTheme.s700})`,
                 color: theme.factionTheme.text,
                 transition: "background-color .2s ease-out",
                 "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
@@ -110,7 +111,7 @@ const AccordionSummary = styled(({ sx, children, ...props }: AccordionSummaryPro
                 },
                 "& .MuiAccordionSummary-expandIconWrapper": {
                     svg: {
-                        fill: theme.factionTheme.u800,
+                        fill: theme.factionTheme.text,
                     },
                 },
                 "& .MuiAccordionSummary-content": {

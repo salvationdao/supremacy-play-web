@@ -199,8 +199,8 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
     return (
         <NiceBoxThing
             border={{
-                color: theme.factionTheme.primary,
-                thickness: "thicc",
+                color: theme.factionTheme.s700,
+                thickness: "very-lean",
             }}
             background={{
                 colors: [theme.factionTheme.u800],
@@ -502,7 +502,7 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
         <NiceAccordion.Base
             sx={(theme) => ({
                 border: "none",
-                outline: expandPicker ? `3px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                outline: expandPicker ? `1px solid ${theme.factionTheme.s700}` : `0px solid transparent`,
                 transition: "outline .2s ease-out",
             })}
             expanded={expandPicker}
@@ -519,7 +519,7 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                 <Stack spacing="2rem" minHeight={600}>
                     <Stack spacing="1rem">
                         <NiceTextField
-                            primaryColor={theme.factionTheme.primary}
+                            primaryColor={theme.factionTheme.contrast_primary}
                             onChange={(value) => debouncedSetSearch(value)}
                             placeholder="Search..."
                             InputProps={{
