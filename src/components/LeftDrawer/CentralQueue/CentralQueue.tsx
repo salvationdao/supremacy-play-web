@@ -55,7 +55,7 @@ export const CentralQueue = () => {
             setReadyLobbies((prev) => {
                 if (prev.length === 0) {
                     return payload
-                        .filter((bl) => !!bl.ready_at)
+                        .filter((bl) => !!bl.ready_at && !bl.deleted_at && !bl.ended_at)
                         .sort((a, b) => {
                             if (a.ready_at && b.ready_at) {
                                 return a.ready_at > b.ready_at ? 1 : -1
@@ -87,7 +87,7 @@ export const CentralQueue = () => {
                 })
 
                 return list
-                    .filter((bl) => !!bl.ready_at)
+                    .filter((bl) => !!bl.ready_at && !bl.deleted_at && !bl.ended_at)
                     .sort((a, b) => {
                         if (a.ready_at && b.ready_at) {
                             return a.ready_at > b.ready_at ? 1 : -1
