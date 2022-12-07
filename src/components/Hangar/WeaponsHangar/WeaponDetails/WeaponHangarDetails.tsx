@@ -54,8 +54,8 @@ export const WeaponHangarDetails = () => {
                 {/* Left side */}
                 <NiceBoxThing
                     border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
+                        color: theme.factionTheme.s700,
+                        thickness: "very-lean",
                     }}
                     background={{
                         colors: [theme.factionTheme.u800],
@@ -151,8 +151,8 @@ export const WeaponHangarDetails = () => {
                 {/* Right side */}
                 <NiceBoxThing
                     border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
+                        color: theme.factionTheme.s700,
+                        thickness: "very-lean",
                     }}
                     background={{
                         colors: [theme.factionTheme.u800],
