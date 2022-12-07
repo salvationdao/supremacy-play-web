@@ -271,7 +271,7 @@ export const MyLobbies = () => {
 
                 {/* Some button */}
                 <NiceButton
-                    buttonColor={theme.factionTheme.primary}
+                    buttonColor={theme.factionTheme.contrast_primary}
                     sx={{ mt: "auto !important", p: ".2rem 1rem", pt: ".4rem", opacity: 0.74 }}
                     route={{ to: "/lobbies" }}
                 >
