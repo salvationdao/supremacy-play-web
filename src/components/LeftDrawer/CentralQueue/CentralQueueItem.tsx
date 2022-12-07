@@ -108,7 +108,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
         }
 
         return (
-            <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+            <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
                 <TypographyTruncated fontWeight="bold" sx={{ color: battleLobby.will_not_start_until ? colors.orange : colors.grey }}>
                     SCHEDULED TIME: {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
                 </TypographyTruncated>
@@ -117,7 +117,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
 
                 <NiceButton
                     sx={{
-                        p: "0 .6rem",
+                        p: ".2rem .6rem",
                         border: `${colors.neonBlue} 1px solid`,
                         opacity: 0.8,
 
@@ -129,7 +129,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
                         navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`)
                     }}
                 >
-                    <Typography variant="body2" color={colors.neonBlue}>
+                    <Typography variant="body2" color={colors.neonBlue} lineHeight={1}>
                         Invite Link
                     </Typography>
                 </NiceButton>
