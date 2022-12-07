@@ -102,20 +102,8 @@ export const MyLobbies = () => {
             setAllLobbies((prev) => {
                 if (prev.length === 0) {
                     return payload
-                        .filter((p) => !p.ended_at && !p.deleted_at)
+                        .filter((p) => !p.ended_at && !p.deleted_at && !p.ready_at)
                         .sort((a, b) => {
-                            if (a.ready_at && b.ready_at) {
-                                return a.ready_at > b.ready_at ? 1 : -1
-                            }
-
-                            if (a.ready_at) {
-                                return -1
-                            }
-
-                            if (b.ready_at) {
-                                return 1
-                            }
-
                             return a.created_at > b.created_at ? 1 : -1
                         })
                 }
@@ -135,20 +123,8 @@ export const MyLobbies = () => {
 
                 // Remove any finished lobby
                 return list
-                    .filter((p) => !p.ended_at && !p.deleted_at)
+                    .filter((p) => !p.ended_at && !p.deleted_at && !p.ready_at)
                     .sort((a, b) => {
-                        if (a.ready_at && b.ready_at) {
-                            return a.ready_at > b.ready_at ? 1 : -1
-                        }
-
-                        if (a.ready_at) {
-                            return -1
-                        }
-
-                        if (b.ready_at) {
-                            return 1
-                        }
-
                         return a.created_at > b.created_at ? 1 : -1
                     })
             })
@@ -171,20 +147,8 @@ export const MyLobbies = () => {
 
         setDisplayLobbies(
             filteredLobbies
-                .filter((p) => !involvedLobbies.some((b) => b.id === p.id))
+                .filter((p) => !involvedLobbies.some((b) => b.id === p.id) && !p.ready_at)
                 .sort((a, b) => {
-                    if (a.ready_at && b.ready_at) {
-                        return a.ready_at > b.ready_at ? 1 : -1
-                    }
-
-                    if (a.ready_at) {
-                        return -1
-                    }
-
-                    if (b.ready_at) {
-                        return 1
-                    }
-
                     return a.created_at > b.created_at ? 1 : -1
                 }),
         )
@@ -196,7 +160,7 @@ export const MyLobbies = () => {
             if (!battleLobby) {
                 return null
             }
-            return <CentralQueueItem battleLobby={battleLobby} isInvolved />
+            return <CentralQueueItem battleLobby={battleLobby} />
         },
         [involvedLobbies],
     )

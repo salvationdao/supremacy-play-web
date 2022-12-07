@@ -15,7 +15,7 @@ export const NiceSnackBar = React.memo(function NiceSnackbar({ icon, message, co
         <Snackbar {...props}>
             <NiceBoxThing
                 border={{ color: color || colors.blue }}
-                background={{ colors: [color || colors.blue, color || colors.blue], opacity: 0.9 }}
+                background={{ colors: [color || colors.blue, color || colors.blue] }}
                 sx={{
                     mb: "-1rem",
                     ml: "-1rem",

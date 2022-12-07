@@ -172,7 +172,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
 
             setReadyLobbies((prev) => {
                 if (prev.length === 0) {
-                    return payload.filter((bl) => !!bl.ready_at)
+                    return payload.filter((bl) => !!bl.ready_at && !bl.deleted_at && !bl.ended_at)
                 }
 
                 // Replace current list
@@ -188,7 +188,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                     list.push(p)
                 })
 
-                return list.filter((bl) => !!bl.ready_at)
+                return list.filter((bl) => !!bl.ready_at && !bl.deleted_at && !bl.ended_at)
             })
         },
     )
