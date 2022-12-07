@@ -1,7 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useImperativeHandle, useState } from "react"
 import { SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
-import { useTheme } from "../../../../../containers/theme"
 import { fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
@@ -10,13 +8,7 @@ import { MechSkinDraggables, MechSkinDraggablesProps } from "./Draggables/MechSk
 import { PowerCoreDraggables, PowerCoreDraggablesProps } from "./Draggables/PowerCoreDraggables"
 import { WeaponDraggables, WeaponDraggablesProps } from "./Draggables/WeaponDraggables"
 
-export type DraggablesHandle = {
-    handleMechLoadoutUpdated: () => void
-}
-
-export interface MechLoadoutDraggablesProps extends WeaponDraggablesProps, MechSkinDraggablesProps, PowerCoreDraggablesProps {
-    draggablesRef: React.ForwardedRef<DraggablesHandle>
-}
+export interface MechLoadoutDraggablesProps extends WeaponDraggablesProps, MechSkinDraggablesProps, PowerCoreDraggablesProps {}
 
 export type OnClickEventWithType = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
@@ -31,7 +23,6 @@ export interface DragWithTypesProps {
 }
 
 export const MechLoadoutDraggables = ({
-    draggablesRef,
     drag,
     onClick,
     excludeWeaponIDs,
@@ -43,14 +34,6 @@ export const MechLoadoutDraggables = ({
     powerCoreSize,
     compareToWeapon,
 }: MechLoadoutDraggablesProps) => {
-    const theme = useTheme()
-    const [expanded, setExpanded] = useState<string | number>("weapons")
-    useImperativeHandle(draggablesRef, () => ({
-        handleMechLoadoutUpdated: () => {
-            console.log("updated")
-        },
-    }))
-
     return (
         <Box
             sx={{
@@ -58,7 +41,6 @@ export const MechLoadoutDraggables = ({
             }}
         >
             <NiceAccordion
-                onExpand={(eid) => setExpanded(eid)}
                 expandID="weapons"
                 items={[
                     {

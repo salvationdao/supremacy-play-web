@@ -16,7 +16,7 @@ import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
-import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
+import { MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
 import { PowerCoreTooltip } from "./Tooltips/PowerCoreTooltip"
 import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
@@ -130,7 +130,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
 
     const [isDragging, setIsDragging] = useState(false)
-    const draggablesRef = useRef<DraggablesHandle>(null)
 
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
@@ -202,10 +201,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
                 setError(undefined)
                 onUpdate(newMechDetails)
-
-                if (draggablesRef.current) {
-                    draggablesRef.current.handleMechLoadoutUpdated()
-                }
             } catch (e) {
                 if (e instanceof Error) {
                     setError(e.message)
@@ -750,7 +745,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         () =>
             userID === owner_id ? (
                 <MechLoadoutDraggables
-                    draggablesRef={draggablesRef}
                     compareToWeapon={compareToWeapon?.weapon}
                     excludeWeaponIDs={(() => {
                         const result: string[] = []

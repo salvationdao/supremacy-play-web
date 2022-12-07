@@ -77,8 +77,8 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
             ) : (
                 <NiceBoxThing
                     border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
+                        color: theme.factionTheme.s700,
+                        thickness: "very-lean",
                     }}
                     background={{
                         colors: [theme.factionTheme.u800],
@@ -111,8 +111,8 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                 <>
                     <NiceBoxThing
                         border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
+                            color: theme.factionTheme.s700,
+                            thickness: "very-lean",
                         }}
                         background={{
                             colors: [theme.factionTheme.u800],
@@ -133,8 +133,8 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                     </NiceBoxThing>
                     <NiceBoxThing
                         border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
+                            color: theme.factionTheme.s700,
+                            thickness: "very-lean",
                         }}
                         background={{
                             colors: [theme.factionTheme.u800],
