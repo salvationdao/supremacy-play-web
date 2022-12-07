@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import { SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
@@ -30,6 +30,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { getFaction, factionsAll } = useSupremacy()
+    const [copied, setCopied] = useState(false)
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
@@ -284,19 +285,25 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                         <NiceButton
                             sx={{
                                 p: "0 .6rem",
-                                border: `${colors.neonBlue} 1px solid`,
+                                border: `${colors.lightGrey} 1px solid`,
                                 opacity: 0.8,
 
                                 ":hover": {
                                     opacity: 1,
                                 },
                             }}
+                            disabled={copied}
                             onClick={() => {
-                                navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`)
+                                navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`).then(() => {
+                                    setCopied(true)
+                                    setTimeout(() => {
+                                        setCopied(false)
+                                    }, 3000)
+                                })
                             }}
                         >
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={colors.neonBlue}>
-                                Invite Link
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                Copy Invite Link
                             </Typography>
                         </NiceButton>
                     )}

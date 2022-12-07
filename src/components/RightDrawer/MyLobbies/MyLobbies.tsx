@@ -15,11 +15,8 @@ import { CentralQueueItem } from "../../LeftDrawer/CentralQueue/CentralQueueItem
 import { JoinPrivateLobbyField } from "./JoinPrivateLobbyField"
 
 const tabs: NiceTab[] = [
-    { value: 0, label: "Exhibition" },
-    {
-        value: 1,
-        label: "System",
-    },
+    { value: 0, label: "Join Exhibition" },
+    { value: 1, label: "Join System" },
 ]
 
 export const MyLobbies = () => {
