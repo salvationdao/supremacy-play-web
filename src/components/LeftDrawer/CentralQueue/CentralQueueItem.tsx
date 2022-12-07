@@ -111,7 +111,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
         return (
             <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
                 <TypographyTruncated fontWeight="bold" sx={{ color: battleLobby.will_not_start_until ? colors.orange : colors.grey }}>
-                    <SvgDamage1 inline size="1.5rem" />
+                    <SvgDamage1 inline size="1.5rem" fill={battleLobby.will_not_start_until ? colors.orange : colors.grey} />{" "}
                     {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
                 </TypographyTruncated>
 

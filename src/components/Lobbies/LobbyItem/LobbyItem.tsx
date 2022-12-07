@@ -270,7 +270,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                             fontFamily={fonts.nostromoBold}
                             sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
                         >
-                            <SvgDamage1 inline />
+                            <SvgDamage1 inline fill={battleLobby.will_not_start_until ? colors.orange : "#FFFFFF"} />{" "}
                             {battleLobby.will_not_start_until.toLocaleString()}
                         </Typography>
                     )}
