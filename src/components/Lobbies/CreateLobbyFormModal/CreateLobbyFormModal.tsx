@@ -200,7 +200,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
                                 </NiceButton>
 
                                 {isLastStep ? (
-                                    <NiceButton buttonColor={colors.green} loading={isLoading} onClick={onCreate}>
+                                    <NiceButton buttonColor={theme.factionTheme.contrast_primary} loading={isLoading} onClick={onCreate}>
                                         Create Lobby
                                     </NiceButton>
                                 ) : (
