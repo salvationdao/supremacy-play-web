@@ -99,19 +99,36 @@ export const CentralQueueItemTooltipRender = ({
                     {battleLobby.name || `Lobby #${battleLobby.number}`}
                 </TypographyTruncated>
 
-                {displayAccessCode && (
+                {displayAccessCode ? (
                     <Stack direction="row" alignItems="center">
                         <Typography variant="h6">{displayAccessCode}</Typography>
                         <IconButton
                             size="small"
                             sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                             onClick={() => {
-                                navigator.clipboard.writeText(displayAccessCode)
+                                navigator.clipboard.writeText(`${location.origin}/lobbies?code=${displayAccessCode}`)
                             }}
                         >
                             <SvgContentCopyIcon inline size="1.3rem" />
                         </IconButton>
                     </Stack>
+                ) : (
+                    <NiceButton
+                        sx={{
+                            p: "0 .6rem",
+                            border: `${colors.neonBlue} 1px solid`,
+                            opacity: 0.8,
+
+                            ":hover": {
+                                opacity: 1,
+                            },
+                        }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`)
+                        }}
+                    >
+                        <Typography color={colors.neonBlue}>Invite Link</Typography>
+                    </NiceButton>
                 )}
             </Stack>
 

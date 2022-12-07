@@ -10,6 +10,7 @@ import { FactionWithPalette } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TimeLeft } from "../../Common/TimeLeft"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
@@ -260,29 +261,44 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                     />
                 </Stack>
 
-                {/* Supports */}
+                {/* Bottom section */}
                 <Stack direction="row" alignItems="center" spacing="2rem" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
                     {battleLobby.will_not_start_until && (
-                        <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography
-                                variant="body2"
-                                fontFamily={fonts.nostromoBold}
-                                sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
-                            >
-                                Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
-                            </Typography>
-                        </Stack>
+                        <Typography
+                            variant="body2"
+                            fontFamily={fonts.nostromoBold}
+                            sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
+                        >
+                            Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
+                        </Typography>
                     )}
 
                     <Box flex={1} />
 
                     {/* Arena name */}
-                    {arenaName && (
-                        <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
-                                Battle arena: {arenaName}
+                    {arenaName ? (
+                        <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                            Battle arena: {arenaName}
+                        </Typography>
+                    ) : (
+                        <NiceButton
+                            sx={{
+                                p: "0 .6rem",
+                                border: `${colors.neonBlue} 1px solid`,
+                                opacity: 0.8,
+
+                                ":hover": {
+                                    opacity: 1,
+                                },
+                            }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`)
+                            }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={colors.neonBlue}>
+                                Invite Link
                             </Typography>
-                        </Stack>
+                        </NiceButton>
                     )}
                 </Stack>
             </NiceBoxThing>
