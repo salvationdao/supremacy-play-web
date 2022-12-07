@@ -40,7 +40,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 icon={<SvgLoadoutSpeed />}
                 label="Walk Speed"
                 stat={{
-                    value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(0),
+                    value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(2),
                 }}
                 hideEmptyComparison
             />
@@ -49,7 +49,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     icon={<SvgLoadoutSpeed />}
                     label="Top Speed"
                     stat={{
-                        value: mech.speed / 100,
+                        value: (mech.speed / 100).toFixed(2),
                     }}
                     hideEmptyComparison
                 />
@@ -145,6 +145,20 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 }}
                 hideEmptyComparison
             />
+            {/* Boosted stats */}
+            {mech.boosted_max_hitpoints !== mech.max_hitpoints && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boosted Hull Hitpoints"
+                    stat={{
+                        value: mech.boosted_max_hitpoints,
+                    }}
+                    compareStat={{
+                        value: mech.max_hitpoints,
+                    }}
+                    hideEmptyComparison
+                />
+            )}
             {mech.boosted_speed !== mech.speed && (
                 <Stat
                     icon={<SvgDoubleChevronUp />}
