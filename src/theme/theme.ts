@@ -17,6 +17,8 @@ declare module "@mui/material/styles" {
         primary: string
         text: string
         background: string
+        contrast_primary: string
+        contrast_background: string
         s100: string
         s200: string
         s300: string
@@ -35,6 +37,8 @@ declare module "@mui/material/styles" {
         primary?: string
         text?: string
         background?: string
+        contrast_primary?: string
+contrast_background?: string
         s100?: string
         s200?: string
         s300?: string
@@ -133,6 +137,8 @@ const factionTheme: FactionTheme = {
     primary: "#00FAFA",
     text: "#ffffff",
     background: "#001919",
+    contrast_primary: "#00FAFA",
+    contrast_background: "#001919",
     s100: "#ccfefe",
     s200: "#80fdfd",
     s300: "#33fbfb",
