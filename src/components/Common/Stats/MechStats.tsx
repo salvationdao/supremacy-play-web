@@ -18,6 +18,7 @@ export interface MechStatsProps {
 }
 
 export const MechStats = ({ mech }: MechStatsProps) => {
+    console.log(mech.max_hitpoints, mech.boosted_max_hitpoints)
     return (
         <>
             <Stat
@@ -42,6 +43,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 stat={{
                     value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(2),
                 }}
+                unit="m/sec"
                 hideEmptyComparison
             />
             {mech.walk_speed_modifier !== "0" && (
@@ -51,6 +53,7 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     stat={{
                         value: (mech.speed / 100).toFixed(2),
                     }}
+                    unit="m/sec"
                     hideEmptyComparison
                 />
             )}
@@ -137,14 +140,16 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 invertComparison
                 hideEmptyComparison
             />
-            <Stat
-                icon={<SvgDoubleChevronUp />}
-                label="Boost"
-                stat={{
-                    value: mech.boosted_stat.split("_").join(" "),
-                }}
-                hideEmptyComparison
-            />
+            {(mech.chassis_skin?.level || 0) > 0 && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boost"
+                    stat={{
+                        value: mech.boosted_stat.split("_").join(" "),
+                    }}
+                    hideEmptyComparison
+                />
+            )}
             {/* Boosted stats */}
             {mech.boosted_max_hitpoints !== mech.max_hitpoints && (
                 <Stat
