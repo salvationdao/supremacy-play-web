@@ -68,12 +68,12 @@ export const MechLoadoutDraggables = ({
                                 <SvgLoadoutWeapon
                                     width="5rem"
                                     height="auto"
-                                    fill={expanded === "weapons" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                    fill={expanded === "weapons" ? theme.factionTheme.u800 : theme.factionTheme.primary}
                                 />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "weapons" ? theme.factionTheme.background : theme.factionTheme.primary,
+                                        color: expanded === "weapons" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Weapons
@@ -90,12 +90,12 @@ export const MechLoadoutDraggables = ({
                                     ml=".5rem"
                                     height="3rem"
                                     width="auto"
-                                    fill={expanded === "mech skins" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                    fill={expanded === "mech skins" ? theme.factionTheme.u800 : theme.factionTheme.primary}
                                 />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "mech skins" ? theme.factionTheme.background : theme.factionTheme.primary,
+                                        color: expanded === "mech skins" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Skins
@@ -118,12 +118,12 @@ export const MechLoadoutDraggables = ({
                                 <SvgLoadoutPowerCore
                                     width="4rem"
                                     height="auto"
-                                    fill={expanded === "power cores" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                    fill={expanded === "power cores" ? theme.factionTheme.u800 : theme.factionTheme.primary}
                                 />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        color: expanded === "power cores" ? theme.factionTheme.background : theme.factionTheme.primary,
+                                        color: expanded === "power cores" ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                     }}
                                 >
                                     Power Cores

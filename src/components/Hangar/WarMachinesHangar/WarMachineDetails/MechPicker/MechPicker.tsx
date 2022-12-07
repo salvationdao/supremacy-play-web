@@ -203,7 +203,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 thickness: "thicc",
             }}
             background={{
-                colors: [theme.factionTheme.background],
+                colors: [theme.factionTheme.u800],
             }}
             sx={{
                 flexBasis: 310,
@@ -237,7 +237,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                     mt: userID === mechDetails.owner_id ? PICKER_BUTTON_HEIGHT : 0,
                     px: "2rem",
                     py: "1rem",
-                    background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.background})`,
+                    background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.u800})`,
                 }}
             >
                 <NiceBoxThing

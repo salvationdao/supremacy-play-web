@@ -816,7 +816,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                             thickness: "thicc",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{
                             position: "absolute",
@@ -860,7 +860,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                         thickness: "thicc",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                 >
                     {/* Saving Changes */}
@@ -879,7 +879,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                     borderColor: theme.factionTheme.primary,
                                     borderThickness: ".3rem",
                                 }}
-                                backgroundColor={theme.factionTheme.background}
+                                backgroundColor={theme.factionTheme.u800}
                                 corners={{
                                     topRight: !(enable3DLoadout && isUnityLoaded),
                                 }}

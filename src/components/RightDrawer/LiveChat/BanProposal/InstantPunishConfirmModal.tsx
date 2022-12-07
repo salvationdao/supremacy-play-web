@@ -41,7 +41,7 @@ export const InstantPunishConfirmModal = ({
                         borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                 >
                     <Stack
                         spacing="1.2rem"

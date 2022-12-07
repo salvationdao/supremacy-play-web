@@ -66,7 +66,7 @@ const WinnerTargetHint = () => {
                     flex: 1,
                     px: "2rem",
                     py: ".6rem",
-                    backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                    backgroundColor: (theme) => `${theme.factionTheme.u800}`,
                 }}
             >
                 <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "bold", color: colour } }}>
@@ -198,7 +198,7 @@ const PlayerAbilityTargetHint = () => {
                         flex: 1,
                         px: "2rem",
                         py: ".6rem",
-                        backgroundColor: (theme) => `${theme.factionTheme.background}`,
+                        backgroundColor: (theme) => `${theme.factionTheme.u800}`,
                     }}
                 >
                     <Typography variant="h5" sx={{ lineHeight: 1, span: { fontWeight: "bold", color: ability.colour } }}>

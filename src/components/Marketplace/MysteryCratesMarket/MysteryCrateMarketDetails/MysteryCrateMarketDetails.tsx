@@ -89,10 +89,10 @@ export const MysteryCrateMarketDetails = () => {
             <WarMachineMarketDetailsInner
                 marketItem={marketItem}
                 primaryColor={marketItem?.sold_at ? colors.marketSold : primaryColor}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
             />
         )
-    }, [loadError, marketItem, theme.factionTheme.background, primaryColor])
+    }, [loadError, marketItem, theme.factionTheme.u800, primaryColor])
 
     return (
         <Box
@@ -119,7 +119,7 @@ export const MysteryCrateMarketDetails = () => {
                     bottomRight: true,
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{ height: "100%" }}
             >
                 <Stack sx={{ height: "100%" }}>{content}</Stack>

@@ -30,7 +30,7 @@ export const NiceAccordion = ({ items, expandID, onExpand, ...props }: NiceAccor
                 thickness: "thicc",
             }}
             background={{
-                colors: [theme.factionTheme.background],
+                colors: [theme.factionTheme.u800],
             }}
             {...props}
         >
@@ -49,11 +49,11 @@ export const NiceAccordion = ({ items, expandID, onExpand, ...props }: NiceAccor
                         aria-controls={`${item.id}-content`}
                         id={`${item.id}-header`}
                         sx={{
-                            backgroundColor: item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.background,
-                            color: item.id === expanded ? theme.factionTheme.background : theme.factionTheme.primary,
+                            backgroundColor: item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.u800,
+                            color: item.id === expanded ? theme.factionTheme.u800 : theme.factionTheme.primary,
                             "& .MuiAccordionSummary-expandIconWrapper": {
                                 svg: {
-                                    fill: item.id === expanded ? theme.factionTheme.background : theme.factionTheme.primary,
+                                    fill: item.id === expanded ? theme.factionTheme.u800 : theme.factionTheme.primary,
                                 },
                             },
                         }}
@@ -110,7 +110,7 @@ const AccordionSummary = styled(({ sx, children, ...props }: AccordionSummaryPro
                 },
                 "& .MuiAccordionSummary-expandIconWrapper": {
                     svg: {
-                        fill: theme.factionTheme.background,
+                        fill: theme.factionTheme.u800,
                     },
                 },
                 "& .MuiAccordionSummary-content": {
@@ -147,7 +147,7 @@ const AccordionDetails = styled(({ backgroundColor, sx, ...props }: MyAccordionD
         <MuiAccordionDetails
             sx={{
                 padding: "2rem",
-                backgroundColor: backgroundColor || theme.factionTheme.background,
+                backgroundColor: backgroundColor || theme.factionTheme.u800,
                 borderTop: "1px solid rgba(0, 0, 0, .125)",
                 ...sx,
             }}

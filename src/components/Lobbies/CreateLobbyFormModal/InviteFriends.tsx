@@ -63,7 +63,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                         "& + .MuiAutocomplete-popper": {
                             ".MuiPaper-root": {
                                 border: `#FFFFFF40 1px solid`,
-                                backgroundColor: theme.factionTheme.background,
+                                backgroundColor: theme.factionTheme.u800,
                                 borderRadius: 0,
 
                                 ".MuiAutocomplete-listbox": {

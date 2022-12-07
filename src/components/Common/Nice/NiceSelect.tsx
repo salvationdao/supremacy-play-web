@@ -29,7 +29,7 @@ export const NiceSelect = ({
 
     const primaryColor = _primaryColor || theme.factionTheme.primary
     const secondaryColor = _secondaryColor || theme.factionTheme.text
-    const backgroundColor = _backgroundColor || theme.factionTheme.background
+    const backgroundColor = _backgroundColor || theme.factionTheme.u800
 
     return (
         <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", boxShadow: 0.5, ...sx }}>

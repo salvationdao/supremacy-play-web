@@ -68,7 +68,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
     return (
         <NiceBoxThing
             border={{ color: `${theme.factionTheme.primary}50` }}
-            background={{ colors: [theme.factionTheme.background], opacity: 0.9 }}
+            background={{ colors: [theme.factionTheme.u800], opacity: 0.9 }}
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
         >
             <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem", textAlign: "center" }}>
@@ -103,7 +103,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                                 borderThickness: ".2rem",
                             }}
                             sx={{ position: "relative" }}
-                            backgroundColor={theme.factionTheme.background}
+                            backgroundColor={theme.factionTheme.u800}
                         >
                             <Box sx={{ py: "2rem", px: "3rem" }}>
                                 <Countdown
@@ -155,7 +155,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                     <FancyButton
                         clipThingsProps={{
                             clipSize: "9px",
-                            backgroundColor: theme.factionTheme.background,
+                            backgroundColor: theme.factionTheme.u800,
                             opacity: 1,
                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                             sx: { position: "relative", width: "32rem" },

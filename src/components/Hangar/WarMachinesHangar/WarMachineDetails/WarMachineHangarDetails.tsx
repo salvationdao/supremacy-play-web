@@ -81,7 +81,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                         thickness: "thicc",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                     sx={{
                         flexBasis: 310,
@@ -115,7 +115,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                             thickness: "thicc",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{ height: "100%", flex: 1 }}
                     >
@@ -137,7 +137,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                             thickness: "thicc",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{
                             height: "100%",

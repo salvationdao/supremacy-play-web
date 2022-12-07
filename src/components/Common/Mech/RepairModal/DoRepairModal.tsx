@@ -85,7 +85,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
         ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired
         : -1
     const primaryColor = _repairJob?.job_owner.faction_id ? faction.palette.primary : theme.factionTheme.primary
-    const backgroundColor = _repairJob?.job_owner.faction_id ? faction.palette.background : theme.factionTheme.background
+    const backgroundColor = _repairJob?.job_owner.faction_id ? faction.palette.background : theme.factionTheme.u800
     const isFinished = !!(repairJob?.closed_at || (repairJob?.expires_at && repairJob?.expires_at < new Date()) || remainDamagedBlocks <= 0)
 
     useEffect(() => {

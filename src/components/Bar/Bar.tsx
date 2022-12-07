@@ -21,7 +21,7 @@ export const Bar = () => {
     const { userID, user } = useAuth()
     const rgb = hexToRGB(colors.lightRed)
 
-    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.background, -50), [theme.factionTheme.background])
+    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.s700, -50), [theme.factionTheme.s700])
 
     return (
         <>
@@ -69,7 +69,7 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    backgroundColor: (theme) => theme.factionTheme.u800,
+                    backgroundColor: (theme) => theme.factionTheme.s700,
                     borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,

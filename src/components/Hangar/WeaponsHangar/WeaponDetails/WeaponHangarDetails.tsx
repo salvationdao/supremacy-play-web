@@ -58,7 +58,7 @@ export const WeaponHangarDetails = () => {
                         thickness: "thicc",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                     sx={{
                         flexShrink: 0,
@@ -155,7 +155,7 @@ export const WeaponHangarDetails = () => {
                         thickness: "thicc",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                     sx={{
                         height: "100%",

@@ -49,7 +49,7 @@ export const BillingHistorySingle = () => {
 
     // Render
     const primaryColor = theme.factionTheme.primary
-    const background = theme.factionTheme.background
+    const background = theme.factionTheme.u800
 
     const content = useMemo(() => {
         if (loadError) {
@@ -310,7 +310,7 @@ export const BillingHistorySingle = () => {
                         borderThickness: ".3rem",
                     }}
                     opacity={0.7}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                     sx={{ height: "100%", flex: 1 }}
                 >
                     <Stack sx={{ position: "relative", height: "100%" }}>

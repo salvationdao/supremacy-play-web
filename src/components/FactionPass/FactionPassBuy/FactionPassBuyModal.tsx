@@ -193,7 +193,7 @@ const StripePayment = React.memo(function StripePayment({
                             fontFamily: fonts.rajdhaniBold,
                             fontWeightNormal: "500",
                             borderRadius: "1.5px",
-                            colorBackground: theme.factionTheme.background,
+                            colorBackground: theme.factionTheme.u800,
                             colorPrimary: theme.factionTheme.primary,
                             colorPrimaryText: "#1A1B25",
                             colorText: "white",

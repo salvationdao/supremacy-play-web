@@ -235,7 +235,7 @@ export const PlayerAbilitiesStore = () => {
                     bottomRight: true,
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{ height: "100%" }}
             >
                 <Stack

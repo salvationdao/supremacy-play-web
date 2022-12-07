@@ -17,7 +17,7 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                 <NiceButton
                     corners
                     disabled={!!weaponDetails.equipped_on}
-                    buttonColor={isInMarketplace ? theme.factionTheme.background : colors.red}
+                    buttonColor={isInMarketplace ? theme.factionTheme.u800 : colors.red}
                     route={{
                         to: weaponDetails.item_sale_id
                             ? `/marketplace/weapons/${weaponDetails.item_sale_id}`

@@ -1,4 +1,4 @@
-import { Box, Zoom, Modal, Stack, Typography } from "@mui/material"
+import { Box, Modal, Stack, Typography, Zoom } from "@mui/material"
 import { ReactNode } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { useTheme } from "../../../containers/theme"
@@ -53,7 +53,7 @@ export const SuccessModal = ({
                                 borderThickness: ".2rem",
                             }}
                             sx={{ position: "relative" }}
-                            backgroundColor={theme.factionTheme.background}
+                            backgroundColor={theme.factionTheme.u800}
                         >
                             <Stack
                                 spacing="1.2rem"

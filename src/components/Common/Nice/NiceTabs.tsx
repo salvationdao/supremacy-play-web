@@ -24,7 +24,7 @@ export const NiceTabs = ({ tabs, value, onChange, ...props }: NiceTabsProps) => 
             variant="fullWidth"
             sx={{
                 height: "4.6rem",
-                background: theme.factionTheme.background,
+                background: theme.factionTheme.u800,
                 boxShadow: 1,
                 zIndex: 9,
                 minHeight: 0,
@@ -53,7 +53,7 @@ export const NiceTabs = ({ tabs, value, onChange, ...props }: NiceTabsProps) => 
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `linear-gradient(180deg, ${theme.factionTheme.background}00, ${theme.factionTheme.background}40)`,
+                        background: `linear-gradient(180deg, ${theme.factionTheme.u800}00, ${theme.factionTheme.u800}40)`,
                         zIndex: -1,
                     },
                 },

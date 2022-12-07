@@ -38,7 +38,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                         borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                 >
                     <Box sx={{ position: "relative", px: "1rem", py: "1.6rem" }}>
                         <Typography variant="h6" sx={{ mb: "1rem", px: "1rem", fontFamily: fonts.nostromoBlack }}>

@@ -164,9 +164,9 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                 <MDEditor
                     id="md-editor"
                     preview="live"
-                    previewOptions={MessageRenderer.generateOptions(theme.factionTheme.background)}
+                    previewOptions={MessageRenderer.generateOptions(theme.factionTheme.u800)}
                     style={{
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                         boxShadow: "none",
                     }}
                     height={height}

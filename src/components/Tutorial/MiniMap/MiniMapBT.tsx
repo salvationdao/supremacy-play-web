@@ -155,7 +155,7 @@ const MiniMapInner = ({ map }: { map: Map }) => {
                         sx={{
                             p: ".6rem 1.6rem",
                             height: `${TOP_BAR_HEIGHT}rem`,
-                            background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
+                            background: (theme) => `linear-gradient(${theme.factionTheme.u800} 26%, ${theme.factionTheme.u800}BB)`,
                             zIndex: 99,
                         }}
                     >

@@ -256,7 +256,7 @@ export const GameMapSelector = ({ field }: { field: ControllerRenderProps<Create
                     position: "relative",
                     height: "8rem",
                     cursor: "pointer",
-                    backgroundColor: factionTheme.background,
+                    backgroundColor: factionTheme.u800,
                     backgroundImage: selectedGameMap ? `url(${selectedGameMap.background_url})` : undefined,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",

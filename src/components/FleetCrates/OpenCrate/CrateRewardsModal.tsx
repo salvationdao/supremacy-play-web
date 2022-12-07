@@ -205,7 +205,7 @@ export const CrateRewardsModal = ({
                                 borderThickness: ".3rem",
                             }}
                             sx={{ m: "4rem", width: "100%" }}
-                            backgroundColor={theme.factionTheme.background}
+                            backgroundColor={theme.factionTheme.u800}
                         >
                             <Stack spacing="3rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem" }}>
                                 {/* Background image */}
@@ -282,7 +282,7 @@ export const CrateRewardsModal = ({
                                     <FancyButton
                                         clipThingsProps={{
                                             clipSize: "9px",
-                                            backgroundColor: theme.factionTheme.background,
+                                            backgroundColor: theme.factionTheme.u800,
                                             opacity: 1,
                                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                             sx: { position: "relative", width: "32rem" },

@@ -55,7 +55,7 @@ export const MarketItem = React.memo(function MarketItem({ item, isGridView, chi
     }, [item.dutch_auction_drop_rate])
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
     const soldBackgroundColor = useMemo(() => shadeColor(colors.marketSold, -95), [])
 
     const { id, end_at, owner, total_bids, sold_at, sold_for, sold_to } = item

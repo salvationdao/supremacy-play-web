@@ -40,7 +40,7 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
     return (
         <NiceBoxThing
             border={{ color: `${theme.factionTheme.primary}50` }}
-            background={{ colors: [theme.factionTheme.background], opacity: 0.9 }}
+            background={{ colors: [theme.factionTheme.u800], opacity: 0.9 }}
             sx={{ position: "relative", m: "4rem", maxWidth: "70rem" }}
         >
             <Stack alignItems="center" sx={{ py: "5rem", px: "5.5rem", textAlign: "center" }}>
@@ -57,7 +57,7 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
 
                     <NiceBoxThing
                         border={{ color: theme.factionTheme.primary }}
-                        background={{ colors: [theme.factionTheme.background] }}
+                        background={{ colors: [theme.factionTheme.u800] }}
                         sx={{ position: "relative", mb: "2.8rem" }}
                     >
                         <CodeEntry code={code} length={6} setCode={setCode} />

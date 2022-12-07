@@ -30,7 +30,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
     const [quantity, setQuantity] = useState(1)
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const addToCart = useCallback(async () => {
         const errMsg = "Failed to add item to the shopping cart."
@@ -246,7 +246,7 @@ export const PackageStoreItemLoadingSkeleton = () => {
                     borderThickness: ".2rem",
                 }}
                 opacity={0.5}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
             >
                 <Stack spacing=".7rem" sx={{ px: "1.8rem", py: "1.6rem" }}>
                     <Skeleton variant="rectangular" width="100%" height="12rem" sx={{ mb: ".3rem !important" }} />

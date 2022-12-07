@@ -69,7 +69,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
     const emptySlotsToRender = useMemo(() => REPAIR_BAY_SLOTS_MAX - (repairSlots?.length || 0), [repairSlots])
 
     const primaryColor = colors.repair
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <NiceBoxThing

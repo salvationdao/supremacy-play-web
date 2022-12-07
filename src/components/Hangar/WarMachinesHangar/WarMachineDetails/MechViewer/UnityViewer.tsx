@@ -389,7 +389,7 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                     }}
                 >
                     <Box>
@@ -425,7 +425,7 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                     }}
                 >
                     <Typography
@@ -458,7 +458,7 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                             topLeft: true,
                             bottomRight: true,
                         }}
-                        backgroundColor={theme.factionTheme.background}
+                        backgroundColor={theme.factionTheme.u800}
                         sx={{
                             animation: `${pulseEffect} 3s infinite`,
                             padding: "1rem",

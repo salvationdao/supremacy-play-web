@@ -4,9 +4,9 @@ import { FancyButton } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
-import { GameServerKeys } from "../../../../keys"
 
 interface DevicePreferencesProps {
     toggleAddDeviceModal: () => void
@@ -92,7 +92,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                     onClick={toggleAddDeviceModal}
                     clipThingsProps={{
                         clipSize: "5px",
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                         opacity: 1,
                         border: { borderColor: colors.green, borderThickness: "1.5px" },
                         sx: { position: "relative" },

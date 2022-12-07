@@ -1,8 +1,8 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { HangarBg, SafePNG } from "../../../../assets"
 import { useParams } from "react-router-dom"
+import { HangarBg, SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -14,8 +14,8 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { KeycardDetails } from "./KeycardDetails"
 
 export const KeycardMarketDetails = () => {
@@ -112,7 +112,7 @@ export const KeycardMarketDetails = () => {
                     bottomRight: true,
                 }}
                 opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{ height: "100%" }}
             >
                 <Stack sx={{ height: "100%" }}>{content}</Stack>

@@ -181,7 +181,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 p: "1rem",
                 alignItems: "center",
                 opacity: isOpen ? 1 : 0.7,
-                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.u700,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s700}70 26%, ${theme.factionTheme.s800})` : theme.factionTheme.u700,
                 transition: "background-color .2s ease-out",
             }}
         >

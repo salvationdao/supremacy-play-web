@@ -36,7 +36,7 @@ export const LeftDrawer = () => {
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                         position: "absolute",
                         borderRight: `1px solid ${theme.factionTheme.s700}`,
                         overflow: "hidden",
@@ -113,7 +113,7 @@ export const LeftDrawer = () => {
                                     sx={{
                                         height: "100%",
                                         p: 0,
-                                        backgroundColor: theme.factionTheme.background,
+                                        backgroundColor: theme.factionTheme.u800,
                                     }}
                                 >
                                     <route.Component />

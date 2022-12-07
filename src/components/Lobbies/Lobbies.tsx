@@ -299,7 +299,7 @@ export const Lobbies = () => {
                     mx: "auto",
                     position: "relative",
                     height: "100%",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: theme.factionTheme.u800,
                     background: `url()`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",

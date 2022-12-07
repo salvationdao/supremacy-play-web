@@ -75,7 +75,7 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
                 sx={{
                     p: ".6rem 1.6rem",
                     height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
+                    background: (theme) => `linear-gradient(${theme.factionTheme.u800} 26%, ${theme.factionTheme.u800}BB)`,
                 }}
             >
                 <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>

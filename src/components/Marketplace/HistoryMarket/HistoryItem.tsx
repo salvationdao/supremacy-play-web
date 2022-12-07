@@ -76,7 +76,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         bottomLeft: true,
                         bottomRight: true,
                     },
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: theme.factionTheme.u800,
                     opacity: 0.9,
                     border: { isFancy: !isGridView, borderColor: `${itemRelatedData.primaryColor}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
@@ -131,7 +131,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `linear-gradient(to top, #FFFFFF08, ${theme.factionTheme.background}90)`,
+                        background: `linear-gradient(to top, #FFFFFF08, ${theme.factionTheme.u800}90)`,
                         zIndex: -1,
                     }}
                 />

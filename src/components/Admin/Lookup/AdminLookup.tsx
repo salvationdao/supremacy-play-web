@@ -53,7 +53,7 @@ export const AdminLookup = () => {
                     bottomRight: true,
                 }}
                 opacity={0.9}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{ height: "100%" }}
                 contentSx={{
                     display: "flex",

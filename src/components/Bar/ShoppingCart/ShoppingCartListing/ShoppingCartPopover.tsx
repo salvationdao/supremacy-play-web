@@ -31,7 +31,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
     const closePopover = useCallback(() => toggleLocalOpen(false), [toggleLocalOpen])
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <NicePopover

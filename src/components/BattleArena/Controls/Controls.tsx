@@ -3,9 +3,9 @@ import { LiveCounts, OverlayToggles, VideoPlayerControls } from "../.."
 import { useArena, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { siteZIndex } from "../../../theme/theme"
-import { VoiceChat } from "./VoiceChat/VoiceChat"
 import { OvenResolutionSelect } from "./ResolutionSelect"
 import { OvenStreamSelect } from "./StreamSelect"
+import { VoiceChat } from "./VoiceChat/VoiceChat"
 
 export const CONTROLS_HEIGHT = 4.5 // rem
 
@@ -28,7 +28,7 @@ export const Controls = () => {
                 height: `${CONTROLS_HEIGHT}rem`,
                 px: "1rem",
                 py: ".2rem",
-                background: theme.factionTheme.background,
+                background: theme.factionTheme.u800,
                 borderTop: `${theme.factionTheme.s700} 1px solid`,
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",

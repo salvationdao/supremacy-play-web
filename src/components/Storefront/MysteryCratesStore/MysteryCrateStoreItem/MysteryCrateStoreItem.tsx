@@ -49,7 +49,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
     const [quantity, setQuantity] = useState(1)
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const priceStr = useMemo(() => (quantity * parseFloat(mysteryCrate.price)).toString(), [quantity, mysteryCrate.price])
     const formattedPrice = useMemo(() => supFormatter(priceStr, 2), [priceStr])

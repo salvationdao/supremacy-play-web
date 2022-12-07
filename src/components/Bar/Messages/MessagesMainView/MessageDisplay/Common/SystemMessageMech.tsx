@@ -17,7 +17,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
 
     return (
         <Stack spacing="1rem" sx={{ width: "15rem" }}>
-            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [`${theme.factionTheme.background}60`] }}>
+            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [`${theme.factionTheme.u800}60`] }}>
                 <Stack
                     spacing="1.2rem"
                     alignItems="stretch"
