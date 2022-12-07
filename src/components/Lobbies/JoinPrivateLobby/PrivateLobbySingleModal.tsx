@@ -6,6 +6,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceModal } from "../../Common/Nice/NiceModal"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { TopUpModal } from "../../LeftDrawer/CentralQueue/CentralQueueItem"
 import { CentralQueueItemTooltipRender } from "../../LeftDrawer/CentralQueue/CentralQueueItemTooltipRender"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
@@ -44,9 +45,9 @@ export const PrivateLobbySingleModal = ({
                         Private Lobby
                     </Typography>
 
-                    <Typography variant="h6" sx={{ color: colors.neonBlue, fontWeight: "bold", mb: "1.3rem" }}>
+                    <TypographyTruncated variant="h6" sx={{ color: colors.neonBlue, fontWeight: "bold", mb: "1.3rem" }}>
                         <SvgInfoCircular inline size="1.8rem" fill={colors.neonBlue} /> Deploy your mechs in order to join the private lobby
-                    </Typography>
+                    </TypographyTruncated>
 
                     <CentralQueueItemTooltipRender
                         battleLobby={battleLobby}

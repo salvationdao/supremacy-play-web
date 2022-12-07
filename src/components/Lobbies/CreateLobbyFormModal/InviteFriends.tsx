@@ -109,28 +109,30 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     )}
                 />
 
-                <Stack direction="row" sx={{ flex: 1, flexWrap: "wrap", gap: ".3rem" }}>
-                    {selectedUsers.length > 0 ? (
-                        selectedUsers.map((su) => (
-                            <NiceBoxThing key={su.id}>
-                                <InviteUserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
-                            </NiceBoxThing>
-                        ))
-                    ) : (
-                        <Stack alignItems="center" justifyContent="center" width="100%">
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: colors.grey,
-                                    fontFamily: fonts.nostromoBold,
-                                    textAlign: "center",
-                                }}
-                            >
-                                No friends...
-                            </Typography>
-                        </Stack>
-                    )}
-                </Stack>
+                <Box flex={1} overflow="hidden">
+                    <Stack spacing=".9rem" sx={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}>
+                        {selectedUsers.length > 0 ? (
+                            selectedUsers.map((su) => (
+                                <NiceBoxThing key={su.id}>
+                                    <InviteUserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
+                                </NiceBoxThing>
+                            ))
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" width="100%" height="100%">
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: colors.grey,
+                                        fontFamily: fonts.nostromoBold,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    No friends...
+                                </Typography>
+                            </Stack>
+                        )}
+                    </Stack>
+                </Box>
             </Stack>
         </Fade>
     )
@@ -155,23 +157,12 @@ export const InviteUserItem = ({ user, remove }: { user: User; remove?: () => vo
                       }
             }
         >
-            <Box
-                sx={{
-                    height: "2.6rem",
-                    width: "2.6rem",
-                    background: `url(${faction.logo_url})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "contain",
-                }}
-            />
-
             <PlayerNameGid
                 player={{
                     id: user.id,
                     username: user.username,
                     gid: user.gid,
-                    faction_id: "",
+                    faction_id: user.faction_id,
                     rank: "NEW_RECRUIT",
                     features: [],
                     role_type: RoleType.player,

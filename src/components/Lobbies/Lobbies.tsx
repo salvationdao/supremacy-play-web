@@ -19,6 +19,7 @@ import { CreateLobbyFormModal } from "./CreateLobbyFormModal/CreateLobbyFormModa
 import { AccessCodePopover } from "./JoinPrivateLobby/AccessCodePopover"
 import { JoinLobbyModal } from "./LobbyItem/JoinLobbyModal"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
+import { QueryParamLobby } from "./QueryParamLobby"
 
 enum LobbyTabs {
     ExhibitionLobbies = "EXHIBITION_LOBBIES",
@@ -377,6 +378,9 @@ export const Lobbies = () => {
             )}
 
             <AccessCodePopover open={isJoinPrivatePopoverOpen} onClose={() => setIsJoinPrivatePopoverOpen(false)} popoverRef={joinPrivatePopoverRef} />
+
+            {/* Checks url query param and opens lobby to join */}
+            <QueryParamLobby />
         </>
     )
 }
