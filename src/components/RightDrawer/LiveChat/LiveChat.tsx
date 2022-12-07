@@ -318,7 +318,7 @@ const Content = React.memo(function Content({
 }) {
     return (
         <>
-            <ChatMessages primaryColor={primaryColor} secondaryColor={secondaryColor} faction_id={faction_id} />
+            <ChatMessages key={`chat-messages-${faction_id}`} primaryColor={primaryColor} secondaryColor={secondaryColor} faction_id={faction_id} />
 
             {userID ? (
                 <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
