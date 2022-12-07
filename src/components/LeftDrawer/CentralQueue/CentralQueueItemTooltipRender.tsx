@@ -358,6 +358,7 @@ const FactionMechList = ({
                                 width: `calc(${SIZE} - 1px)`,
                                 height: `calc(${SIZE} - 1px)`,
                                 p: 0,
+                                opacity: !mech?.is_destroyed ? 1 : 0.36,
                             }}
                             disableAutoColor
                             onClick={() => mech?.queued_by?.id === userID && leaveLobby(mech.id)}
@@ -370,7 +371,6 @@ const FactionMechList = ({
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    opacity: !mech?.is_destroyed ? 1 : 0.36,
                                 }}
                             />
 

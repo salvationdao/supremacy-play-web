@@ -155,7 +155,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 </Stack>
 
                 <Stack direction="row" spacing="3rem" sx={{ position: "relative", flex: 1, p: "1.6rem 2rem", pr: "2.5rem" }}>
-                    <Stack spacing="1.8rem" sx={{ width: "27rem" }}>
+                    <Stack spacing="1.8rem" sx={{ minWidth: "29rem" }}>
                         {/* Host name */}
                         <Stack direction="row" alignItems="center" spacing=".6rem">
                             {ownerFaction.logo_url && (
