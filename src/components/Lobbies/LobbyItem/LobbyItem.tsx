@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
-import { SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
+import { SvgDamage1, SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -270,7 +270,8 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                             fontFamily={fonts.nostromoBold}
                             sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
                         >
-                            Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
+                            <SvgDamage1 inline />
+                            {battleLobby.will_not_start_until.toLocaleString()}
                         </Typography>
                     )}
 
@@ -285,7 +286,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                         <NiceButton
                             sx={{
                                 p: "0 .6rem",
-                                border: `${colors.lightGrey} 1px solid`,
+                                border: `#FFFFFF 1px solid`,
                                 opacity: 0.8,
 
                                 ":hover": {
@@ -302,8 +303,8 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                                 })
                             }}
                         >
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                Copy Invite Link
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                {copied ? "Copied" : "Copy Invite Link"}
                             </Typography>
                         </NiceButton>
                     )}

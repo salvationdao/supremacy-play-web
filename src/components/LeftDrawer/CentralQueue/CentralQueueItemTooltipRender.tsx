@@ -4,9 +4,9 @@ import { useCallback, useMemo, useState } from "react"
 import {
     SvgChest2,
     SvgContentCopyIcon,
+    SvgDamage1,
     SvgEmptySet,
     SvgFirstPlace,
-    SvgHistoryClock,
     SvgLeaderboard,
     SvgLobbies,
     SvgLock,
@@ -116,7 +116,7 @@ export const CentralQueueItemTooltipRender = ({
                     <NiceButton
                         sx={{
                             p: "0 .6rem",
-                            border: `${colors.lightGrey} 1px solid`,
+                            border: `#FFFFFF 1px solid`,
                             opacity: 0.8,
 
                             ":hover": {
@@ -133,7 +133,7 @@ export const CentralQueueItemTooltipRender = ({
                             })
                         }}
                     >
-                        <Typography color={colors.lightGrey}>Copy Invite Link</Typography>
+                        <Typography>{copied ? "Copied" : "Copy Invite Link"}</Typography>
                     </NiceButton>
                 )}
             </Stack>
@@ -179,7 +179,7 @@ export const CentralQueueItemTooltipRender = ({
                 {/* Scheduled time */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgHistoryClock inline /> Scheduled time:
+                        <SvgDamage1 inline /> Scheduled time:
                     </Typography>
                     <TypographyTruncated sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}>
                         {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}

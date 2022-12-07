@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgContentCopyIcon, SvgDamage1, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
@@ -111,7 +111,8 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
         return (
             <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
                 <TypographyTruncated fontWeight="bold" sx={{ color: battleLobby.will_not_start_until ? colors.orange : colors.grey }}>
-                    SCHEDULED TIME: {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
+                    <SvgDamage1 inline size="1.5rem" />
+                    {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
                 </TypographyTruncated>
 
                 <Box flex={1} />
@@ -119,7 +120,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
                 <NiceButton
                     sx={{
                         p: ".2rem .6rem",
-                        border: `${colors.lightGrey} 1px solid`,
+                        border: `#FFFFFF 1px solid`,
                         opacity: 0.8,
 
                         ":hover": {
@@ -136,8 +137,8 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
                         })
                     }}
                 >
-                    <Typography variant="body2" color={colors.lightGrey} lineHeight={1}>
-                        Copy Invite Link
+                    <Typography variant="body2" lineHeight={1}>
+                        {copied ? "Copied" : "Copy Invite Link"}
                     </Typography>
                 </NiceButton>
             </Stack>
