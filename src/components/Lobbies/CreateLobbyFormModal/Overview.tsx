@@ -57,7 +57,7 @@ export const Overview = ({ formMethods }: { formMethods: UseFormReturn<CreateLob
                                             size="small"
                                             sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                                             onClick={() => {
-                                                navigator.clipboard.writeText(access_code)
+                                                navigator.clipboard.writeText(`${location.origin}/lobbies?code=${access_code}`)
                                             }}
                                         >
                                             <SvgContentCopyIcon inline size="1.3rem" />

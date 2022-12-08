@@ -105,7 +105,7 @@ export const Supporters = React.memo(function Supporters({
                                 src={faction.logo_url}
                                 sx={{
                                     filter: "grayscale(1)",
-                                    opacity: 0.5,
+                                    opacity: 0.4,
                                 }}
                             />
                         )

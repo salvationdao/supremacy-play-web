@@ -1,12 +1,12 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import {
     SvgChest2,
     SvgContentCopyIcon,
+    SvgDamage1,
     SvgEmptySet,
     SvgFirstPlace,
-    SvgHistoryClock,
     SvgLeaderboard,
     SvgLobbies,
     SvgLock,
@@ -46,6 +46,7 @@ export const CentralQueueItemTooltipRender = ({
     const theme = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
+    const [copied, setCopied] = useState(false)
 
     const ownerFaction = useMemo(() => getFaction(battleLobby.host_by.faction_id), [getFaction, battleLobby.host_by.faction_id])
 
@@ -90,7 +91,6 @@ export const CentralQueueItemTooltipRender = ({
                 spacing="1.6rem"
                 sx={{
                     p: "1rem 1.5rem",
-                    pr: ".5rem",
                     backgroundColor: theme.factionTheme.s600,
                 }}
             >
@@ -99,19 +99,42 @@ export const CentralQueueItemTooltipRender = ({
                     {battleLobby.name || `Lobby #${battleLobby.number}`}
                 </TypographyTruncated>
 
-                {displayAccessCode && (
+                {displayAccessCode ? (
                     <Stack direction="row" alignItems="center">
                         <Typography variant="h6">{displayAccessCode}</Typography>
                         <IconButton
                             size="small"
                             sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                             onClick={() => {
-                                navigator.clipboard.writeText(displayAccessCode)
+                                navigator.clipboard.writeText(`${location.origin}/lobbies?code=${displayAccessCode}`)
                             }}
                         >
                             <SvgContentCopyIcon inline size="1.3rem" />
                         </IconButton>
                     </Stack>
+                ) : (
+                    <NiceButton
+                        sx={{
+                            p: "0 .6rem",
+                            border: `#FFFFFF 1px solid`,
+                            opacity: 0.8,
+
+                            ":hover": {
+                                opacity: 1,
+                            },
+                        }}
+                        disabled={copied}
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`).then(() => {
+                                setCopied(true)
+                                setTimeout(() => {
+                                    setCopied(false)
+                                }, 3000)
+                            })
+                        }}
+                    >
+                        <Typography>{copied ? "Copied" : "Copy Invite Link"}</Typography>
+                    </NiceButton>
                 )}
             </Stack>
 
@@ -156,7 +179,7 @@ export const CentralQueueItemTooltipRender = ({
                 {/* Scheduled time */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgHistoryClock inline /> Scheduled time:
+                        <SvgDamage1 inline /> Scheduled time:
                     </Typography>
                     <TypographyTruncated sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}>
                         {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}
@@ -358,6 +381,7 @@ const FactionMechList = ({
                                 width: `calc(${SIZE} - 1px)`,
                                 height: `calc(${SIZE} - 1px)`,
                                 p: 0,
+                                opacity: !mech?.is_destroyed ? 1 : 0.36,
                             }}
                             disableAutoColor
                             onClick={() => mech?.queued_by?.id === userID && leaveLobby(mech.id)}
@@ -370,7 +394,6 @@ const FactionMechList = ({
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "contain",
-                                    opacity: !mech?.is_destroyed ? 1 : 0.36,
                                 }}
                             />
 

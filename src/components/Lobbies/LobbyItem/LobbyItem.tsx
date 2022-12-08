@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
-import { SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
+import React, { useMemo, useState } from "react"
+import { SvgDamage1, SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -10,6 +10,7 @@ import { FactionWithPalette } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TimeLeft } from "../../Common/TimeLeft"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
@@ -29,6 +30,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { getFaction, factionsAll } = useSupremacy()
+    const [copied, setCopied] = useState(false)
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
@@ -155,7 +157,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 </Stack>
 
                 <Stack direction="row" spacing="3rem" sx={{ position: "relative", flex: 1, p: "1.6rem 2rem", pr: "2.5rem" }}>
-                    <Stack spacing="1.8rem" sx={{ width: "27rem" }}>
+                    <Stack spacing="1.8rem" sx={{ minWidth: "29rem" }}>
                         {/* Host name */}
                         <Stack direction="row" alignItems="center" spacing=".6rem">
                             {ownerFaction.logo_url && (
@@ -260,29 +262,51 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                     />
                 </Stack>
 
-                {/* Supports */}
+                {/* Bottom section */}
                 <Stack direction="row" alignItems="center" spacing="2rem" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
                     {battleLobby.will_not_start_until && (
-                        <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography
-                                variant="body2"
-                                fontFamily={fonts.nostromoBold}
-                                sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
-                            >
-                                Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
-                            </Typography>
-                        </Stack>
+                        <Typography
+                            variant="body2"
+                            fontFamily={fonts.nostromoBold}
+                            sx={{ color: battleLobby.will_not_start_until ? colors.orange : "#FFFFFF" }}
+                        >
+                            <SvgDamage1 inline fill={battleLobby.will_not_start_until ? colors.orange : "#FFFFFF"} />{" "}
+                            {battleLobby.will_not_start_until.toLocaleString()}
+                        </Typography>
                     )}
 
                     <Box flex={1} />
 
                     {/* Arena name */}
-                    {arenaName && (
-                        <Stack direction="row" alignItems="center" spacing=".6rem">
-                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
-                                Battle arena: {arenaName}
+                    {arenaName ? (
+                        <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                            Battle arena: {arenaName}
+                        </Typography>
+                    ) : (
+                        <NiceButton
+                            sx={{
+                                p: "0 .6rem",
+                                border: `#FFFFFF 1px solid`,
+                                opacity: 0.8,
+
+                                ":hover": {
+                                    opacity: 1,
+                                },
+                            }}
+                            disabled={copied}
+                            onClick={() => {
+                                navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`).then(() => {
+                                    setCopied(true)
+                                    setTimeout(() => {
+                                        setCopied(false)
+                                    }, 3000)
+                                })
+                            }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                {copied ? "Copied" : "Copy Invite Link"}
                             </Typography>
-                        </Stack>
+                        </NiceButton>
                     )}
                 </Stack>
             </NiceBoxThing>

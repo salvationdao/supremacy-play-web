@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgContentCopyIcon, SvgDamage1, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
@@ -23,6 +23,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
     const { factionID } = useAuth()
     const theme = useTheme()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
+    const [copied, setCopied] = useState(false)
 
     // For sponsoring battle with more sups
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
@@ -98,7 +99,7 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
                         size="small"
                         sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                         onClick={() => {
-                            navigator.clipboard.writeText(displayAccessCode)
+                            navigator.clipboard.writeText(`${location.origin}/lobbies?code=${displayAccessCode}`)
                         }}
                     >
                         <SvgContentCopyIcon inline size="1.3rem" />
@@ -108,13 +109,41 @@ export const CentralQueueItem = ({ battleLobby, isInvolved }: { battleLobby: Bat
         }
 
         return (
-            <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
-                <Typography fontWeight="bold" sx={{ color: battleLobby.will_not_start_until ? colors.orange : colors.grey }}>
-                    SCHEDULED TIME: {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
-                </Typography>
+            <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+                <TypographyTruncated fontWeight="bold" sx={{ color: battleLobby.will_not_start_until ? colors.orange : colors.grey }}>
+                    <SvgDamage1 inline size="1.5rem" fill={battleLobby.will_not_start_until ? colors.orange : colors.grey} />{" "}
+                    {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
+                </TypographyTruncated>
+
+                <Box flex={1} />
+
+                <NiceButton
+                    sx={{
+                        p: ".2rem .6rem",
+                        border: `#FFFFFF 1px solid`,
+                        opacity: 0.8,
+
+                        ":hover": {
+                            opacity: 1,
+                        },
+                    }}
+                    disabled={copied}
+                    onClick={() => {
+                        navigator.clipboard.writeText(`${location.origin}/lobbies?join=${battleLobby.id}`).then(() => {
+                            setCopied(true)
+                            setTimeout(() => {
+                                setCopied(false)
+                            }, 3000)
+                        })
+                    }}
+                >
+                    <Typography variant="body2" lineHeight={1}>
+                        {copied ? "Copied" : "Copy Invite Link"}
+                    </Typography>
+                </NiceButton>
             </Stack>
         )
-    }, [battleLobby, displayAccessCode, factionID])
+    }, [battleLobby, copied, displayAccessCode, factionID])
 
     return (
         <>

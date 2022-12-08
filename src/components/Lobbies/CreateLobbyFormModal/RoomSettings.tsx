@@ -70,7 +70,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                                         size="small"
                                                         sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                                                         onClick={() => {
-                                                            navigator.clipboard.writeText(accessCode)
+                                                            navigator.clipboard.writeText(`${location.origin}/lobbies?code=${accessCode}`)
                                                         }}
                                                     >
                                                         <SvgContentCopyIcon inline size="1.3rem" />
