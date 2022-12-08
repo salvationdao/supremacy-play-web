@@ -163,7 +163,7 @@ export const ChatSend = ({ faction_id }: ChatSendProps) => {
 
                     <NiceTextField
                         id={`message-textfield-${faction_id}`}
-                        primaryColor={theme.factionTheme.contrast_primary}
+                        primaryColor={theme.factionTheme.primary}
                         value={message}
                         placeholder="Send a message..."
                         inputRef={textfieldRef}
