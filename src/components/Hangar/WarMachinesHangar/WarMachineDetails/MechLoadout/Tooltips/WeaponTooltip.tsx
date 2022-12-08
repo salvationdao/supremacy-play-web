@@ -77,18 +77,40 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                         </Typography>
                     </Stack>
                 </Stack>
-                <Box
-                    component="img"
-                    src={weapon.image_url || weapon.avatar_url}
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        maxHeight: 140,
-                        p: "2rem",
-                        objectFit: "contain",
-                        borderBottom: `1px solid ${rarity.color}`,
-                    }}
-                />
+                <Box position="relative">
+                    {weapon.brand && (
+                        <Box
+                            component="img"
+                            src={weapon.brand.logo_url}
+                            alt={`${weapon.brand.label} logo`}
+                            sx={{
+                                zIndex: -1,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                filter: "grayscale(100%)",
+                                opacity: 0.1,
+                            }}
+                        />
+                    )}
+                    <Box
+                        component="img"
+                        src={weapon.image_url || weapon.avatar_url}
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            maxHeight: 140,
+                            p: "2rem",
+                            objectFit: "contain",
+                            borderBottom: `1px solid ${rarity.color}`,
+                        }}
+                    />
+                </Box>
                 <Stack spacing=".5rem" p="2rem">
                     <WeaponStats weapon={weapon} compareTo={compareTo} />
                 </Stack>

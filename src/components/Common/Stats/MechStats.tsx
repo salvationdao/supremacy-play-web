@@ -18,7 +18,6 @@ export interface MechStatsProps {
 }
 
 export const MechStats = ({ mech }: MechStatsProps) => {
-    console.log(mech.max_hitpoints, mech.boosted_max_hitpoints)
     return (
         <>
             <Stat

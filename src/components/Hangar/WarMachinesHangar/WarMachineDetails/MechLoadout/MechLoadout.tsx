@@ -613,6 +613,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                         disabled={loadoutDisabled}
                         key={weapon.id}
                         imageUrl={weapon.image_url || weapon.avatar_url}
+                        backgroundImageUrl={weapon.brand?.logo_url}
                         label={weapon.label}
                         subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
                         Icon={SvgLoadoutWeapon}

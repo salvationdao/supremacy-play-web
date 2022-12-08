@@ -264,40 +264,59 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                         }}
                     />
                 </NiceBoxThing>
-                <Stack flex={1}>
-                    <MechName
-                        onRename={(newName) => onUpdate({ ...mechDetails, name: newName })}
-                        mech={mechDetails}
-                        allowEdit={userID === mechDetails.owner_id}
+                <Stack flex={1} position="relative">
+                    <Box
+                        component="img"
+                        src={mechDetails.brand.logo_url}
+                        alt={`${mechDetails.brand.label} logo`}
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                            filter: "grayscale(100%)",
+                            opacity: 0.1,
+                        }}
                     />
-                    <Stack direction="row" justifyContent="space-between">
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.rajdhaniMedium,
-                                fontSize: "1.6rem",
-                            }}
-                        >
-                            {mechDetails.label}
-                        </Typography>
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.rajdhaniMedium,
-                                fontSize: "1.6rem",
-                                color: rarity.color,
-                            }}
-                        >
-                            {rarity.label}
-                        </Typography>
+                    <Stack position="relative">
+                        <MechName
+                            onRename={(newName) => onUpdate({ ...mechDetails, name: newName })}
+                            mech={mechDetails}
+                            allowEdit={userID === mechDetails.owner_id}
+                        />
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.rajdhaniMedium,
+                                    fontSize: "1.6rem",
+                                }}
+                            >
+                                {mechDetails.label}
+                            </Typography>
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.rajdhaniMedium,
+                                    fontSize: "1.6rem",
+                                    color: rarity.color,
+                                }}
+                            >
+                                {rarity.label}
+                            </Typography>
+                        </Stack>
+                        {mechStaked && (
+                            <Typography
+                                sx={{
+                                    color: colors.red,
+                                }}
+                            >
+                                STAKED
+                            </Typography>
+                        )}
                     </Stack>
-                    {mechStaked && (
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                            }}
-                        >
-                            STAKED
-                        </Typography>
-                    )}
                 </Stack>
             </Stack>
 

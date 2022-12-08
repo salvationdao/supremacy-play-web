@@ -280,6 +280,7 @@ export interface Brand {
     deleted_at?: Date
     updated_at: Date
     created_at: Date
+    logo_url: string
 }
 
 export interface BlueprintMechSkin extends Collection, Images {
@@ -345,6 +346,7 @@ export interface PowerCoreMaxStats {
 export interface Weapon extends Collection, Images {
     id: string
     brand_id?: string
+    brand?: Brand
     label: string
     slug: string
     damage: string

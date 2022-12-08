@@ -10,6 +10,7 @@ export interface LoadoutItem {
     BottomRight?: React.ReactNode
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     imageUrl?: string
+    backgroundImageUrl?: string
     label: string
     subLabel?: string
     rarity?: Rarity
@@ -119,6 +120,7 @@ const MechLoadoutItemButton = ({
     BottomRight,
     Icon,
     imageUrl,
+    backgroundImageUrl,
     label,
     subLabel,
     isEmpty,
@@ -141,6 +143,7 @@ const MechLoadoutItemButton = ({
                 disableAutoColor
                 buttonColor={rarity ? rarity.color : colors.darkGrey}
                 sx={{
+                    position: "relative",
                     width: shape === "rectangle" ? width : height,
                     height: height,
                     padding: 0,
@@ -177,6 +180,23 @@ const MechLoadoutItemButton = ({
                     </Stack>
                 ) : (
                     <>
+                        <Box
+                            component="img"
+                            src={backgroundImageUrl}
+                            sx={{
+                                zIndex: -1,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                filter: "grayscale(100%)",
+                                opacity: 0.1,
+                            }}
+                        />
                         <Box
                             component="img"
                             src={imageUrl}
