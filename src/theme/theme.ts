@@ -38,7 +38,7 @@ declare module "@mui/material/styles" {
         text?: string
         background?: string
         contrast_primary?: string
-contrast_background?: string
+        contrast_background?: string
         s100?: string
         s200?: string
         s300?: string
