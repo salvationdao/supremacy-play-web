@@ -50,7 +50,7 @@ export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
                 <Stack
                     sx={{
                         p: "2rem",
-                        background: `linear-gradient(to right, ${theme.factionTheme.background}, ${rarity.color}22)`,
+                        background: `linear-gradient(to right, ${theme.factionTheme.u800}, ${rarity.color}22)`,
                     }}
                 >
                     <Typography
@@ -94,7 +94,7 @@ export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
                 </Stack>
             </>
         )
-    }, [compareTo, powerCore, theme.factionTheme.background])
+    }, [compareTo, powerCore, theme.factionTheme.u800])
 
     return (
         <NiceBoxThing
@@ -103,7 +103,7 @@ export const PowerCoreTooltip = ({ id, compareTo }: PowerCoreTooltipProps) => {
                 thickness: "very-lean",
             }}
             background={{
-                colors: [theme.factionTheme.background],
+                colors: [theme.factionTheme.u800],
             }}
             sx={{
                 display: "flex",

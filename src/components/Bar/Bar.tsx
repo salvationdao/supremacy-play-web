@@ -1,12 +1,11 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, STAGING_ONLY, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { hexToRGB, shadeColor } from "../../helpers"
+import { hexToRGB } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { BarButton } from "../MainMenuNav/BarButton"
@@ -20,8 +19,6 @@ export const Bar = () => {
     const theme = useTheme()
     const { userID, user } = useAuth()
     const rgb = hexToRGB(colors.lightRed)
-
-    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.background, -50), [theme.factionTheme.background])
 
     return (
         <>
@@ -69,7 +66,7 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    backgroundColor: (theme) => theme.factionTheme.s800,
+                    background: `linear-gradient(to bottom, ${theme.factionTheme.s700}, ${theme.factionTheme.u800})`,
                     borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,
@@ -79,20 +76,6 @@ export const Bar = () => {
                 }}
             >
                 <BarContent userID={userID} user={user} />
-
-                {/* Background gradient */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: darkerBg,
-                        pointerEvents: "none",
-                        zIndex: -1,
-                    }}
-                />
             </Stack>
         </>
     )

@@ -199,11 +199,11 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
     return (
         <NiceBoxThing
             border={{
-                color: theme.factionTheme.primary,
-                thickness: "thicc",
+                color: theme.factionTheme.s700,
+                thickness: "very-lean",
             }}
             background={{
-                colors: [theme.factionTheme.background],
+                colors: [theme.factionTheme.u800],
             }}
             sx={{
                 flexBasis: 310,
@@ -237,7 +237,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                     mt: userID === mechDetails.owner_id ? PICKER_BUTTON_HEIGHT : 0,
                     px: "2rem",
                     py: "1rem",
-                    background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.background})`,
+                    background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.u800})`,
                 }}
             >
                 <NiceBoxThing
@@ -264,40 +264,59 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                         }}
                     />
                 </NiceBoxThing>
-                <Stack flex={1}>
-                    <MechName
-                        onRename={(newName) => onUpdate({ ...mechDetails, name: newName })}
-                        mech={mechDetails}
-                        allowEdit={userID === mechDetails.owner_id}
+                <Stack flex={1} position="relative">
+                    <Box
+                        component="img"
+                        src={mechDetails.brand.logo_url}
+                        alt={`${mechDetails.brand.label} logo`}
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                            filter: "grayscale(100%)",
+                            opacity: 0.1,
+                        }}
                     />
-                    <Stack direction="row" justifyContent="space-between">
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.rajdhaniMedium,
-                                fontSize: "1.6rem",
-                            }}
-                        >
-                            {mechDetails.label}
-                        </Typography>
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.rajdhaniMedium,
-                                fontSize: "1.6rem",
-                                color: rarity.color,
-                            }}
-                        >
-                            {rarity.label}
-                        </Typography>
+                    <Stack position="relative">
+                        <MechName
+                            onRename={(newName) => onUpdate({ ...mechDetails, name: newName })}
+                            mech={mechDetails}
+                            allowEdit={userID === mechDetails.owner_id}
+                        />
+                        <Stack direction="row" justifyContent="space-between">
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.rajdhaniMedium,
+                                    fontSize: "1.6rem",
+                                }}
+                            >
+                                {mechDetails.label}
+                            </Typography>
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.rajdhaniMedium,
+                                    fontSize: "1.6rem",
+                                    color: rarity.color,
+                                }}
+                            >
+                                {rarity.label}
+                            </Typography>
+                        </Stack>
+                        {mechStaked && (
+                            <Typography
+                                sx={{
+                                    color: colors.red,
+                                }}
+                            >
+                                STAKED
+                            </Typography>
+                        )}
                     </Stack>
-                    {mechStaked && (
-                        <Typography
-                            sx={{
-                                color: colors.red,
-                            }}
-                        >
-                            STAKED
-                        </Typography>
-                    )}
                 </Stack>
             </Stack>
 
@@ -502,7 +521,7 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
         <NiceAccordion.Base
             sx={(theme) => ({
                 border: "none",
-                outline: expandPicker ? `3px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                outline: expandPicker ? `1px solid ${theme.factionTheme.s700}` : `0px solid transparent`,
                 transition: "outline .2s ease-out",
             })}
             expanded={expandPicker}
@@ -519,7 +538,7 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                 <Stack spacing="2rem" minHeight={600}>
                     <Stack spacing="1rem">
                         <NiceTextField
-                            primaryColor={theme.factionTheme.primary}
+                            primaryColor={theme.factionTheme.contrast_primary}
                             onChange={(value) => debouncedSetSearch(value)}
                             placeholder="Search..."
                             InputProps={{

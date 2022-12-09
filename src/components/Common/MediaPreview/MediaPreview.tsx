@@ -4,6 +4,7 @@ import { MediaPreviewModal } from "./MediaPreviewModal"
 
 export const MediaPreview = ({
     imageUrl,
+    backgroundImageUrl,
     videoUrls,
     showBorder,
     sx,
@@ -14,6 +15,7 @@ export const MediaPreview = ({
     allowModal,
 }: {
     imageUrl?: string
+    backgroundImageUrl?: string
     videoUrls?: (string | undefined)[]
     showBorder?: boolean
     sx?: SxProps
@@ -45,17 +47,38 @@ export const MediaPreview = ({
                 onClick={allowModal ? () => setShowModal(true) : undefined}
             >
                 {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
-                    <Box
-                        component="img"
-                        src={imageUrl}
-                        sx={{
-                            height: "100%",
-                            width: "100%",
-                            objectFit: objectFit || "contain",
-                            objectPosition: objectPosition || "center",
-                            transform: imageTransform || "",
-                        }}
-                    />
+                    <>
+                        {backgroundImageUrl && (
+                            <Box
+                                component="img"
+                                src={backgroundImageUrl}
+                                sx={{
+                                    zIndex: -1,
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    filter: "grayscale(100%)",
+                                    opacity: 0.1,
+                                }}
+                            />
+                        )}
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: objectFit || "contain",
+                                objectPosition: objectPosition || "center",
+                                transform: imageTransform || "",
+                            }}
+                        />
+                    </>
                 ) : (
                     <Box
                         key={imageUrl}

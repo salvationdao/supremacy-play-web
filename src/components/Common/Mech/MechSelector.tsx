@@ -318,8 +318,8 @@ export const MechSelector = React.memo(function MechSelector({
             </Stack>
 
             {onlyDeployableMechs && (
-                <TypographyTruncated sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
-                    <SvgInfoCircular inline size="1.8rem" fill={colors.neonBlue} /> Only mechs with a power core and weapons will be shown
+                <TypographyTruncated sx={{ color: theme.factionTheme.contrast_primary, fontWeight: "bold" }}>
+                    <SvgInfoCircular inline size="1.8rem" fill={theme.factionTheme.contrast_primary} /> Only mechs with a power core and weapons will be shown
                 </TypographyTruncated>
             )}
 

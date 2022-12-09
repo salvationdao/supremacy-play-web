@@ -46,7 +46,7 @@ export const AssetChooseModal = ({
     const question = itemTypeLabel ? `Choose a ${itemTypeLabel}` : "Choose an item type"
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const getItems = useCallback(async () => {
         let key = ""

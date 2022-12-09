@@ -10,7 +10,7 @@ export interface MechViewer3DProps {
 
 export const MechViewer3D = ({ mech, unity }: MechViewer3DProps) => {
     const theme = useTheme()
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <Box

@@ -77,11 +77,11 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
             ) : (
                 <NiceBoxThing
                     border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
+                        color: theme.factionTheme.s700,
+                        thickness: "very-lean",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                     sx={{
                         flexBasis: 310,
@@ -111,11 +111,11 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                 <>
                     <NiceBoxThing
                         border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
+                            color: theme.factionTheme.s700,
+                            thickness: "very-lean",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{ height: "100%", flex: 1 }}
                     >
@@ -133,11 +133,11 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                     </NiceBoxThing>
                     <NiceBoxThing
                         border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
+                            color: theme.factionTheme.s700,
+                            thickness: "very-lean",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{
                             height: "100%",

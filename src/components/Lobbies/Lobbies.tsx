@@ -283,12 +283,12 @@ export const Lobbies = () => {
                     No results...
                 </Typography>
 
-                <NiceButton onClick={() => setShowCreateLobbyModal(true)} buttonColor={theme.factionTheme.primary}>
+                <NiceButton onClick={() => setShowCreateLobbyModal(true)} buttonColor={theme.factionTheme.contrast_primary}>
                     Create lobby
                 </NiceButton>
             </Stack>
         )
-    }, [displayLobbies, isLoading, renderIndex, theme.factionTheme.primary])
+    }, [displayLobbies, isLoading, renderIndex, theme.factionTheme.contrast_primary])
 
     return (
         <>
@@ -300,7 +300,7 @@ export const Lobbies = () => {
                     mx: "auto",
                     position: "relative",
                     height: "100%",
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: theme.factionTheme.u800,
                     background: `url()`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
@@ -315,7 +315,12 @@ export const Lobbies = () => {
                         {/* Search, sort, grid view, and other top buttons */}
                         <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                             {/* Create lobby button */}
-                            <NiceButton corners buttonColor={colors.green} sx={{ p: ".85rem 1rem" }} onClick={() => setShowCreateLobbyModal(true)}>
+                            <NiceButton
+                                corners
+                                buttonColor={theme.factionTheme.contrast_primary}
+                                sx={{ p: ".85rem 1rem" }}
+                                onClick={() => setShowCreateLobbyModal(true)}
+                            >
                                 <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                                     <SvgPlus inline size="1.2rem" /> CREATE LOBBY
                                 </Typography>

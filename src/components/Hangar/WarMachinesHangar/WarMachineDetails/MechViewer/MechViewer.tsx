@@ -10,7 +10,7 @@ export interface MechViewerProps {
 
 export const MechViewer = ({ mechDetails, fillContainer }: MechViewerProps) => {
     const theme = useTheme()
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url

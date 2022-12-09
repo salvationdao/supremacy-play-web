@@ -56,7 +56,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({
 
     const primaryColor = pColor || theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.text
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const content = useMemo(
         () => (

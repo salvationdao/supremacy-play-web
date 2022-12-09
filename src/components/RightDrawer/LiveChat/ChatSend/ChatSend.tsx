@@ -19,11 +19,10 @@ import { EmojiShortcut } from "./EmojiShortcut"
 import { TagPlayer } from "./TagPlayer"
 
 interface ChatSendProps {
-    primaryColor: string
     faction_id: string | null
 }
 
-export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
+export const ChatSend = ({ faction_id }: ChatSendProps) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -153,7 +152,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                     }}
                 >
                     <EmojiShortcut
-                        primaryColor={primaryColor}
+                        primaryColor={theme.factionTheme.primary}
                         faction_id={faction_id}
                         message={message}
                         setMessageWithCheck={setMessageWithCheck}
@@ -164,7 +163,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
 
                     <NiceTextField
                         id={`message-textfield-${faction_id}`}
-                        primaryColor={primaryColor}
+                        primaryColor={theme.factionTheme.primary}
                         value={message}
                         placeholder="Send a message..."
                         inputRef={textfieldRef}
@@ -215,7 +214,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                         </NiceButton>
                                     </NiceTooltip>
 
-                                    <NiceButton corners buttonColor={theme.factionTheme.primary} onClick={sendMessage} sx={{ p: ".5rem" }}>
+                                    <NiceButton corners buttonColor={theme.factionTheme.contrast_primary} onClick={sendMessage} sx={{ p: ".5rem" }}>
                                         <SvgSend size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                     </NiceButton>
                                 </InputAdornment>
@@ -241,7 +240,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
 
                 {isEmojiOpen && (
                     <EmojiPopover
-                        primaryColor={primaryColor}
+                        primaryColor={theme.factionTheme.primary}
                         setMessage={setMessageWithCheck}
                         popoverRef={popoverRef}
                         isEmojiOpen={isEmojiOpen}
@@ -255,10 +254,10 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             focusCaretTextField,
             isEmojiOpen,
             message,
-            primaryColor,
             sendMessage,
             setMessageWithCheck,
             showCharCount,
+            theme.factionTheme.contrast_primary,
             theme.factionTheme.primary,
             toggleIsEmojiOpen,
         ],

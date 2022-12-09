@@ -238,6 +238,7 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
                             >
                                 <MechLoadoutItem
                                     imageUrl={w.image_url || w.avatar_url}
+                                    backgroundImageUrl={w.brand?.logo_url}
                                     label={w.label}
                                     Icon={SvgLoadoutWeapon}
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}

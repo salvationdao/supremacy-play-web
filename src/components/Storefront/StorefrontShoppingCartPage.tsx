@@ -1,20 +1,20 @@
-import { useState, useCallback } from "react"
-import { useHistory } from "react-router-dom"
 import { Box, CircularProgress, Stack, TextField, Typography } from "@mui/material"
-import { HangarBg, SvgBack } from "../../assets"
-import { fonts, colors, siteZIndex } from "../../theme/theme"
-import { ClipThing, FancyButton } from ".."
-import { useFiat } from "../../containers/fiat"
-import { ShoppingCartTable } from "../Bar/ShoppingCart/ShoppingCartListing/ShoppingCartTable"
-import { useTheme } from "../../containers/theme"
-import { PageHeader } from "../Common/Deprecated/PageHeader"
-import { loadStripe } from "@stripe/stripe-js"
-import { STRIPE_PUBLISHABLE_KEY } from "../../constants"
-import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../Stripe/StripeElements"
 import { CardNumberElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js"
-import { StripeGenericChangeEvent } from "../Stripe/StripeInput"
+import { loadStripe } from "@stripe/stripe-js"
+import { useCallback, useState } from "react"
+import { useHistory } from "react-router-dom"
+import { ClipThing, FancyButton } from ".."
+import { HangarBg, SvgBack } from "../../assets"
+import { STRIPE_PUBLISHABLE_KEY } from "../../constants"
+import { useFiat } from "../../containers/fiat"
+import { useTheme } from "../../containers/theme"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { ShoppingCartTable } from "../Bar/ShoppingCart/ShoppingCartListing/ShoppingCartTable"
+import { PageHeader } from "../Common/Deprecated/PageHeader"
+import { StripeTextFieldCVC, StripeTextFieldExpiry, StripeTextFieldNumber } from "../Stripe/StripeElements"
+import { StripeGenericChangeEvent } from "../Stripe/StripeInput"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
@@ -79,7 +79,7 @@ const PaymentSection = () => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     if (!shoppingCart || shoppingCart.items.length === 0) {
         return null
@@ -140,7 +140,7 @@ const PaymentForm = () => {
     }, [])
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const [submitting, setSubmitting] = useState(false)
     const [receiptEmail, setReceiptEmail] = useState("")
@@ -403,7 +403,7 @@ const ShoppingCartSection = () => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <ClipThing

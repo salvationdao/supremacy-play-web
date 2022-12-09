@@ -40,7 +40,7 @@ export const BattleArenaBT = () => {
 
     return useMemo(() => {
         return (
-            <Stack spacing="1rem" sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
+            <Stack spacing="1rem" sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.u800 }}>
                 {content}
             </Stack>
         )

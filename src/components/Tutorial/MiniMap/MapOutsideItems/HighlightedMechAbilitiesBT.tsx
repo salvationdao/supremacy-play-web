@@ -2,6 +2,7 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { useAuth, useTraining } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { truncateTextLines } from "../../../../helpers"
 import { useInterval } from "../../../../hooks"
 import { glowEffect, zoomEffect } from "../../../../theme/keyframes"
 import {
@@ -15,7 +16,6 @@ import {
 } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
-import { truncateTextLines } from "../../../../helpers"
 
 const trainingGameAbilities: GameAbility[] = [
     {
@@ -77,7 +77,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                 }}
                 corners={{ bottomLeft: true }}
                 opacity={0.3}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{
                     position: "absolute",
                     top: "3.5rem",

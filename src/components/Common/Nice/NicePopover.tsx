@@ -18,7 +18,7 @@ export const NicePopover = ({ children, open, ...props }: PopoverProps) => {
             }}
             PaperProps={{
                 sx: {
-                    backgroundColor: theme.factionTheme.background,
+                    backgroundColor: theme.factionTheme.u800,
                     borderRadius: 0,
                 },
             }}

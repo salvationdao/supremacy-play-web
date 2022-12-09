@@ -1,12 +1,12 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { SvgClose } from "../../../../assets"
+import { DEV_ONLY } from "../../../../constants"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
-import { NotificationPreferences } from "./NotificationPreferences"
 import { DevicePreferences } from "./DevicePreferences"
-import { useAuth } from "../../../../containers"
-import { DEV_ONLY } from "../../../../constants"
+import { NotificationPreferences } from "./NotificationPreferences"
 
 interface PreferencesModalProps {
     onClose: () => void
@@ -38,7 +38,7 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDevic
                         borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                 >
                     <Stack
                         spacing=".7rem"

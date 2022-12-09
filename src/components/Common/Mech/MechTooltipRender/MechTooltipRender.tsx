@@ -23,7 +23,7 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
     const utilitySlots = useMemo(() => mech.utilities?.map((u) => u.utility).filter((u) => !!u) as Utility[] | undefined, [mech.utilities])
 
     return (
-        <Stack sx={{ width: "45rem", backgroundColor: ownerFaction.palette.s900, overflow: "hidden", maxHeight: "calc(100vh - 4rem)" }}>
+        <Stack sx={{ width: "45rem", backgroundColor: ownerFaction.palette.u800, overflow: "hidden", maxHeight: "calc(100vh - 4rem)" }}>
             {/* Mech name and general info */}
             <Stack
                 spacing=".4rem"

@@ -64,7 +64,7 @@ const JoinPrivateLobbyFieldInner = ({ accessCode, setAccessCode, setBattleLobby 
     return (
         <Stack direction="row" alignItems="center" spacing="1rem" sx={{ p: ".5rem" }}>
             <NiceTextField
-                primaryColor={theme.factionTheme.primary}
+                primaryColor={theme.factionTheme.contrast_primary}
                 value={accessCode}
                 onChange={(value) => {
                     setAccessCode(value)
@@ -78,7 +78,7 @@ const JoinPrivateLobbyFieldInner = ({ accessCode, setAccessCode, setBattleLobby 
                 sheen={{ autoSheen: true }}
                 loading={isLoading}
                 disabled={!accessCode}
-                buttonColor={theme.factionTheme.primary}
+                buttonColor={theme.factionTheme.contrast_primary}
                 corners
                 onClick={() => accessCode && onConfirm(accessCode)}
                 sx={{ py: "1rem" }}

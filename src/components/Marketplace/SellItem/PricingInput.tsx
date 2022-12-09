@@ -1,4 +1,4 @@
-import { Stack, TextField, InputAdornment, Typography } from "@mui/material"
+import { InputAdornment, Stack, TextField, Typography } from "@mui/material"
 import { SvgSupToken } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { colors } from "../../../theme/theme"
@@ -25,7 +25,7 @@ export const PricingInput = ({
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <QuestionSection primaryColor={primaryColor} question={question} description={description} isOptional={isOptional}>

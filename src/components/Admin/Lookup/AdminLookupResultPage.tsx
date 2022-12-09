@@ -5,9 +5,9 @@ import { ClipThing } from "../.."
 import { HangarBg, SvgBack, SvgEdit } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { truncateTextLines } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { truncateTextLines } from "../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionWithPalette, RoleType } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
@@ -88,7 +88,7 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                 borderColor: theme.factionTheme.primary,
                 borderThickness: ".3rem",
             }}
-            backgroundColor={theme.factionTheme.background}
+            backgroundColor={theme.factionTheme.u800}
             opacity={0.9}
             sx={{
                 flexBasis: "300px",

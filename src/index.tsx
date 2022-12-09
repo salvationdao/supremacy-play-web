@@ -126,7 +126,7 @@ const AppInner = () => {
                     position: "fixed",
                     width: "100vw",
                     height: "100%",
-                    backgroundColor: (theme) => theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.u800,
                 }}
             >
                 <Box
@@ -165,7 +165,7 @@ const AppInner = () => {
                     position: "fixed",
                     width: "100vw",
                     height: "100%",
-                    backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
+                    backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.u800),
                 }}
             >
                 <Bar />
@@ -192,7 +192,7 @@ const AppInner = () => {
                             flex: 1,
                             position: "relative",
                             height: "100%",
-                            backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
+                            backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.u800),
                             overflow: "hidden",
                         }}
                     >

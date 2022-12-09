@@ -27,7 +27,7 @@ export const AssetToSell = ({
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.text
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <>

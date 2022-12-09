@@ -7,7 +7,7 @@ import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewe
 export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
 
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     const skin = weaponDetails.weapon_skin
     const avatarUrl = skin?.avatar_url || weaponDetails?.avatar_url

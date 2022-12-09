@@ -3,6 +3,7 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgUserDiamond, SvgView } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { MechWeaponSlot } from "../../../types/battle_queue"
@@ -25,6 +26,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
     toggleSelected?: (mech: NewMechStruct) => void
     sx?: SxProps
 }) {
+    const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
@@ -33,7 +35,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
     return (
         <NiceBoxThing
             border={{
-                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF20",
+                color: isSelected ? `${theme.factionTheme.contrast_primary}80` : "#FFFFFF20",
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
@@ -78,8 +80,12 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                                     checked={isSelected}
                                     onClick={() => toggleSelected(mech)}
                                     sx={{
-                                        "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                        "&.Mui-checked > .MuiSvgIcon-root": {
+                                            fill: `${theme.factionTheme.contrast_primary} !important`,
+                                        },
+                                        ".Mui-checked+.MuiSwitch-track": {
+                                            backgroundColor: `${theme.factionTheme.contrast_primary}50 !important`,
+                                        },
                                     }}
                                 />
                             )}

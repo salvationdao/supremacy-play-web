@@ -59,7 +59,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                             borderThickness: ".2rem",
                         }}
                         sx={{ position: "relative" }}
-                        backgroundColor={theme.factionTheme.background}
+                        backgroundColor={theme.factionTheme.u800}
                     >
                         <Stack
                             direction="row"
@@ -158,7 +158,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                         borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                 >
                     <Stack
                         direction="row"

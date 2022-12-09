@@ -146,7 +146,7 @@ export const CentralQueue = () => {
 
             {/* Some button */}
             <NiceButton
-                buttonColor={theme.factionTheme.primary}
+                buttonColor={theme.factionTheme.contrast_primary}
                 sx={{ mt: "auto !important", p: ".2rem 1rem", pt: ".4rem", opacity: 0.74 }}
                 route={{ to: "/lobbies" }}
             >
@@ -202,7 +202,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 p: "1rem",
                 alignItems: "center",
                 opacity: isOpen ? 1 : 0.7,
-                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s700}70 26%, ${theme.factionTheme.s800})` : theme.factionTheme.u700,
                 transition: "background-color .2s ease-out",
             }}
         >

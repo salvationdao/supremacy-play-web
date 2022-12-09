@@ -36,7 +36,7 @@ export const DangerZone = () => {
                     bottomRight: true,
                 }}
                 opacity={0.9}
-                backgroundColor={theme.factionTheme.background}
+                backgroundColor={theme.factionTheme.u800}
                 sx={{ height: "100%" }}
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>

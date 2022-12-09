@@ -226,7 +226,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "5px",
-                        backgroundColor: theme.factionTheme.background,
+                        backgroundColor: theme.factionTheme.u800,
                         opacity: 1,
                         border: { borderColor: colors.green, borderThickness: "1.5px" },
                         sx: { position: "relative" },

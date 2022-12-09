@@ -30,7 +30,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, backdropColor, disab
         >
             <NiceBoxThing
                 border={{ color: `${colors.darkGrey}90`, thickness: "very-lean" }}
-                background={{ colors: [theme.factionTheme.background] }}
+                background={{ colors: [theme.factionTheme.u800] }}
                 sx={{
                     position: "absolute",
                     top: "50%",

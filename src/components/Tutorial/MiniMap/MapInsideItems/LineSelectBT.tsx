@@ -156,7 +156,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                         cursor: "pointer",
                         borderRadius: "50%",
                         backgroundColor: selectStage === SelectStage.StartCoord ? colors.lightGrey : theme.factionTheme.primary,
-                        border: `${theme.factionTheme.background} 3px solid`,
+                        border: `${theme.factionTheme.u800} 3px solid`,
                         boxShadow: 2,
                         transform: `translate(${_selection.startCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             _selection.startCoords.y * gridHeight - indicatorDiameter / 2
@@ -187,7 +187,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                         cursor: "pointer",
                         borderRadius: "50%",
                         backgroundColor: selectStage !== SelectStage.Submit ? colors.lightGrey : theme.factionTheme.primary,
-                        border: `${theme.factionTheme.background} 3px solid`,
+                        border: `${theme.factionTheme.u800} 3px solid`,
                         boxShadow: 2,
                         transform: `translate(${_selection.endCoords.x * gridWidth - indicatorDiameter / 2}px, ${
                             _selection.endCoords.y * gridHeight - indicatorDiameter / 2

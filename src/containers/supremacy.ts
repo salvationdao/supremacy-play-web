@@ -5,6 +5,7 @@ import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
 import { useLocalStorage } from "../hooks/useLocalStorage"
+import { colors } from "../theme/theme"
 import { FactionWithPalette } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -96,7 +97,15 @@ export const SupremacyContainer = createContainer(() => {
                 if (resp.error || !resp.payload) return
                 const currentData = {} as FactionsAll
                 resp.payload.forEach((f) => {
-                    currentData[f.id] = f
+                    currentData[f.id] = {
+                        ...f,
+                        palette: {
+                            ...f.palette,
+                            u700: colors.universal.u700,
+                            u800: colors.universal.u800,
+                            u900: colors.universal.u900,
+                        },
+                    }
                 })
                 setFactionsAll(currentData)
             } catch (e) {

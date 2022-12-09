@@ -23,7 +23,7 @@ export const ThemeProvider: React.FC = ({ children }) => {
     })
 
     useEffect(() => {
-        setCurrentTheme((curTheme: Theme) => mergeDeep(curTheme, { factionTheme: factionColors }))
+        setCurrentTheme((currTheme: Theme) => mergeDeep(currTheme, { factionTheme: factionColors }))
     }, [factionColors])
 
     return (

@@ -52,7 +52,7 @@ export const NiceTooltip = ({ text, renderNode, children, placement, color, text
                         color: `${primaryColor}50`,
                         thickness: "very-lean",
                     }}
-                    background={{ colors: [theme.factionTheme.background] }}
+                    background={{ colors: [theme.factionTheme.u800] }}
                     sx={{ height: "100%", maxHeight: "calc(100vh - 4rem)", ...parentSx }}
                 >
                     <Stack sx={{ height: "100%", backgroundColor: "#FFFFFF10" }}>

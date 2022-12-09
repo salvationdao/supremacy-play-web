@@ -132,7 +132,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                         borderThickness: ".25rem",
                         borderColor: theme.factionTheme.primary,
                     }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                     opacity={0.8}
                     sx={{ position: "relative", width: "100%", height: "100%", transition: "all .2s" }}
                 >

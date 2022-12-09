@@ -40,8 +40,9 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 icon={<SvgLoadoutSpeed />}
                 label="Walk Speed"
                 stat={{
-                    value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(0),
+                    value: (mech.speed / (parseFloat(mech.walk_speed_modifier) * 100)).toFixed(2),
                 }}
+                unit="m/sec"
                 hideEmptyComparison
             />
             {mech.walk_speed_modifier !== "0" && (
@@ -49,8 +50,9 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                     icon={<SvgLoadoutSpeed />}
                     label="Top Speed"
                     stat={{
-                        value: mech.speed / 100,
+                        value: (mech.speed / 100).toFixed(2),
                     }}
+                    unit="m/sec"
                     hideEmptyComparison
                 />
             )}
@@ -137,14 +139,30 @@ export const MechStats = ({ mech }: MechStatsProps) => {
                 invertComparison
                 hideEmptyComparison
             />
-            <Stat
-                icon={<SvgDoubleChevronUp />}
-                label="Boost"
-                stat={{
-                    value: mech.boosted_stat.split("_").join(" "),
-                }}
-                hideEmptyComparison
-            />
+            {(mech.chassis_skin?.level || 0) > 0 && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boost"
+                    stat={{
+                        value: mech.boosted_stat.split("_").join(" "),
+                    }}
+                    hideEmptyComparison
+                />
+            )}
+            {/* Boosted stats */}
+            {mech.boosted_max_hitpoints !== mech.max_hitpoints && (
+                <Stat
+                    icon={<SvgDoubleChevronUp />}
+                    label="Boosted Hull Hitpoints"
+                    stat={{
+                        value: mech.boosted_max_hitpoints,
+                    }}
+                    compareStat={{
+                        value: mech.max_hitpoints,
+                    }}
+                    hideEmptyComparison
+                />
+            )}
             {mech.boosted_speed !== mech.speed && (
                 <Stat
                     icon={<SvgDoubleChevronUp />}

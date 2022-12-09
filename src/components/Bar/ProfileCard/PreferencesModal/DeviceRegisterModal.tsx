@@ -61,7 +61,7 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                         borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={theme.factionTheme.u800}
                 >
                     <Stack spacing=".7rem" sx={{ position: "relative", px: "1.8rem", py: "1.6rem" }}>
                         {/* Modal title */}

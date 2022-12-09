@@ -54,7 +54,7 @@ export const MechThumbnail = ({
                           borderThickness: imageUrl && !smallSize && !tiny ? "0" : ".18rem",
                       }
             }
-            backgroundColor={theme.factionTheme.background}
+            backgroundColor={theme.factionTheme.u800}
             sx={{ flex: 1, position: "relative" }}
         >
             {!smallSize && !tiny && (
@@ -73,7 +73,7 @@ export const MechThumbnail = ({
                         style={{
                             padding: ".1rem .6rem",
                             lineHeight: 1.5,
-                            backgroundColor: `${theme.factionTheme.background}DD`,
+                            backgroundColor: `${theme.factionTheme.u800}DD`,
                         }}
                     >
                         {rarityDeets.label}

@@ -38,7 +38,7 @@ export const ListingDurationSelect = ({
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.text
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     return (
         <QuestionSection primaryColor={primaryColor} question="Duration" description="You can choose how long you want this listing to be available.">

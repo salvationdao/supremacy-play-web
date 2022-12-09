@@ -41,7 +41,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
 }: PlayerAbilityStoreItemProps) {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
+    const backgroundColor = theme.factionTheme.u800
 
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()

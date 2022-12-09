@@ -92,7 +92,7 @@ export const QuestsPopover = ({
                                     sx={{
                                         m: "0 !important",
                                         ".MuiAccordionSummary-root": {
-                                            backgroundColor: (theme) => theme.factionTheme.s900,
+                                            backgroundColor: (theme) => theme.factionTheme.u800,
                                             "&.Mui-expanded": {
                                                 backgroundColor: `${colors.purple}40`,
                                                 minHeight: 0,
@@ -111,7 +111,7 @@ export const QuestsPopover = ({
                                             </Typography>
                                         </Stack>
                                     </AccordionSummary>
-                                    <AccordionDetails sx={{ p: "1rem 1rem 2rem", backgroundColor: (theme) => theme.factionTheme.background }}>
+                                    <AccordionDetails sx={{ p: "1rem 1rem 2rem", backgroundColor: (theme) => theme.factionTheme.u800 }}>
                                         <Stack spacing="1rem">
                                             {questStatsFiltered.map((qs) => {
                                                 const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)

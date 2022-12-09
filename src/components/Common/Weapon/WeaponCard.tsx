@@ -136,7 +136,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ boxShadow: 0.4, flex: 1 }}
                     >
-                        <MediaPreview imageUrl={image} objectFit="contain" sx={{ height: "20rem" }} />
+                        <MediaPreview imageUrl={image} backgroundImageUrl={weapon.brand?.logo_url} objectFit="contain" sx={{ height: "20rem" }} />
                     </NiceBoxThing>
                 </Link>
 

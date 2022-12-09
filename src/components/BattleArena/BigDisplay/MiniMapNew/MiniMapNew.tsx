@@ -235,7 +235,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                         sx={{
                             p: ".6rem 1.6rem",
                             height: `${TOP_BAR_HEIGHT}rem`,
-                            background: (theme) => theme.factionTheme.background,
+                            background: (theme) => theme.factionTheme.u800,
                             zIndex: 99,
                         }}
                     >

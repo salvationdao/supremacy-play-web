@@ -21,7 +21,7 @@ export const WindowPortal = React.forwardRef(function WindowPortal({ title, back
             <WindowPortalProvider initialState={{ features, container }}>
                 <Box
                     ref={(ref: HTMLElement) => setContainer(ref)}
-                    sx={{ width: "100%", height: "100%", backgroundColor: (theme) => backgroundColor || theme.factionTheme.background }}
+                    sx={{ width: "100%", height: "100%", backgroundColor: (theme) => backgroundColor || theme.factionTheme.u800 }}
                 >
                     <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
                         {container && <CacheWrapper container={container}>{children}</CacheWrapper>}

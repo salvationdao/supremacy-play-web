@@ -212,7 +212,7 @@ const MechStatus = ({ label, icon, value }: MechStatusProps) => {
     const { factionTheme } = useTheme()
     return (
         <NiceTooltip placement="top" text={label}>
-            <Stack direction="row" alignItems="center" flex={1} spacing=".3rem" sx={{ px: ".5rem", py: ".25rem", backgroundColor: factionTheme.background }}>
+            <Stack direction="row" alignItems="center" flex={1} spacing=".3rem" sx={{ px: ".5rem", py: ".25rem", backgroundColor: factionTheme.u800 }}>
                 {icon}
                 <Typography>{value}</Typography>
             </Stack>

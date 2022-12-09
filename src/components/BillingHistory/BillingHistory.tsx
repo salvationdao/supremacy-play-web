@@ -84,7 +84,7 @@ export const BillingHistory = () => {
                 <NiceBoxThing
                     border={{ color: theme.factionTheme.primary }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                         opacity: 0.7,
                     }}
                     sx={{ flex: 1, height: "100%" }}

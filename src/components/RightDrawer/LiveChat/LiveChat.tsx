@@ -321,7 +321,7 @@ const Content = React.memo(function Content({
             <ChatMessages key={`chat-messages-${faction_id}`} primaryColor={primaryColor} secondaryColor={secondaryColor} faction_id={faction_id} />
 
             {userID ? (
-                <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
+                <ChatSend faction_id={faction_id} />
             ) : (
                 <Box sx={{ px: "1.6rem", py: ".8rem", backgroundColor: colors.red }}>
                     <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages</Typography>
@@ -377,7 +377,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 p: "1rem",
                 alignItems: "center",
                 opacity: isOpen ? 1 : 0.7,
-                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s700}70 26%, ${theme.factionTheme.s800})` : theme.factionTheme.u700,
                 transition: "background-color .2s ease-out",
             }}
         >

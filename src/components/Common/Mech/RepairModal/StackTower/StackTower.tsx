@@ -63,7 +63,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
 
     // Initialize game
     useEffect(() => {
-        gameInstance.current = new Game(theme.factionTheme.background, setGameState, onPlaceBlock, setActivePlayButton)
+        gameInstance.current = new Game(theme.factionTheme.u800, setGameState, onPlaceBlock, setActivePlayButton)
         setTimeout(() => {
             gameInstance.current?.start()
         }, 100)
@@ -72,7 +72,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
             const instance = gameInstance.current
             instance?.destroy()
         }
-    }, [onPlaceBlock, setGameState, theme.factionTheme.background])
+    }, [onPlaceBlock, setGameState, theme.factionTheme.u800])
 
     return (
         <NiceBoxThing
@@ -133,7 +133,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                                 bottom: 0,
                                 left: 0,
                                 right: 0,
-                                backgroundColor: theme.factionTheme.background,
+                                backgroundColor: theme.factionTheme.u800,
                             }}
                         />
 

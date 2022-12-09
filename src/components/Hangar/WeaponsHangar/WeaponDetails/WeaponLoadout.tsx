@@ -30,7 +30,13 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                 }}
             >
                 {skin ? (
-                    <MechLoadoutItem imageUrl={skin.image_url || skin.avatar_url} label={skin.label} Icon={SvgLoadoutSkin} rarity={getRarityDeets(skin.tier)} />
+                    <MechLoadoutItem
+                        backgroundImageUrl={weaponDetails.brand?.logo_url}
+                        imageUrl={skin.image_url || skin.avatar_url}
+                        label={skin.label}
+                        Icon={SvgLoadoutSkin}
+                        rarity={getRarityDeets(skin.tier)}
+                    />
                 ) : (
                     <MechLoadoutItem label="SKIN" onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}

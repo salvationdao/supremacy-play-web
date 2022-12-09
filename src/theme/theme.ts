@@ -17,6 +17,8 @@ declare module "@mui/material/styles" {
         primary: string
         text: string
         background: string
+        contrast_primary: string
+        contrast_background: string
         s100: string
         s200: string
         s300: string
@@ -26,12 +28,17 @@ declare module "@mui/material/styles" {
         s700: string
         s800: string
         s900: string
+        u700: string
+        u800: string
+        u900: string
     }
     // allow configuration using `createTheme`
     interface FactionThemeOptions {
         primary?: string
         text?: string
         background?: string
+        contrast_primary?: string
+        contrast_background?: string
         s100?: string
         s200?: string
         s300?: string
@@ -41,6 +48,9 @@ declare module "@mui/material/styles" {
         s700?: string
         s800?: string
         s900?: string
+        u700?: string
+        u800?: string
+        u900?: string
     }
 }
 
@@ -102,6 +112,12 @@ export const colors = {
     utilities: "#5DC437",
     powerCore: "#009CBF",
 
+    universal: {
+        u700: "#251B30",
+        u800: "#0D0415",
+        u900: "#010001",
+    },
+
     rarity: {
         MEGA: "#e84234",
         COLOSSAL: "#b43328",
@@ -121,6 +137,8 @@ const factionTheme: FactionTheme = {
     primary: "#00FAFA",
     text: "#ffffff",
     background: "#001919",
+    contrast_primary: "#00FAFA",
+    contrast_background: "#001919",
     s100: "#ccfefe",
     s200: "#80fdfd",
     s300: "#33fbfb",
@@ -130,6 +148,9 @@ const factionTheme: FactionTheme = {
     s700: "#004b4b",
     s800: "#003232",
     s900: "#001919",
+    u700: colors.universal.u700,
+    u800: colors.universal.u800,
+    u900: colors.universal.u900,
 }
 
 export const fonts = {

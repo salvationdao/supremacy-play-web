@@ -94,7 +94,7 @@ export const WarMachineStatsBT = () => {
                             clipSize="10px"
                             corners={{ topRight: true }}
                             opacity={0.7}
-                            backgroundColor={theme.factionTheme.background}
+                            backgroundColor={theme.factionTheme.u800}
                             sx={{ height: "100%" }}
                         >
                             <HorizontalScrollContainer>

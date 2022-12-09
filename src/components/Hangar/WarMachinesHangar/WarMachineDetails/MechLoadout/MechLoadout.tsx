@@ -16,7 +16,7 @@ import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
-import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
+import { MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
 import { PowerCoreTooltip } from "./Tooltips/PowerCoreTooltip"
 import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
@@ -130,7 +130,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
 
     const [isDragging, setIsDragging] = useState(false)
-    const draggablesRef = useRef<DraggablesHandle>(null)
 
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
@@ -202,10 +201,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
                 setError(undefined)
                 onUpdate(newMechDetails)
-
-                if (draggablesRef.current) {
-                    draggablesRef.current.handleMechLoadoutUpdated()
-                }
             } catch (e) {
                 if (e instanceof Error) {
                     setError(e.message)
@@ -618,6 +613,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                         disabled={loadoutDisabled}
                         key={weapon.id}
                         imageUrl={weapon.image_url || weapon.avatar_url}
+                        backgroundImageUrl={weapon.brand?.logo_url}
                         label={weapon.label}
                         subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
                         Icon={SvgLoadoutWeapon}
@@ -750,7 +746,6 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         () =>
             userID === owner_id ? (
                 <MechLoadoutDraggables
-                    draggablesRef={draggablesRef}
                     compareToWeapon={compareToWeapon?.weapon}
                     excludeWeaponIDs={(() => {
                         const result: string[] = []
@@ -812,11 +807,11 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 >
                     <NiceBoxThing
                         border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
+                            color: theme.factionTheme.s700,
+                            thickness: "very-lean",
                         }}
                         background={{
-                            colors: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.u800],
                         }}
                         sx={{
                             position: "absolute",
@@ -856,11 +851,11 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 <NiceBoxThing
                     flex={1}
                     border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
+                        color: theme.factionTheme.s700,
+                        thickness: "very-lean",
                     }}
                     background={{
-                        colors: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.u800],
                     }}
                 >
                     {/* Saving Changes */}
@@ -879,7 +874,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                     borderColor: theme.factionTheme.primary,
                                     borderThickness: ".3rem",
                                 }}
-                                backgroundColor={theme.factionTheme.background}
+                                backgroundColor={theme.factionTheme.u800}
                                 corners={{
                                     topRight: !(enable3DLoadout && isUnityLoaded),
                                 }}
