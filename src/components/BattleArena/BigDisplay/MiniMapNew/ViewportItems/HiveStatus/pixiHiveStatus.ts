@@ -5,7 +5,7 @@ import { deg2rad, HEXToVBColor } from "../../../../../../helpers"
 import { HiveHexLocations } from "../../../../../../types/hive"
 import { Vector2i } from "../../../../../../types/game"
 
-const HEX_SIZE = 40
+const HEX_SIZE = 19
 
 export class PixiHiveStatus {
     root: PIXI.Container<PIXI.DisplayObject>
