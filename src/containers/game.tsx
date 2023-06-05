@@ -123,6 +123,7 @@ export const GameContainer = createContainer(() => {
             setSpawnedAI(payload.spawned_ai)
             setIsAIDrivenMatch(payload.is_ai_driven_match)
             payload.game_map.Background_Url = MiniMapImageURL(SalvationDAOBaseURL, payload.game_map.Name)
+            payload.game_map.Image_Url = MiniMapImageURL(SalvationDAOBaseURL, payload.game_map.Name)
             setMap(payload.game_map)
         },
     )
