@@ -7,6 +7,30 @@ import { AbilityDetail, AIType, BattleEndDetail, BattleState, BattleZoneStruct, 
 import { BattleLobby } from "../types/battle_queue"
 import { useArena } from "./arena"
 
+interface GameClientMap {
+    Name: string
+    ImageURL: string
+}
+
+const S3BaseURL = "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com"
+const SalvationDAOBaseURL = "https://afiles.ninja-cdn.com"
+const maps: GameClientMap[] = [
+    { Name: "Arctic Bay", ImageURL: "/supremacy/maps/ArcticBay.webp" },
+    { Name: "Desert City", ImageURL: "/supremacy/maps/DesertCity.webp" },
+    { Name: "MIBT", ImageURL: "/supremacy/maps/UrbanBuildings.webp" },
+    { Name: "NyuTokyo", ImageURL: "/supremacy/maps/NeoTokyo.webp" },
+    { Name: "CloudKu 9", ImageURL: "/supremacy/maps/CloudKu.webp" },
+    { Name: "TheHive", ImageURL: "/supremacy/maps/TheHive.webp" },
+    { Name: "Aokigahara Sea of Trees", ImageURL: "/supremacy/maps/AokigaharaForest.webp" },
+    { Name: "Kazuya City", ImageURL: "/supremacy/maps/CityBlockArena.webp" },
+    { Name: "IronDust 5", ImageURL: "/supremacy/maps/RedMountainMine.webp" },
+]
+
+const MiniMapImageURL = (baseURL: string, mapName: string): string => {
+    const result = maps.find((m) => m.Name === mapName)
+    return result ? `${baseURL}${result.ImageURL}` : ""
+}
+
 export interface GameSettingsResponse {
     battle_id: string
     battle_identifier: number
@@ -98,6 +122,7 @@ export const GameContainer = createContainer(() => {
             setWarMachines(payload.war_machines)
             setSpawnedAI(payload.spawned_ai)
             setIsAIDrivenMatch(payload.is_ai_driven_match)
+            payload.game_map.Background_Url = MiniMapImageURL(SalvationDAOBaseURL, payload.game_map.Name)
             setMap(payload.game_map)
         },
     )

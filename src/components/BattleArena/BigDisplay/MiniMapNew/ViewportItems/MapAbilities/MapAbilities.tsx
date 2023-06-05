@@ -209,24 +209,23 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     }
                                 }
 
+                                const S3BaseURL = "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com"
+                                const SalvationDAOBaseURL = "https://afiles.ninja-cdn.com"
                                 // Show landmine activation after time offset
-                                let image_url = "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine.webp"
+                                let image_url = `${SalvationDAOBaseURL}/supremacy/mini-map/landmines/landmine.webp`
                                 let colour = "#000000"
                                 switch (factionNo) {
                                     case 1:
                                         colour = "#C24242"
-                                        image_url =
-                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_redmountain.webp"
+                                        image_url = `${SalvationDAOBaseURL}/supremacy/mini-map/landmines/landmine_redmountain.webp`
                                         break
                                     case 2:
                                         colour = "#428EC1"
-                                        image_url =
-                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_boston.webp"
+                                        image_url = `${SalvationDAOBaseURL}/supremacy/mini-map/landmines/landmine_boston.webp`
                                         break
                                     case 3:
                                         colour = "#FFFFFF"
-                                        image_url =
-                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_zai.webp"
+                                        image_url = `${SalvationDAOBaseURL}/supremacy/mini-map/landmines/landmine_zai.webp`
                                         break
                                 }
 
